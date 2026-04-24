@@ -1,0 +1,61 @@
+.botones-form {
+  display: flex;
+  justify-content: space-around;
+}
+
+.tag-naranja {
+  border-radius: 25px;
+  background-color: #FF6D2A;
+  color: white;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  font-weight: 500;
+  font-size: 10px;
+}
+.tag-verde {
+  background-color: #8BC34A;
+  border-radius: 25px;
+  color: white;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  font-weight: 500;
+  font-size: 10px;
+}
+
+.cls > td {  
+  background-color: red!important;  
+}
+
+.border { border: 2px blue dashed; } 
+.mr-0 { margin-right: 0; } 
+.ml-auto { margin-left:auto; } 
+.d-block { display:block; }
+
+::ng-deep #exportContainer {
+  text-align: right;
+}
+
+
+::ng-deep .dx-scrollbar-horizontal.dx-scrollbar-hoverable {
+  height: 15px;
+}
+
+::ng-deep .dx-scrollbar-vertical.dx-scrollbar-hoverable {
+  width: 15px;
+}
+
+::ng-deep .dx-scrollbar-horizontal .dx-scrollable-scroll { 
+  height: 15px; 
+}
+
+::ng-deep .dx-scrollbar-vertical .dx-scrollable-scroll { 
+  width: 15px; 
+}
+
+::ng-deep .dx-scrollable-scroll-content { 
+  background-color:gray !important; /* optional if you want to change the color */
+}

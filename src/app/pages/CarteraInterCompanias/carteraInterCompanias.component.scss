@@ -1,0 +1,50 @@
+::ng-deep .styletotal {
+  background: #DCDCDC;
+}
+
+::ng-deep .dx-datagrid-headers {  
+  background: #DCDCDC;  
+} 
+
+::ng-deep .dx-toast-content {
+    min-width: 200px;
+    max-width: 400px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  ::ng-deep .dx-scrollbar-horizontal.dx-scrollbar-hoverable {
+    height: 15px;
+  }
+  
+  ::ng-deep .dx-scrollbar-vertical.dx-scrollbar-hoverable {
+    width: 15px;
+  }
+  
+  ::ng-deep .dx-scrollbar-horizontal .dx-scrollable-scroll { 
+    height: 15px; 
+  }
+  
+  ::ng-deep .dx-scrollbar-vertical .dx-scrollable-scroll { 
+    width: 15px; 
+  }
+  
+  ::ng-deep .dx-scrollable-scroll-content { 
+    background-color:gray !important; /* optional if you want to change the color */
+  }
+
+
+  .border { border: 2px blue dashed; } 
+.mr-0 { margin-right: 0; } 
+.ml-auto { margin-left:auto; } 
+.d-block { display:block; }
+
+::ng-deep .long-title h3 {
+  font-family: 'Segoe UI Light', 'Helvetica Neue Light', 'Segoe UI', 'Helvetica Neue', 'Trebuchet MS', Verdana;
+  font-weight: 200;
+  font-size: 28px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+  

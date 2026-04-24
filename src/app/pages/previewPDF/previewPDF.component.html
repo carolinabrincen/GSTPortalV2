@@ -1,0 +1,22 @@
+<!-- Card principal  -->
+<div class="content-block dx-card responsive-paddings padding-10">
+
+<!-- <input id="preview" type="file" (change)="previewFile($event)"/> -->
+
+    <div class="map-container">
+      <div class="map-frame">
+        <div id="map" class="map"></div>
+      </div>
+    </div>
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+
+    <dx-toast [(visible)]="isVisible" type="warning" message="Seleccione Año y Mes">  
+        <dxo-position
+            my="top"
+            at="right"
+            of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>

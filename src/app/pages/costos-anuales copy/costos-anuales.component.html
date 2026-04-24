@@ -1,0 +1,678 @@
+<!-- Card principal  -->
+<div class="content-block dx-card responsive-paddings padding-10">
+
+    <dx-tab-panel>
+        <dxi-item title="TPS">
+            <br><br>
+            <dx-responsive-box>
+                <!-- COLS -->
+                <!-- <dxi-col [ratio]="1"></dxi-col> -->
+                <!--Año-->
+                <dxi-col [ratio]=".05"></dxi-col>
+                <dxi-col [ratio]=".20"></dxi-col>
+                <!--vacia-->
+                <dxi-col [ratio]=".15"></dxi-col>
+                <!--Mes-->
+                <!-- <dxi-col [ratio]=".20"></dxi-col>
+                <dxi-col [ratio]="1.50"></dxi-col> -->
+                <!--vacia-->
+                <!-- <dxi-col [ratio]=".15"></dxi-col> -->
+                <!--Buscar-->
+                <dxi-col [ratio]="1"></dxi-col>
+                <dxi-col [ratio]=".25"></dxi-col>
+        
+        
+                <!-- ROWS -->
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+        
+                <!-- CONTROLES DEL FORM -->
+                <!--#region :::: ROW 1 DEL FORM ::::  -->
+                <!-- AÑO -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Año:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="1"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="anio" displayExpr="anio" valueExpr="idAnio" (onValueChanged)="seleccionarAnioTPS($event)">
+                    </dx-select-box>
+                </dxi-item>
+                <!-- MES -->
+                <!-- <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="3"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="2" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Mes:</div>
+                </dxi-item>
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="4"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="3" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="arrMeses" displayExpr="nombre" valueExpr="idMes" (onValueChanged)="seleccionarMesTPS($event)">
+                    </dx-select-box>
+                </dxi-item> -->
+                <!-- BUSCAR -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="3"></dxi-location>
+                    <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                    <div>
+                        <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120" (onClick)="buscarClickTPS($event)">
+                        </dx-button>
+                    </div>
+                </dxi-item>
+                <!--#endregion :::: FIN ROW 1 ::::  -->
+            </dx-responsive-box>
+
+            <br><br><br>
+
+            <!--==========================Bar and Line Chart==================-->
+            <!-- <dx-chart id="chart" [dataSource]="costosTPSGrafica">
+
+                <dxi-series argumentField="udn" valueField="ingreso" name="Ingreso" type="bar" color="#363640">
+                    <dxo-label [visible]="true" [format]="formatSliderTooltip" position="inside">
+                        <dxo-font size="9"></dxo-font>
+                    </dxo-label>
+                </dxi-series>
+
+                <dxi-series argumentField="udn" valueField="presupuesto" name="Presupuesto" type="bar" color="#FA593F">
+                    <dxo-label [visible]="true" [format]="formatSliderTooltip" position="outside">
+                        <dxo-font size="9"></dxo-font>
+                    </dxo-label>
+                    
+                </dxi-series>
+                
+                <dxo-title text="Ingreso">
+                    <dxo-subtitle text="(Mensual)"> </dxo-subtitle>
+                </dxo-title>
+
+                <dxo-export [enabled]="true"></dxo-export>
+              </dx-chart> -->
+
+            <!--====================================Finish chart==========-->
+
+            <br><br><br>
+
+            <dx-tab-panel>
+                <dxi-item title="GST Consolidado">
+                    <dx-data-grid  #rentGer id="gridContainer" [dataSource]="costosFTP" [height]="700"[showBorders]="true" [columnAutoWidth]="true"
+                    (onRowPrepared)="onRowPreparedTPS($event)" (onCellPrepared)="onCellPreparedTPS($event)">
+
+                        <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                        <dxo-paging [pageSize]="100"></dxo-paging>
+                        <dxo-export [enabled]="true" fileName="TPS-Global" [customizeExcelCell]="customizeCompania"></dxo-export>
+                        
+                        <dxi-column dataField="concepto" caption="Concepto" [fixed]="true"></dxi-column>
+        
+                        <dxi-column caption="GEMINIS">
+                            <dxi-column dataField="geminisMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="geminisMesRealP" caption="%"  format="percent"></dxi-column>
+                            <dxi-column dataField="geminisMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="geminisMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="GEMINIS">
+                            <dxi-column dataField="geminisAcumuladoReal" caption="REAL ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="geminisAcumuladoRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="geminisAcumuladoPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="geminisAcumuladoPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="TBK">
+                            <dxi-column dataField="tbkMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="tbkMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="tbkMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="tbkMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="TBK">
+                            <dxi-column dataField="tbkAcumuladoReal" caption="REAL ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="tbkAcumuladoRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="tbkAcumuladoPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="tbkAcumuladoPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="TEISA">
+                            <dxi-column dataField="teisaMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="teisaMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="teisaMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="teisaMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="TEISA">
+                            <dxi-column dataField="teisaAcumuladoReal" caption="REAL ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="teisaAcumuladoRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="teisaAcumuladoPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="teisaAcumuladoPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="GST-TPS">
+                            <dxi-column dataField="gstMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="gstMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="gstMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="gstMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="GST-TPS">
+                            <dxi-column dataField="gstAcumuladoReal" caption="REAL ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="gstAcumuladoRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="gstAcumuladoPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="gstAcumuladoPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="CENTRO DE MONITOREO">
+                            <dxi-column dataField="moniMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="moniMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="moniMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="moniMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="CENTRO DE MONITOREO">
+                            <dxi-column dataField="moniAcumuladoReal" caption="REAL ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="moniAcumuladoRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="moniAcumuladoPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="moniAcumuladoPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="GST-TOTAL GRUPO">
+                            <dxi-column dataField="gstGrupoMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="gstGrupoMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="gstGrupoMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="gstGrupoMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="GST-TOTAL GRUPO">
+                            <dxi-column dataField="gstGrupoAcumuladoReal" caption="REAL ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="gstGrupoAcumuladoRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="gstGrupoAcumuladoPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="gstGrupoAcumuladoPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+
+                        <dxi-column caption="" [width]="20"></dxi-column>
+                        
+                        <dxi-column caption="ATM">
+                            <dxi-column dataField="atmMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="atmMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="atmMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="atmMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+            
+                        <dxi-column caption="ATM">
+                            <dxi-column dataField="atmAcumuladoReal" caption="REAL ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="atmAcumuladoRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="atmAcumuladoPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="atmAcumuladoPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        
+                    </dx-data-grid>
+                </dxi-item>
+
+                <dxi-item title="Región Centro Occidente">
+                    <dx-data-grid #rentGer id="gridContainer" [dataSource]="costosTPSOccidente" [height]="700" [columnAutoWidth]="true" [showColumnLines]="true"
+                     [showBorders]="true" [rowAlternationEnabled]="true" (onRowPrepared)="onRowPreparedTPS($event)" (onCellPrepared)="onCellPreparedTPS($event)">
+                        <dxo-scrolling mode="virtual"></dxo-scrolling>
+                        <dxo-grouping #expand [autoExpandAll]="true" [allowCollapsing]="false"></dxo-grouping>
+                        
+                        
+                        <dxi-column dataField="concepto" caption="Concepto" [fixed]="true"></dxi-column>
+        
+                        <dxi-column caption="TULTITLAN">
+                            <dxi-column dataField="tultiMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="tultiMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="tultiMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="tultiMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="TULTITLAN">
+                            <dxi-column dataField="tultiAcumuladoReal" caption="REAL ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="tultiAcumuladoRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="tultiAcumuladoPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="tultiAcumuladoPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="CUAUTITLAN">
+                            <dxi-column dataField="cuautMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="cuautMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="cuautMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="cuautMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="CUAUTITLAN">
+                            <dxi-column dataField="cuautAcumuladoReal" caption="REAL ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="cuautAcumuladoRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="cuautAcumuladoPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="cuautAcumuladoPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="GUADALAJARA">
+                            <dxi-column dataField="guadMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="guadMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="guadMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="guadMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="GUADALAJARA">
+                            <dxi-column dataField="guadAcumuladoReal" caption="REAL ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="guadAcumuladoRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="guadAcumuladoPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="guadAcumuladoPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="HERMOSILLO">
+                            <dxi-column dataField="hermMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="hermMesRealP" caption="%"></dxi-column>
+                            <dxi-column dataField="hermMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="hermMesPresupuestoP" caption="%"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="HERMOSILLO">
+                            <dxi-column dataField="hermAcumuladoReal" caption="REAL ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="hermAcumuladoRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="hermAcumuladoPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="hermAcumuladoPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <!-- <dxi-column caption="MEXICALI" headerCellTemplate="headerTemplate">
+                            <dxi-column dataField="mexMesReal" caption="MesReal" headerCellTemplate="headerTemplate"></dxi-column>
+                            <dxi-column dataField="mexMesPresupuesto" caption="MesPpto" headerCellTemplate="headerTemplate"></dxi-column>
+                            <dxi-column dataField="mexMesDesviacion" caption="MesVar" headerCellTemplate="headerTemplate"></dxi-column>
+                            <dxi-column dataField="mexMesPorDesv" caption="%" headerCellTemplate="headerTemplate"></dxi-column>
+                            <dxi-column dataField="mexAcumuladoReal" caption="AcumReal" headerCellTemplate="headerTemplate"></dxi-column>
+                            <dxi-column dataField="mexAcumuladoPresupuesto" caption="AcumPpto" headerCellTemplate="headerTemplate"></dxi-column>
+                            <dxi-column dataField="mexAcumuladoDesviacion" caption="AcumVar" headerCellTemplate="headerTemplate"></dxi-column>
+                            <dxi-column dataField="mexAcumuladoPorDesv" caption="%" headerCellTemplate="headerTemplate"></dxi-column>
+                        </dxi-column> -->
+                        <dxi-column caption="TOTAL MES">
+                            <dxi-column dataField="totalMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="totalMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="totalMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="totalMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="TOTAL ACUMULADO">
+                            <dxi-column dataField="acumMesReal" caption="REAL ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="acumMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="acumMesPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="acumMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+            
+                        <dxo-export [enabled]="true" fileName="Región-Centro-Occidente" [customizeExcelCell]="customizeRCO"></dxo-export>
+                        <dxo-paging [pageSize]="100"></dxo-paging>
+                        <dxo-sorting mode="none"></dxo-sorting>
+                    </dx-data-grid>
+                </dxi-item>
+
+                <dxi-item title="Golfo Sureste">
+                    <dx-data-grid #rentGer id="gridContainer" [dataSource]="costosTPSGolfo" [height]="700" [columnAutoWidth]="true"
+                     [showColumnLines]="true" [showBorders]="true" [rowAlternationEnabled]="true" (onRowPrepared)="onRowPreparedTPS($event)" (onCellPrepared)="onCellPreparedTPS($event)">
+                        <dxo-scrolling mode="virtual"></dxo-scrolling>
+                        <dxo-grouping #expand [autoExpandAll]="true" [allowCollapsing]="false"></dxo-grouping>
+                        
+                        
+                        <dxi-column dataField="concepto" caption="Concepto" [fixed]="true"></dxi-column>
+        
+                        <dxi-column caption="ORIZABA">
+                            <dxi-column dataField="oriMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="oriMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="oriMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="oriMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="ORIZABA">
+                            <dxi-column dataField="oriAcumuladoReal" caption="REAL ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="oriAcumuladoRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="oriAcumuladoPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="oriAcumuladoPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="RAMOS ARIZPE">
+                            <dxi-column dataField="ramosMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="ramosMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="ramosMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="ramosMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="RAMOS ARIZPE">
+                            <dxi-column dataField="ramosAcumuladoReal" caption="REAL ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="ramosAcumuladoRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="ramosAcumuladoPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="ramosAcumuladoPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="TOTAL MES">
+                            <dxi-column dataField="totalMesReal" caption="REAL MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="totalMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="totalMesPresupuesto" caption="PRESUP. MES" [format]="separator"></dxi-column>
+                            <dxi-column dataField="totalMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="TOTAL ACUMULADO">
+                            <dxi-column dataField="acumMesReal" caption="REAL AUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="acumMesRealP" caption="%" format="percent"></dxi-column>
+                            <dxi-column dataField="acumMesPresupuesto" caption="PRESUP. ACUMULADO" [format]="separator"></dxi-column>
+                            <dxi-column dataField="acumMesPresupuestoP" caption="%" format="percent"></dxi-column>
+                        </dxi-column>
+            
+                        <dxo-export [enabled]="true" fileName="Golfo-Sureste" [customizeExcelCell]="customizeGS"></dxo-export>
+                        <dxo-paging [pageSize]="100"></dxo-paging>
+                        <dxo-sorting mode="none"></dxo-sorting>
+                    </dx-data-grid>
+                </dxi-item>
+
+            </dx-tab-panel>
+
+        </dxi-item>
+        <dxi-item title="ESTADO DE RESULTADOS">
+            <br><br>
+            <dx-responsive-box>
+                <!-- COLS -->
+                <!--Año-->
+                <dxi-col [ratio]=".50"></dxi-col>
+                <dxi-col [ratio]=".90"></dxi-col>
+                <!--vacia-->
+                <dxi-col [ratio]=".15"></dxi-col>
+                <!--Compañia-->
+                <dxi-col [ratio]=".70"></dxi-col>
+                <dxi-col [ratio]="3.20"></dxi-col>
+                <!--vacia-->
+                <dxi-col [ratio]=".15"></dxi-col>
+                <!--UDN-->
+                <dxi-col [ratio]=".40"></dxi-col>
+                <dxi-col [ratio]="1.10"></dxi-col>
+                <!--vacia-->
+                <!-- <dxi-col [ratio]=".15"></dxi-col> -->
+                <!--Clasificacion-->
+                <!-- <dxi-col [ratio]="1.70"></dxi-col>
+                <dxi-col [ratio]="3"></dxi-col> -->
+                <!--vacia-->
+                <dxi-col [ratio]=".15"></dxi-col>
+                <!--Buscar-->
+                <dxi-col [ratio]=".30"></dxi-col>
+                <dxi-col [ratio]="1.20"></dxi-col>
+        
+        
+                <!-- ROWS -->
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+        
+                <!-- CONTROLES DEL FORM -->
+                <!--#region :::: ROW 1 DEL FORM ::::  -->
+                <!-- AÑO -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Periodo:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="1"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="arrAnos" displayExpr="anio" valueExpr="idAnio" (onValueChanged)="seleccionarAnio($event)">
+                    </dx-select-box>
+                </dxi-item>
+                <!-- MES -->
+                <!-- <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="3"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="2" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Mes:</div>
+                </dxi-item>
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="4"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="3" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="arrMeses" displayExpr="nombre" valueExpr="idMes" (onValueChanged)="seleccionarMes($event)">
+                    </dx-select-box>
+                </dxi-item> -->
+        
+                <!--Compañia -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="3"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="0" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Compañia:</div>
+                </dxi-item>
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="4"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="1" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="nweCompanias" displayExpr="compania" valueExpr="compania" (onValueChanged)="selectCompaniaNew($event)">
+                    </dx-select-box>
+                </dxi-item>
+                <!--ROW 1 Unidad de Negocio -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="6"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="0" [col]="0" [colspan]="12"></dxi-location>
+                    <div>UdN:</div>
+                </dxi-item>
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="7"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="1" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="arrUnidadesNegocio" displayExpr="udn" valueExpr="idUdn" (onValueChanged)="seleccionarUDN($event)">
+                    </dx-select-box>
+                </dxi-item>
+                <!-- CLASIFICACION se oculto por el momento -->
+                <!-- <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="12"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Clasificación:</div>
+                </dxi-item>
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="13"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="1" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="clasificaciones" displayExpr="clasificacion" valueExpr="idClas" (onValueChanged)="selectClasficacion($event)">
+                    </dx-select-box>
+                </dxi-item> -->
+                <!-- BUSCAR -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="10"></dxi-location>
+                    <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                    <div>
+                        <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120" (onClick)="buscarClick($event)">
+                        </dx-button>
+                    </div>
+                </dxi-item>
+                <!--#endregion :::: FIN ROW 1 ::::  -->
+            </dx-responsive-box>
+            <br>
+        
+            <dx-tab-panel>
+                <dxi-item title="ESTADO DE RESULTADOS">
+
+                    <dx-data-grid  #ER id="gridContainer2" [dataSource]="CATPS" [height]="700"[showBorders]="true" [columnAutoWidth]="true"
+                    (onRowPrepared)="onRowPreparedCAER($event)" (onCellPrepared)="onCellPreparedCAER($event)">
+                      
+                      <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                      <dxo-paging [pageSize]="100"></dxo-paging>
+                      <dxo-export [enabled]="true" fileName="ESTADO DE RESULTADOS" [customizeExcelCell]="customizeCAER"></dxo-export>
+
+                        <!-- <dxi-column dataField="clasificacion" caption="Clasificación" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column> -->
+                        <dxi-column caption="{{myCompania +' - '+ myUdN}}" >
+                            <dxi-column dataField="concepto" caption="Concepto"></dxi-column>
+
+                            <dxi-column caption="CONTABILIZADO DEL MES">
+                                <dxi-column dataField="real" caption="REAL" [format]="separator" [allowSorting]="false"></dxi-column>
+                                <dxi-column dataField="realP" caption="%" format="percent"></dxi-column>
+                                <dxi-column dataField="presupuesto" caption="PRESUP" [format]="separator" [allowSorting]="false"></dxi-column>
+                                <dxi-column dataField="presupuestoP" caption="%" format="percent"></dxi-column>
+                                <dxi-column dataField="presupuestoPC" caption="vs Real %" format="percent" [allowSorting]="false"></dxi-column>
+                            </dxi-column>
+                            <dxi-column caption="CONTABILIZADO ACUMULADO">
+                                <dxi-column dataField="realA" caption="REAL ACUM" [format]="separator" [allowSorting]="false"></dxi-column>
+                                <dxi-column dataField="realAP" caption="%" format="percent"></dxi-column>
+                                <dxi-column dataField="presA" caption="PRESUP ACUM" [format]="separator" [allowSorting]="false"></dxi-column>
+                                <dxi-column dataField="presAP" caption="%" format="percent"></dxi-column>
+                                <dxi-column dataField="presupuestoAPC" caption="vs Real %" format="percent" [allowSorting]="false"></dxi-column>
+                            </dxi-column>
+                        </dxi-column>
+                        <!-- <dxi-column dataField="periodo" caption="Periodo"  headerCellTemplate="headerTemplate"></dxi-column>
+                        <dxi-column dataField="renglon" caption="Renglon" headerCellTemplate="headerTemplate"></dxi-column> -->
+
+                        <dxi-column dataField="" caption="Ver" [fixed]="false" cellTemplate="detalleCellTemplate"></dxi-column>
+
+                        <div *dxTemplate="let data of 'detalleCellTemplate'">
+                            <dx-button icon="paste" stylingMode="outlined" type="danger" (onClick)="verDetallesClick(data)"></dx-button>
+                        </div>
+
+                    </dx-data-grid>
+
+                  
+                </dxi-item>
+
+                <dxi-item title="RESUMEN DE CUENTAS">
+
+                    <dx-data-grid  #ER id="gridContainer2" [dataSource]="CACostos" [height]="700"[showBorders]="true" [columnAutoWidth]="true"
+                     [showColumnLines]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true" [allowColumnResizing]="true" [allowColumnReordering]="false" [columnAutoWidth]="true" [showBorders]="true"
+                    (onRowPrepared)="onRowPrepared($event)" (onContentReady)="onContentReady($event)" (onCellPrepared)="onCellPrepared($event)">
+                      <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                      <dxo-paging [pageSize]="100"></dxo-paging>
+
+                      <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+
+                      <dxo-export [enabled]="true" fileName="RESUMEN CUENTAS"></dxo-export>
+                      
+                      <dxi-column dataField="numCuentaFormat" caption="Num. Cuenta" [fixed]="false"></dxi-column>
+                      <dxi-column dataField="descCuenta" caption="Descripción" [fixed]="false"></dxi-column>
+                      <dxi-column dataField="total" caption="Total" [fixed]="false" format="$ #,##0.##;-$ #,##0.##"></dxi-column>
+              
+
+                    </dx-data-grid>
+                </dxi-item>
+
+                <dxi-item title="AUXILIAR">
+
+                    <dx-data-grid  #ER id="gridContainer2" [dataSource]="CAAuxiliar" [height]="700"[showBorders]="true" [columnAutoWidth]="true"
+                    [showColumnLines]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true" [allowColumnResizing]="true" [allowColumnReordering]="false" [columnAutoWidth]="true" [showBorders]="true"
+                   (onRowPrepared)="onRowPrepared($event)" (onContentReady)="onContentReady($event)" (onCellPrepared)="onCellPrepared($event)">
+                     <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                     <dxo-paging [pageSize]="100"></dxo-paging>
+
+                     <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+
+                     <dxo-export [enabled]="true" fileName="Auxiliar"></dxo-export>
+                     
+                     <dxi-column caption="POLIZA">
+                        <dxi-column dataField="nombre" caption="Compañia" [fixed]="true"></dxi-column>
+                        <dxi-column dataField="areaPoliza" caption="Area" [fixed]="true"></dxi-column>
+                        <dxi-column dataField="descripcionTipo" caption="Descripcion Tipo" [fixed]="true"></dxi-column>
+                        <dxi-column dataField="descripcion" caption="Descripción"></dxi-column>
+                        <dxi-column dataField="identificadorPoliza" caption="Identificador"></dxi-column>
+                        <dxi-column dataField="fechaCreacion" caption="Creacion" format="dd/mm/yyyy"></dxi-column>
+                        <dxi-column dataField="fechaIngreso" caption="Ingreso" format="dd/mm/yyyy"></dxi-column>
+                        <dxi-column dataField="fechaModifico" caption="Modificación" format="dd/mm/yyyy"></dxi-column>
+                        <dxi-column dataField="totalAbono" caption="Abono" format="$ #,##0.##;-$ #,##0.##"></dxi-column>
+                        <dxi-column dataField="totalCargo" caption="Cargo" format="$ #,##0.##;-$ #,##0.##"></dxi-column>
+                    </dxi-column>
+                    <dxi-column caption="Detalle cuenta">
+                        <dxi-column dataField="numPartida" caption="Partida"></dxi-column>
+                        <dxi-column dataField="conceptoIndividual" caption="Concepto individual"></dxi-column>
+                        <dxi-column dataField="numCuentaFormat" caption="Num. Cuenta"></dxi-column>
+                        <dxi-column dataField="descCuenta" caption="Cuenta"></dxi-column>
+                        <dxi-column dataField="referencia" caption="Referencia"></dxi-column>
+                        <dxi-column dataField="mmAbono" caption="Abono" format="$ #,##0.##;-$ #,##0.##"></dxi-column>
+                        <dxi-column dataField="mmCargo" caption="Cargo" format="$ #,##0.##;-$ #,##0.##"></dxi-column>
+                        <dxi-column dataField="total" caption="Total" format="$ #,##0.##;-$ #,##0.##"></dxi-column>
+                    </dxi-column>
+                    <dxi-column caption="Centro costos origen">
+                        <dxi-column dataField="centroCosto1" caption="Centro costo 1"></dxi-column>
+                        <dxi-column dataField="centroCosto2" caption="Centro costo 2"></dxi-column>
+                        <dxi-column dataField="centroCosto3" caption="Centro costo 3"></dxi-column>
+                    </dxi-column>
+                    <dxi-column caption="Centro costos aplicación">
+                        <dxi-column dataField="centroCostoCia" caption="Compañia"></dxi-column>
+                        <dxi-column dataField="centroCostoCta" caption="Centro costo"></dxi-column>
+                    </dxi-column>
+                    <!-- <dxi-column dataField="centroCosto" caption="Centro costo"></dxi-column> -->
+                    <!-- <dxi-column dataField="estatus" caption="Estatus"></dxi-column>
+                    <dxi-column dataField="periodo" caption="Periodo"></dxi-column> -->
+                   </dx-data-grid>
+                </dxi-item>
+            </dx-tab-panel>
+
+        </dxi-item>
+    </dx-tab-panel>
+   
+
+<!--==========================MODAL REAL=========================================================-->
+<dx-popup width="100%" height="100%" [showTitle]="true" title="Detalle" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modDetalleA">
+    <!-- <dxo-position at="middle" my="center" [of]="positionOf"> </dxo-position>  -->
+
+
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+
+            <dx-data-grid class="data-grid" [dataSource]="deltalleAxuliar" [showColumnLines]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true"
+             [allowColumnResizing]="true" [allowColumnReordering]="false" [columnAutoWidth]="true" [showBorders]="true">
+
+                <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+
+                <dxo-export [enabled]="true" fileName="Auxiliar"></dxo-export>
+                
+                <dxi-column caption="POLIZA">
+                   <dxi-column dataField="nombre" caption="Compañia" [fixed]="true"></dxi-column>
+                   <dxi-column dataField="areaPoliza" caption="Area" [fixed]="true"></dxi-column>
+                   <dxi-column dataField="descripcionTipo" caption="Descripcion Tipo" [fixed]="true"></dxi-column>
+                   <dxi-column dataField="descripcion" caption="Descripción"></dxi-column>
+                   <dxi-column dataField="identificadorPoliza" caption="Identificador"></dxi-column>
+                   <dxi-column dataField="fechaCreacion" caption="Creacion" format="dd/mm/yyyy"></dxi-column>
+                   <dxi-column dataField="fechaIngreso" caption="Ingreso" format="dd/mm/yyyy"></dxi-column>
+                   <dxi-column dataField="fechaModifico" caption="Modificación" format="dd/mm/yyyy"></dxi-column>
+                   <dxi-column dataField="totalAbono" caption="Abono" format="$ #,##0.##;-$ #,##0.##"></dxi-column>
+                   <dxi-column dataField="totalCargo" caption="Cargo" format="$ #,##0.##;-$ #,##0.##"></dxi-column>
+               </dxi-column>
+               <dxi-column caption="Detalle cuenta">
+                   <dxi-column dataField="numPartida" caption="Partida"></dxi-column>
+                   <dxi-column dataField="conceptoIndividual" caption="Concepto individual"></dxi-column>
+                   <dxi-column dataField="numCuentaFormat" caption="Num. Cuenta"></dxi-column>
+                   <dxi-column dataField="descCuenta" caption="Cuenta"></dxi-column>
+                   <dxi-column dataField="referencia" caption="Referencia"></dxi-column>
+                   <dxi-column dataField="mmAbono" caption="Abono" format="$ #,##0.##;-$ #,##0.##"></dxi-column>
+                   <dxi-column dataField="mmCargo" caption="Cargo" format="$ #,##0.##;-$ #,##0.##"></dxi-column>
+                   <dxi-column dataField="total" caption="Total" format="$ #,##0.##;-$ #,##0.##"></dxi-column>
+               </dxi-column>
+               <dxi-column caption="Centro costos origen">
+                   <dxi-column dataField="centroCosto1" caption="Centro costo 1"></dxi-column>
+                   <dxi-column dataField="centroCosto2" caption="Centro costo 2"></dxi-column>
+                   <dxi-column dataField="centroCosto3" caption="Centro costo 3"></dxi-column>
+               </dxi-column>
+               <dxi-column caption="Centro costos aplicación">
+                   <dxi-column dataField="centroCostoCia" caption="Compañia"></dxi-column>
+                   <dxi-column dataField="centroCostoCta" caption="Centro costo"></dxi-column>
+               </dxi-column>
+
+                <div *dxTemplate="let data of 'headerTemplate'">
+                    <div style="font-weight: bolder; color: black">
+                        {{ data.column.caption }}
+                    </div>
+                </div>
+                <div *dxTemplate="let cell of 'cellTemplateBold'">
+                    <div style="font-weight: bold;">{{cell.text}}</div>
+                </div>
+                <dxo-paging [pageSize]="20"></dxo-paging>
+                <dxo-group-panel [visible]="false"></dxo-group-panel>
+                <dxo-grouping #expand [autoExpandAll]="expandGroup"></dxo-grouping>
+                <dxo-pager [visible]="true" [allowedPageSizes]="allowedPageSizes" displayMode="full" [showPageSizeSelector]="true" [showInfo]="true" [showNavigationButtons]="true">
+                </dxo-pager>
+                <dxo-sorting mode="none"></dxo-sorting>
+            </dx-data-grid>
+        </dx-scroll-view>
+    </div>
+</dx-popup>
+<!--=============================================FIN MODAL==========================================-->
+
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+
+    <dx-toast [(visible)]="isVisible" type="warning" message="Seleccione Año y Mes">  
+        <dxo-position
+            my="top"
+            at="right"
+            of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>

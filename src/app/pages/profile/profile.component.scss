@@ -1,0 +1,46 @@
+.form-avatar {
+    float: left;
+    height: 120px;
+    width: 120px;
+    margin-right: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #fff;
+    overflow: hidden;
+    img {
+        height: 120px;
+        display: block;
+        margin: 0 auto;
+    }
+}
+
+::ng-deep .first-group,
+::ng-deep .second-group {
+    padding: 20px;
+}
+
+::ng-deep .second-group {
+    background-color: rgba(191, 191, 191, 0.15);
+}
+
+.margen-25 {
+    width: 25% !important;
+}
+
+.margen-75 {
+    width: 75% !important;
+}
+
+.padding-10 {
+    padding: 10px !important;
+}
+
+.td {
+    font-weight: bold !important;
+}
+
+.dx-datagrid-headers .MyHeaderClass {
+    text-align: center!important;
+}

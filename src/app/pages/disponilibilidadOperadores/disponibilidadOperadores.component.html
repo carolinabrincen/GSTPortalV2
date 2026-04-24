@@ -1,0 +1,111 @@
+<h2 class="content-block">Diponibilidad de Operadores</h2>
+<div [id]="'myDiv'" class="content-block dx-card responsive-paddings">
+    <br>
+    <div class="dx-card">
+        <dx-form id="form" [formData]="formFilter">
+
+            <dxi-item itemType="group" cssClass="form-group" [colCount]="3">
+                 
+                <dxi-item itemType="group">
+                    <dxi-item dataField="UdN">  
+                        <dx-select-box [dataSource]="unidadNegoios" valueExpr="idUnidad" displayExpr="ciudad" [value]="unidadNegoios[0].idUnidad" (onValueChanged)="selectUdn($event)"></dx-select-box>  
+                    </dxi-item>  
+                </dxi-item>
+                <dxi-item itemType="group">
+                    <dxi-item dataField="Fecha" editorType="dxDateBox" [editorOptions]="{ width: '100%', displayFormat:'dd/MM/yyyy' }"></dxi-item>
+                </dxi-item>
+
+                <dxi-item itemType="group">
+                    <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120" (onClick)="buscarClick($event)">
+                    </dx-button>
+                </dxi-item>
+                
+            </dxi-item>
+        </dx-form>
+    </div>
+    <br><br>
+
+    <div>
+        <dx-data-grid #DisOpe id="gridContainer" [dataSource]="operadores" [height]="570" [showBorders]="true" [columnAutoWidth]="true"
+         (onRowPrepared)="onRowPrepared($event)"  (onCellPrepared)="onCellPrepared($event)">
+            <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+            <dxo-paging [pageSize]="100"></dxo-paging>
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxo-export [enabled]="true"></dxo-export>
+
+            <dxo-editing mode="cell" [allowUpdating]="true"></dxo-editing>
+
+            <dxi-column dataField="operadorUdN" caption="" [fixed]="true" [allowEditing]="false" [groupIndex]="0"></dxi-column>
+            <dxi-column dataField="operacion" caption="" [fixed]="true" [allowEditing]="false" [groupIndex]="1"></dxi-column>
+
+            <dxi-column caption="Operador">
+                <dxi-column dataField="id_personal" caption="Clave" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="operadorNombre" caption="Nombre" [fixed]="false" [allowEditing]="false"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="En Viaje">
+                <dxi-column dataField="viajeNoviaje" caption="No Viaje" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="viajeIdArea" caption="Id Area" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="viajeFecha" caption="Despacho" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="viajeTipo" caption="Tipo" [fixed]="false" [allowEditing]="false"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Ultimo Viaje">
+                <dxi-column dataField="ultViajeNoviaje" caption="No. Viaje" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="ultViajeIdArea" caption="Id Area" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="ultViajeFecha" caption="Despacho" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="ultViajeTipo" caption="Tipo" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="ultViajeTracto" caption="Unidad" [fixed]="false" [allowEditing]="false"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Mantenimiento">
+                <dxi-column dataField="fecha_programada" caption="Programado" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="ordenMttoIdOrden" caption="No. Orden" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="tractoEstado" caption="Edo. Unidad" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="ordenMttoInicio" caption="Inicio" [fixed]="false" [allowEditing]="false"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Tipo de Operación Operador">
+                <dxi-column dataField="operacion" caption="Operación" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="fechaModifico" caption="Modifico" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="nombreTipoOp" caption="Usuario" [fixed]="false" [allowEditing]="false"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Status Logístico Manual">
+                <dxi-column dataField="descripcionStManual" caption="Status" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="observaciones" caption="Observaciones" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="nombreUsSt" caption="Modifico" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="inicio" caption="Inicio" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="fin" caption="Fin" [fixed]="false" [allowEditing]="false"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Status Disponibilidad">
+                <dxi-column dataField="status" caption="Status" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="descripcion" caption="Descripción" [fixed]="false" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="tipo" caption="Tipo" [fixed]="false" [allowEditing]="false"></dxi-column>
+            </dxi-column>
+
+            <!-- <dxi-column caption="Asignación Operación">
+                <dxi-column dataField="asigOperacion" caption="Operación" [fixed]="false" [width]="130">
+                    <dxo-lookup [dataSource]="operacion" displayExpr="operacion" valueExpr="id">
+                    </dxo-lookup></dxi-column>
+                <dxi-column dataField="asigModifico" caption="Modificó" [fixed]="false" dataType="date" format="dd/MM/yyyy" [width]="130"></dxi-column>    
+            </dxi-column>
+            <dxi-column caption="Status Logístico">
+                <dxi-column dataField="statLogistico" caption="Status Logístico" [fixed]="false" [width]="150">
+                    <dxo-lookup [dataSource]="estadosOp" displayExpr="logistica" valueExpr="operativo">
+                    </dxo-lookup>
+                </dxi-column>
+                <dxi-column dataField="statModifico" caption="Modificó" [fixed]="false" dataType="date" format="dd/MM/yyyy" [width]="130"></dxi-column>    
+                <dxi-column dataField="statRetorno" caption="Retorno" [fixed]="false" dataType="date" format="dd/MM/yyyy" [width]="130"></dxi-column>
+            </dxi-column> -->
+
+            <dxo-group-panel [visible]="false"></dxo-group-panel>
+            <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+        </dx-data-grid>
+    </div>
+
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+
+
+    <dx-toast [(visible)]="isVisible" type="info" message="Seleccione Año y Mes">
+        <dxo-position my="top" at="right" of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>

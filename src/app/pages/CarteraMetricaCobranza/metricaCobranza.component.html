@@ -1,0 +1,825 @@
+<!-- Card principal  -->
+<div class="content-block dx-card responsive-paddings padding-10">
+    <h2 class="content-block">Cartera Cuentas por Cobrar</h2>
+<!--====================================Grafica de Dona Ingreso========================================================-->
+
+    <dx-box *ngIf="screen > 500" direction="col" width="100%" [height]="600">
+        <dxi-item [ratio]="3" [baseSize]="0">
+            <dx-box direction="row" width="100%" [height]="200">
+                <dxi-item class="rect demo-dark" [ratio]="4">
+                    <dx-pie-chart id="pie" type="doughnut" title="Cartera de Clientes" palette="material" [dataSource]="graficaIngreso"
+                    [animation]="false" resolveLabelOverlapping="shift" centerTemplate="centerTemplate" [innerRadius]="0.65" [customizePoint]="perosnalizeStyle">
+                        <dxo-export [enabled]="true"></dxo-export>
+                        <dxo-legend horizontalAlignament="center" verticalAlignment="bottom"></dxo-legend>
+                        <dxo-size [height]="600"></dxo-size>
+
+                        <dxi-series argumentField="region" valueField="val">
+                            <dxo-small-values-grouping mode="topN" [topCount]="3" ></dxo-small-values-grouping>
+                            <dxo-label [visible]="true" format="fixedPoint" [customizeText]="customizeLabelDonut">
+                                <!-- <dxo-font size="12" color="black" weight="bold"></dxo-font> -->
+                                <dxo-connector [visible]="true" [width]="1"></dxo-connector>
+                            </dxo-label>
+                        </dxi-series>
+                
+                        <svg *dxTemplate="let pieChart of 'centerTemplate'">
+                            <circle cx="100" cy="100" [attr.r]="pieChart.getInnerRadius() - 6" fill="#eee" ></circle>
+                            <text text-anchor="middle" style="font-size: 18px" x="100" y="100" fill="#494949" >
+                              <!-- display: inline -->
+                              <tspan x="100" dy="20px" style="font-weight: 600">{{ calculateTotal(pieChart) }}</tspan>
+                            </text>
+                          </svg>
+                    </dx-pie-chart>
+                </dxi-item>
+                <dxi-item class="rect demo-dark" [ratio]="3">
+                    <dx-pie-chart id="pie" type="doughnut" title="Gastos Intercompañías" palette="Soft Pastel" [dataSource]="graficaIngresoIntercompania"
+                    [animation]="false" resolveLabelOverlapping="shift" centerTemplate="centerTemplate" [innerRadius]="0.65" [customizePoint]="perosnalizeStyle">
+                        <dxo-export [enabled]="true"></dxo-export>
+                        <dxo-legend [visible]="false" horizontalAlignament="center" verticalAlignment="bottom"></dxo-legend>
+                        <dxo-size [height]="250"></dxo-size>
+                        
+                        <dxi-series argumentField="region" valueField="val">
+                            <dxo-small-values-grouping mode="topN" [topCount]="3" ></dxo-small-values-grouping>
+                            <dxo-label [visible]="false" format="fixedPoint" [customizeText]="customizeLabelDonut" alignment="right">
+                                <dxo-connector [visible]="true" [width]="1"></dxo-connector>
+                            </dxo-label>
+                        </dxi-series>
+                
+                        <svg *dxTemplate="let pieChart of 'centerTemplate'">
+                            <circle cx="100" cy="100" [attr.r]="pieChart.getInnerRadius() - 6" fill="#eee" ></circle>
+                            <text text-anchor="middle" style="font-size: 15px" x="100" y="100" fill="#494949" >
+                              <!-- display: inline -->
+                              <tspan x="100" dy="14px" style="font-weight: 600">{{ calculateTotal(pieChart) }}</tspan>
+                            </text>
+                          </svg>
+                    </dx-pie-chart>
+                </dxi-item>
+            </dx-box>
+        </dxi-item>
+    </dx-box>
+    
+    <dx-responsive-box *ngIf="screen <= 412" direction="col" width="100%">
+        <dxi-item [ratio]="3" [baseSize]="0">
+            <dx-responsive-box direction="row" width="100%">
+                <dxi-item class="rect demo-dark" [ratio]="4">
+                    <dx-pie-chart id="pie" type="doughnut" title="Cartera de Clientes" palette="material" [dataSource]="graficaIngreso"
+                    [animation]="false" resolveLabelOverlapping="shift" centerTemplate="centerTemplate" [innerRadius]="0.65" [customizePoint]="perosnalizeStyle">
+                        <dxo-export [enabled]="true"></dxo-export>
+                        <dxo-legend horizontalAlignament="center" verticalAlignment="bottom"></dxo-legend>
+                        <dxo-size [height]="600"></dxo-size>
+
+                        <dxi-series argumentField="region" valueField="val">
+                            <dxo-small-values-grouping mode="topN" [topCount]="3" ></dxo-small-values-grouping>
+                            <dxo-label [visible]="true" format="fixedPoint" [customizeText]="customizeLabelDonut">
+                                <!-- <dxo-font size="12" color="black" weight="bold"></dxo-font> -->
+                                <dxo-connector [visible]="true" [width]="1"></dxo-connector>
+                            </dxo-label>
+                        </dxi-series>
+                
+                        <svg *dxTemplate="let pieChart of 'centerTemplate'">
+                            <circle cx="100" cy="100" [attr.r]="pieChart.getInnerRadius() - 6" fill="#eee" ></circle>
+                            <text text-anchor="middle" style="font-size: 18px" x="100" y="100" fill="#494949" >
+                              <!-- display: inline -->
+                              <tspan x="100" dy="20px" style="font-weight: 600">{{ calculateTotal(pieChart) }}</tspan>
+                            </text>
+                          </svg>
+                    </dx-pie-chart>
+                </dxi-item>
+                <dxi-item class="rect demo-dark" [ratio]="3">
+                    <dx-pie-chart id="pie" type="doughnut" title="Gastos Intercompañías" palette="Soft Pastel" [dataSource]="graficaIngresoIntercompania"
+                    [animation]="false" resolveLabelOverlapping="shift" centerTemplate="centerTemplate" [innerRadius]="0.65" [customizePoint]="perosnalizeStyle">
+                        <dxo-export [enabled]="true"></dxo-export>
+                        <dxo-legend [visible]="false" horizontalAlignament="center" verticalAlignment="bottom"></dxo-legend>
+                        <dxo-size [height]="250"></dxo-size>
+                        
+                        <dxi-series argumentField="region" valueField="val">
+                            <dxo-small-values-grouping mode="topN" [topCount]="3" ></dxo-small-values-grouping>
+                            <dxo-label [visible]="false" format="fixedPoint" [customizeText]="customizeLabelDonut" alignment="right">
+                                <dxo-connector [visible]="true" [width]="1"></dxo-connector>
+                            </dxo-label>
+                        </dxi-series>
+                
+                        <svg *dxTemplate="let pieChart of 'centerTemplate'">
+                            <circle cx="100" cy="100" [attr.r]="pieChart.getInnerRadius() - 6" fill="#eee" ></circle>
+                            <text text-anchor="middle" style="font-size: 15px" x="100" y="100" fill="#494949" >
+                              <!-- display: inline -->
+                              <tspan x="100" dy="14px" style="font-weight: 600">{{ calculateTotal(pieChart) }}</tspan>
+                            </text>
+                          </svg>
+                    </dx-pie-chart>
+                </dxi-item>
+            </dx-responsive-box>
+        </dxi-item>
+    </dx-responsive-box>
+
+
+    <br><br>
+    <div>
+        <div class="dx-field">
+            <div class="dx-field-value d-block mr-0 ml-auto" style="width: 20%;">
+                <dx-button stylingMode="contained" text="Actualizar" icon="refresh" type="normal" [width]="240" (onClick)="Actuaizar($event)">
+                </dx-button>
+            </div>
+        </div>
+    </div>
+    <br><br>
+
+<!--====================================Grafica y Grid Metrica Cobranza========================================================-->    
+    <dx-tab-panel>
+        <dxi-item title="Cartera de Clientes">
+
+            <dx-box *ngIf="screen > 500" direction="col" width="100%" [height]="530">
+                <dxi-item [ratio]="3" [baseSize]="0">
+                <dx-box direction="row" width="100%" [height]="125">
+                    <dxi-item class="rect demo-dark" [ratio]="4">
+                        <!--==========================Bar and Line Chart==================-->
+                        <dx-chart #chart [dataSource]="graficaMC" palette="material" [rotated]="false" [barGroupWidth]="300">
+                            <dxo-size [height]="570"></dxo-size>
+                            
+                            <!-- <dxi-value-axis [maxValueMargin]=".15">
+                        </dxi-value-axis> -->
+                            <dxo-common-series-settings argumentField="tipo" type="bar" valueField="monto">
+                                <dxo-label [visible]="true" position="outside" [rotationAngle]="-90"
+                                backgroundColor="transparent" [verticalOffset]="15" [format]="formatPesosMX">
+                                    <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                                </dxo-label>
+                            </dxo-common-series-settings>
+
+                            <dxo-argument-axis> <!-- or dxi-value-axis, or dxo-common-axis-settings -->
+                                <dxo-label
+                                    displayMode="standard"
+                                    [staggeringSpacing]="10">
+                                    <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                                </dxo-label>
+                                
+                            </dxo-argument-axis>
+
+                            <dxi-value-axis>
+                                <dxo-label
+                                    displayMode="standard"
+                                    [staggeringSpacing]="10">
+                                    <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                                </dxo-label>
+                                
+                            </dxi-value-axis>
+
+                            <dxo-series-template nameField="clasificacion" [customizeSeries]="customizeSeries"></dxo-series-template>
+                            <dxo-title text=""></dxo-title>
+                            <dxo-legend verticalAlignment="bottom" horizontalAlignment="center"></dxo-legend>
+                            <dxo-export [enabled]="true" fileName="Métrica de Cobranza"></dxo-export>
+                        </dx-chart>
+                        <!--====================================Finish chart==========-->
+                    </dxi-item>
+                    <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+                    <dxi-item class="rect demo-dark" [ratio]="2">
+                        <dx-data-grid  #IOUDN id="gridContainer8" [dataSource]="metricaCombranza" [height]="570"[showBorders]="true" [columnAutoWidth]="true"
+                        (onRowPrepared)="onRowPreparedMC($event)" (onCellPrepared)="onCellPreparedMC($event)">
+                                
+                        <dxi-column dataField="tipo" caption="Concepto"></dxi-column>
+                        <dxi-column dataField="monto" caption="Monto" [format]="formatPesosMX"></dxi-column>
+                        <dxi-column dataField="porcentaje" caption="%" format="percent"></dxi-column>
+                        <dxi-column dataField="" caption=""></dxi-column>
+                    
+                        <dxo-group-panel [visible]="false"></dxo-group-panel>
+                        <dxo-export [enabled]="true" fileName="Metrica de Cobranza" [customizeExcelCell]="customizeExport"></dxo-export>
+
+                        </dx-data-grid>
+                    </dxi-item>
+                </dx-box>
+                </dxi-item>
+            </dx-box>
+
+            <dx-responsive-box *ngIf="screen <= 412" direction="col" width="100%">
+                <dxi-item [ratio]="3" [baseSize]="0">
+                <dx-responsive-box direction="row" width="100%">
+                    <dxi-item class="rect demo-dark" [ratio]="4">
+                        <!--==========================Bar and Line Chart==================-->
+                        <dx-chart #chart [dataSource]="graficaMC" palette="material" [rotated]="false" [barGroupWidth]="300">
+                            <dxo-size [height]="570"></dxo-size>
+                            
+                            <!-- <dxi-value-axis [maxValueMargin]=".15">
+                        </dxi-value-axis> -->
+                            <dxo-common-series-settings argumentField="tipo" type="bar" valueField="monto">
+                                <dxo-label [visible]="true" position="outside" [rotationAngle]="-90"
+                                backgroundColor="transparent" [verticalOffset]="15" [format]="formatPesosMX">
+                                    <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                                </dxo-label>
+                            </dxo-common-series-settings>
+
+                            <dxo-argument-axis> <!-- or dxi-value-axis, or dxo-common-axis-settings -->
+                                <dxo-label
+                                    displayMode="standard"
+                                    [staggeringSpacing]="10">
+                                    <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                                </dxo-label>
+                                
+                            </dxo-argument-axis>
+
+                            <dxi-value-axis>
+                                <dxo-label
+                                    displayMode="standard"
+                                    [staggeringSpacing]="10">
+                                    <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                                </dxo-label>
+                                
+                            </dxi-value-axis>
+
+                            <dxo-series-template nameField="clasificacion" [customizeSeries]="customizeSeries"></dxo-series-template>
+                            <dxo-title text=""></dxo-title>
+                            <dxo-legend verticalAlignment="bottom" horizontalAlignment="center"></dxo-legend>
+                            <dxo-export [enabled]="true" fileName="Métrica de Cobranza"></dxo-export>
+                        </dx-chart>
+                        <!--====================================Finish chart==========-->
+                    </dxi-item>
+                    <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+                    <dxi-item class="rect demo-dark" [ratio]="2">
+                        <dx-data-grid  #IOUDN id="gridContainer8" [dataSource]="metricaCombranza" [height]="570"[showBorders]="true" [columnAutoWidth]="true"
+                        (onRowPrepared)="onRowPreparedMC($event)" (onCellPrepared)="onCellPreparedMC($event)">
+                                
+                        <dxi-column dataField="tipo" caption="Concepto"></dxi-column>
+                        <dxi-column dataField="monto" caption="Monto" [format]="formatPesosMX"></dxi-column>
+                        <dxi-column dataField="porcentaje" caption="%" format="percent"></dxi-column>
+                        <dxi-column dataField="" caption=""></dxi-column>
+                    
+                        <dxo-group-panel [visible]="false"></dxo-group-panel>
+                        <dxo-export [enabled]="true" fileName="Metrica de Cobranza" [customizeExcelCell]="customizeExport"></dxo-export>
+
+                        </dx-data-grid>
+                    </dxi-item>
+                </dx-responsive-box>
+                </dxi-item>
+            </dx-responsive-box>
+        <br><br><br><br><br><br>
+
+    <dx-tab-panel>
+    <dxi-item title="Pendientes de Timbrar">
+
+        <dx-box *ngIf="screen > 500" direction="col" width="100%" [height]="530">
+            <dxi-item [ratio]="3" [baseSize]="0">
+            <dx-box direction="row" width="100%" [height]="125">
+                <dxi-item class="rect demo-dark" [ratio]="4">
+                    <!--==========================Bar and Line Chart==================-->
+                    <dx-chart #chart [dataSource]="graficaPT" palette="material" [rotated]="false" [barGroupWidth]="100" >
+                        <dxo-size [height]="430"></dxo-size>
+
+                        <dxo-common-series-settings argumentField="tipo" type="bar" valueField="monto">
+                            <dxo-label [visible]="true" position="outside" [rotationAngle]="-90"
+                            backgroundColor="transparent" [verticalOffset]="15" [format]="formatPesosMX">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                        </dxo-common-series-settings>
+
+                        <dxo-argument-axis> <!-- or dxi-value-axis, or dxo-common-axis-settings -->
+                            <dxo-label
+                                displayMode="standard"
+                                [staggeringSpacing]="10">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                            
+                        </dxo-argument-axis>
+
+                        <dxi-value-axis>
+                            <dxo-label
+                                displayMode="standard"
+                                [staggeringSpacing]="10">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                            
+                        </dxi-value-axis>
+
+                        <dxo-series-template nameField="clasificacion" [customizeSeries]="customizeSeries"></dxo-series-template>
+                        <dxo-title text="Pendientes de Timbrar"></dxo-title>
+                        <dxo-legend verticalAlignment="bottom" horizontalAlignment="center"></dxo-legend>
+                        <dxo-export [enabled]="true" fileName="Pendientes de Timbrar"></dxo-export>
+                    </dx-chart>
+                    <!--====================================Finish chart==========-->
+                </dxi-item>
+                <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+                <dxi-item class="rect demo-dark" [ratio]="2">
+                    <dx-data-grid  #IOUDN id="gridContainer8" [dataSource]="pendienteTimbrar" [height]="450"[showBorders]="true" [columnAutoWidth]="true"
+                    (onRowPrepared)="onRowPreparedPT($event)" (onCellPrepared)="onCellPreparedPT($event)">
+
+                    <dxi-column dataField="clasificacion" caption="" [groupIndex]="0"></dxi-column>
+
+                    <dxi-column dataField="tipo" caption="Concepto"></dxi-column>
+                    <dxi-column dataField="monto" caption="Monto" [format]="formatPesosMX"></dxi-column>
+                    <dxi-column dataField="porcentaje" caption="%" format="percent"></dxi-column>
+                    <dxi-column dataField="" caption=""></dxi-column>
+
+                    <dxo-summary>
+                        <dxi-group-item column="monto" summaryType="sum" [valueFormat]="formatPesosMX" displayFormat="{0}" [showInGroupFooter]="true"></dxi-group-item>
+                        <dxi-group-item column="porcentaje" summaryType="sum" valueFormat="percent" displayFormat="{0}"  [showInGroupFooter]="true"></dxi-group-item>
+        
+                        <dxi-total-item column="monto" summaryType="sum" [valueFormat]="formatPesosMX" displayFormat="{0}"></dxi-total-item>
+                        <dxi-total-item column="porcentaje" summaryType="sum" valueFormat="percent" displayFormat="{0}"></dxi-total-item>
+                    </dxo-summary>
+                
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-export [enabled]="true" fileName="Pendientes de Timbrar" [customizeExcelCell]="customizeExportPT"></dxo-export>
+
+                    </dx-data-grid>
+                </dxi-item>
+            </dx-box>
+            </dxi-item>
+        </dx-box>
+
+        <dx-responsive-box *ngIf="screen <= 412" direction="col" width="100%">
+            <dxi-item [ratio]="3" [baseSize]="0">
+            <dx-responsive-box direction="row" width="100%">
+                <dxi-item class="rect demo-dark" [ratio]="4">
+                    <!--==========================Bar and Line Chart==================-->
+                    <dx-chart #chart [dataSource]="graficaPT" palette="material" [rotated]="false" [barGroupWidth]="100" >
+                        <dxo-size [height]="430"></dxo-size>
+
+                        <dxo-common-series-settings argumentField="tipo" type="bar" valueField="monto">
+                            <dxo-label [visible]="true" position="outside" [rotationAngle]="-90"
+                            backgroundColor="transparent" [verticalOffset]="15" [format]="formatPesosMX">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                        </dxo-common-series-settings>
+
+                        <dxo-argument-axis> <!-- or dxi-value-axis, or dxo-common-axis-settings -->
+                            <dxo-label
+                                displayMode="standard"
+                                [staggeringSpacing]="10">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                            
+                        </dxo-argument-axis>
+
+                        <dxi-value-axis>
+                            <dxo-label
+                                displayMode="standard"
+                                [staggeringSpacing]="10">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                            
+                        </dxi-value-axis>
+
+                        <dxo-series-template nameField="clasificacion" [customizeSeries]="customizeSeries"></dxo-series-template>
+                        <dxo-title text="Pendientes de Timbrar"></dxo-title>
+                        <dxo-legend verticalAlignment="bottom" horizontalAlignment="center"></dxo-legend>
+                        <dxo-export [enabled]="true" fileName="Pendientes de Timbrar"></dxo-export>
+                    </dx-chart>
+                    <!--====================================Finish chart==========-->
+                </dxi-item>
+                <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+                <dxi-item class="rect demo-dark" [ratio]="2">
+                    <dx-data-grid  #IOUDN id="gridContainer8" [dataSource]="pendienteTimbrar" [height]="450"[showBorders]="true" [columnAutoWidth]="true"
+                    (onRowPrepared)="onRowPreparedPT($event)" (onCellPrepared)="onCellPreparedPT($event)">
+
+                    <dxi-column dataField="clasificacion" caption="" [groupIndex]="0"></dxi-column>
+
+                    <dxi-column dataField="tipo" caption="Concepto"></dxi-column>
+                    <dxi-column dataField="monto" caption="Monto" [format]="formatPesosMX"></dxi-column>
+                    <dxi-column dataField="porcentaje" caption="%" format="percent"></dxi-column>
+                    <dxi-column dataField="" caption=""></dxi-column>
+
+                    <dxo-summary>
+                        <dxi-group-item column="monto" summaryType="sum" [valueFormat]="formatPesosMX" displayFormat="{0}" [showInGroupFooter]="true"></dxi-group-item>
+                        <dxi-group-item column="porcentaje" summaryType="sum" valueFormat="percent" displayFormat="{0}"  [showInGroupFooter]="true"></dxi-group-item>
+        
+                        <dxi-total-item column="monto" summaryType="sum" [valueFormat]="formatPesosMX" displayFormat="{0}"></dxi-total-item>
+                        <dxi-total-item column="porcentaje" summaryType="sum" valueFormat="percent" displayFormat="{0}"></dxi-total-item>
+                    </dxo-summary>
+                
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-export [enabled]="true" fileName="Pendientes de Timbrar" [customizeExcelCell]="customizeExportPT"></dxo-export>
+
+                    </dx-data-grid>
+                </dxi-item>
+            </dx-responsive-box>
+            </dxi-item>
+        </dx-responsive-box>
+
+    </dxi-item>
+
+    <dxi-item title="Pendientes Carta Cobro">
+
+        <dx-box *ngIf="screen > 500" direction="col" width="100%" [height]="530">
+            <dxi-item [ratio]="3" [baseSize]="0">
+            <dx-box direction="row" width="100%" [height]="125">
+                <dxi-item class="rect demo-dark" [ratio]="4">
+                    <!--==========================Bar and Line Chart==================-->
+                    <dx-chart #chart [dataSource]="graficaPCC" palette="material" [rotated]="false" [barGroupWidth]="300" >
+                        <dxo-size [height]="430"></dxo-size>
+                        <!-- <dxi-value-axis [maxValueMargin]=".15">
+                    </dxi-value-axis> -->
+                        <dxo-common-series-settings argumentField="tipo" type="bar" valueField="monto">
+                            <dxo-label [visible]="true" position="outside" [rotationAngle]="-90"
+                            backgroundColor="transparent" [verticalOffset]="15" [format]="formatPesosMX">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                        </dxo-common-series-settings>
+
+                        <dxo-argument-axis> <!-- or dxi-value-axis, or dxo-common-axis-settings -->
+                            <dxo-label
+                                displayMode="standard"
+                                [staggeringSpacing]="10">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                            
+                        </dxo-argument-axis>
+
+                        <dxi-value-axis>
+                            <dxo-label
+                                displayMode="standard"
+                                [staggeringSpacing]="10">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                            
+                        </dxi-value-axis>
+
+                        <dxo-series-template nameField="clasificacion" [customizeSeries]="customizeSeries"></dxo-series-template>
+                        <dxo-title text="Pendientes Carta Cobro"></dxo-title>
+                        <dxo-legend verticalAlignment="bottom" horizontalAlignment="center"></dxo-legend>
+                        <dxo-export [enabled]="true" fileName="Pendientes Carta Cobro"></dxo-export>
+                    </dx-chart>
+                    <!--====================================Finish chart==========-->
+                </dxi-item>
+                <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+                <dxi-item class="rect demo-dark" [ratio]="2">
+                    <dx-data-grid  #IOUDN id="gridContainer8" [dataSource]="pendienteCartaCobro" [height]="450"[showBorders]="true" [columnAutoWidth]="true"
+                    (onRowPrepared)="onRowPreparedPCC($event)" (onCellPrepared)="onCellPreparedPCC($event)">
+
+                    <dxi-column dataField="clasificacion" caption="" [groupIndex]="0"></dxi-column>
+
+                    <dxi-column dataField="tipo" caption="Concepto"></dxi-column>
+                    <dxi-column dataField="monto" caption="Monto" [format]="formatPesosMX"></dxi-column>
+                    <dxi-column dataField="porcentaje" caption="%" format="percent"></dxi-column>
+                    <dxi-column dataField="" caption=""></dxi-column>
+
+                    <dxo-summary>
+                        <dxi-group-item column="monto" summaryType="sum" [valueFormat]="formatPesosMX" displayFormat="{0}" [showInGroupFooter]="true"></dxi-group-item>
+                        <dxi-group-item column="porcentaje" summaryType="sum" valueFormat="percent" displayFormat="{0}"  [showInGroupFooter]="true"></dxi-group-item>
+        
+                        <dxi-total-item column="monto" summaryType="sum" [valueFormat]="formatPesosMX" displayFormat="{0}"></dxi-total-item>
+                        <dxi-total-item column="porcentaje" summaryType="sum" valueFormat="percent" displayFormat="{0}"></dxi-total-item>
+                    </dxo-summary>
+                
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-export [enabled]="true" fileName="Pendientes Carta Cobro" [customizeExcelCell]="customizeExportPCC"></dxo-export>
+
+                    </dx-data-grid>
+                </dxi-item>
+            </dx-box>
+            </dxi-item>
+        </dx-box>
+
+        <dx-responsive-box *ngIf="screen <= 412" direction="col" width="100%">
+            <dxi-item [ratio]="3" [baseSize]="0">
+            <dx-responsive-box direction="row" width="100%">
+                <dxi-item class="rect demo-dark" [ratio]="4">
+                    <!--==========================Bar and Line Chart==================-->
+                    <dx-chart #chart [dataSource]="graficaPCC" palette="material" [rotated]="false" [barGroupWidth]="300" >
+                        <dxo-size [height]="430"></dxo-size>
+                        <!-- <dxi-value-axis [maxValueMargin]=".15">
+                    </dxi-value-axis> -->
+                        <dxo-common-series-settings argumentField="tipo" type="bar" valueField="monto">
+                            <dxo-label [visible]="true" position="outside" [rotationAngle]="-90"
+                            backgroundColor="transparent" [verticalOffset]="15" [format]="formatPesosMX">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                        </dxo-common-series-settings>
+
+                        <dxo-argument-axis> <!-- or dxi-value-axis, or dxo-common-axis-settings -->
+                            <dxo-label
+                                displayMode="standard"
+                                [staggeringSpacing]="10">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                            
+                        </dxo-argument-axis>
+
+                        <dxi-value-axis>
+                            <dxo-label
+                                displayMode="standard"
+                                [staggeringSpacing]="10">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                            
+                        </dxi-value-axis>
+
+                        <dxo-series-template nameField="clasificacion" [customizeSeries]="customizeSeries"></dxo-series-template>
+                        <dxo-title text="Pendientes Carta Cobro"></dxo-title>
+                        <dxo-legend verticalAlignment="bottom" horizontalAlignment="center"></dxo-legend>
+                        <dxo-export [enabled]="true" fileName="Pendientes Carta Cobro"></dxo-export>
+                    </dx-chart>
+                    <!--====================================Finish chart==========-->
+                </dxi-item>
+                <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+                <dxi-item class="rect demo-dark" [ratio]="2">
+                    <dx-data-grid  #IOUDN id="gridContainer8" [dataSource]="pendienteCartaCobro" [height]="450"[showBorders]="true" [columnAutoWidth]="true"
+                    (onRowPrepared)="onRowPreparedPCC($event)" (onCellPrepared)="onCellPreparedPCC($event)">
+
+                    <dxi-column dataField="clasificacion" caption="" [groupIndex]="0"></dxi-column>
+
+                    <dxi-column dataField="tipo" caption="Concepto"></dxi-column>
+                    <dxi-column dataField="monto" caption="Monto" [format]="formatPesosMX"></dxi-column>
+                    <dxi-column dataField="porcentaje" caption="%" format="percent"></dxi-column>
+                    <dxi-column dataField="" caption=""></dxi-column>
+
+                    <dxo-summary>
+                        <dxi-group-item column="monto" summaryType="sum" [valueFormat]="formatPesosMX" displayFormat="{0}" [showInGroupFooter]="true"></dxi-group-item>
+                        <dxi-group-item column="porcentaje" summaryType="sum" valueFormat="percent" displayFormat="{0}"  [showInGroupFooter]="true"></dxi-group-item>
+        
+                        <dxi-total-item column="monto" summaryType="sum" [valueFormat]="formatPesosMX" displayFormat="{0}"></dxi-total-item>
+                        <dxi-total-item column="porcentaje" summaryType="sum" valueFormat="percent" displayFormat="{0}"></dxi-total-item>
+                    </dxo-summary>
+                
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-export [enabled]="true" fileName="Pendientes Carta Cobro" [customizeExcelCell]="customizeExportPCC"></dxo-export>
+
+                    </dx-data-grid>
+                </dxi-item>
+            </dx-responsive-box>
+            </dxi-item>
+        </dx-responsive-box>
+
+    </dxi-item>
+
+    <dxi-item title="Con Carta Cobro">
+        <dx-box *ngIf="screen > 500" direction="col" width="100%" [height]="530">
+            <dxi-item [ratio]="3" [baseSize]="0">
+            <dx-box direction="row" width="100%" [height]="125">
+                <dxi-item class="rect demo-dark" [ratio]="4">
+                    <!--==========================Bar and Line Chart==================-->
+                    <dx-chart #chart [dataSource]="graficaCCC" palette="material" [rotated]="false" [barGroupWidth]="300" >
+                        <dxo-size [height]="430"></dxo-size>
+                        <!-- <dxi-value-axis [maxValueMargin]=".15">
+                    </dxi-value-axis> -->
+                        <dxo-common-series-settings argumentField="tipo" type="bar" valueField="monto" [barWidth]="20">
+                            <dxo-label [visible]="true" position="outside" [rotationAngle]="-90"
+                            backgroundColor="transparent" [verticalOffset]="15" [format]="formatPesosMX">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                        </dxo-common-series-settings>
+
+                        <dxo-argument-axis> <!-- or dxi-value-axis, or dxo-common-axis-settings -->
+                            <dxo-label
+                                displayMode="standard"
+                                [staggeringSpacing]="10">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                            
+                        </dxo-argument-axis>
+
+                        <dxi-value-axis>
+                            <dxo-label
+                                displayMode="standard"
+                                [staggeringSpacing]="10">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                            
+                        </dxi-value-axis>
+
+                        <dxo-series-template nameField="clasificacion" [customizeSeries]="customizeSeries"></dxo-series-template>
+                        <dxo-title text="Con Carta Cobro"></dxo-title>
+                        <dxo-legend verticalAlignment="bottom" horizontalAlignment="center"></dxo-legend>
+                        <dxo-export [enabled]="true" fileName="Con Carta Cobro"></dxo-export>
+                    </dx-chart>
+                    <!--====================================Finish chart==========-->
+                </dxi-item>
+                <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+                <dxi-item class="rect demo-dark" [ratio]="2">
+                    <dx-data-grid  #IOUDN id="gridContainer8" [dataSource]="conCartaCobro" [height]="450"[showBorders]="true" [columnAutoWidth]="true"
+                    (onRowPrepared)="onRowPreparedCCC($event)" (onCellPrepared)="onCellPreparedCCC($event)">
+
+                    <!-- <dxi-column dataField="clasificacion" caption="" [groupIndex]="0"></dxi-column> -->
+
+                    <dxi-column dataField="tipo" caption="Concepto"></dxi-column>
+                    <dxi-column dataField="monto" caption="Monto" [format]="formatPesosMX"></dxi-column>
+                    <dxi-column dataField="porcentaje" caption="%" format="percent"></dxi-column>
+                    <dxi-column dataField="" caption=""></dxi-column>
+
+                    <dxo-summary>
+                        <dxi-group-item column="monto" summaryType="sum" [valueFormat]="formatPesosMX" displayFormat="{0}" [showInGroupFooter]="true"></dxi-group-item>
+                        <dxi-group-item column="porcentaje" summaryType="sum" valueFormat="percent" displayFormat="{0}"  [showInGroupFooter]="true"></dxi-group-item>
+        
+                        <dxi-total-item column="monto" summaryType="sum" [valueFormat]="formatPesosMX" displayFormat="{0}"></dxi-total-item>
+                        <dxi-total-item column="porcentaje" summaryType="sum" valueFormat="percent" displayFormat="{0}"></dxi-total-item>
+                    </dxo-summary>
+                
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-export [enabled]="true" fileName="Pendientes Carta Cobro" [customizeExcelCell]="customizeExportCCC"></dxo-export>
+
+                    </dx-data-grid>
+                </dxi-item>
+            </dx-box>
+            </dxi-item>
+        </dx-box>
+
+        <dx-responsive-box *ngIf="screen <= 412" direction="col" width="100%">
+            <dxi-item [ratio]="3" [baseSize]="0">
+            <dx-responsive-box direction="row" width="100%">
+                <dxi-item class="rect demo-dark" [ratio]="4">
+                    <!--==========================Bar and Line Chart==================-->
+                    <dx-chart #chart [dataSource]="graficaCCC" palette="material" [rotated]="false" [barGroupWidth]="300" >
+                        <dxo-size [height]="430"></dxo-size>
+                        <!-- <dxi-value-axis [maxValueMargin]=".15">
+                    </dxi-value-axis> -->
+                        <dxo-common-series-settings argumentField="tipo" type="bar" valueField="monto" [barWidth]="20">
+                            <dxo-label [visible]="true" position="outside" [rotationAngle]="-90"
+                            backgroundColor="transparent" [verticalOffset]="15" [format]="formatPesosMX">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                        </dxo-common-series-settings>
+
+                        <dxo-argument-axis> <!-- or dxi-value-axis, or dxo-common-axis-settings -->
+                            <dxo-label
+                                displayMode="standard"
+                                [staggeringSpacing]="10">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                            
+                        </dxo-argument-axis>
+
+                        <dxi-value-axis>
+                            <dxo-label
+                                displayMode="standard"
+                                [staggeringSpacing]="10">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+                            
+                        </dxi-value-axis>
+
+                        <dxo-series-template nameField="clasificacion" [customizeSeries]="customizeSeries"></dxo-series-template>
+                        <dxo-title text="Con Carta Cobro"></dxo-title>
+                        <dxo-legend verticalAlignment="bottom" horizontalAlignment="center"></dxo-legend>
+                        <dxo-export [enabled]="true" fileName="Con Carta Cobro"></dxo-export>
+                    </dx-chart>
+                    <!--====================================Finish chart==========-->
+                </dxi-item>
+                <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+                <dxi-item class="rect demo-dark" [ratio]="2">
+                    <dx-data-grid  #IOUDN id="gridContainer8" [dataSource]="conCartaCobro" [height]="450"[showBorders]="true" [columnAutoWidth]="true"
+                    (onRowPrepared)="onRowPreparedCCC($event)" (onCellPrepared)="onCellPreparedCCC($event)">
+
+                    <!-- <dxi-column dataField="clasificacion" caption="" [groupIndex]="0"></dxi-column> -->
+
+                    <dxi-column dataField="tipo" caption="Concepto"></dxi-column>
+                    <dxi-column dataField="monto" caption="Monto" [format]="formatPesosMX"></dxi-column>
+                    <dxi-column dataField="porcentaje" caption="%" format="percent"></dxi-column>
+                    <dxi-column dataField="" caption=""></dxi-column>
+
+                    <dxo-summary>
+                        <dxi-group-item column="monto" summaryType="sum" [valueFormat]="formatPesosMX" displayFormat="{0}" [showInGroupFooter]="true"></dxi-group-item>
+                        <dxi-group-item column="porcentaje" summaryType="sum" valueFormat="percent" displayFormat="{0}"  [showInGroupFooter]="true"></dxi-group-item>
+        
+                        <dxi-total-item column="monto" summaryType="sum" [valueFormat]="formatPesosMX" displayFormat="{0}"></dxi-total-item>
+                        <dxi-total-item column="porcentaje" summaryType="sum" valueFormat="percent" displayFormat="{0}"></dxi-total-item>
+                    </dxo-summary>
+                
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-export [enabled]="true" fileName="Pendientes Carta Cobro" [customizeExcelCell]="customizeExportCCC"></dxo-export>
+
+                    </dx-data-grid>
+                </dxi-item>
+            </dx-responsive-box>
+            </dxi-item>
+        </dx-responsive-box>
+
+    </dxi-item>
+    </dx-tab-panel>    
+        </dxi-item>
+        <dxi-item title="Gastos Intercompania">
+
+            <dx-box *ngIf="screen > 500" direction="col" width="100%" [height]="530">
+                <dxi-item [ratio]="3" [baseSize]="0">
+                <dx-box direction="row" width="100%" [height]="125">
+                    <dxi-item class="rect demo-dark" [ratio]="4">
+                        <!--==========================Bar and Line Chart==================-->
+                        <dx-chart #chart [dataSource]="graficaMCIntercompania" palette="Soft Pastel" [rotated]="false" [barGroupWidth]="100">
+                            <dxo-size [height]="570"></dxo-size>
+                            
+                            <!-- <dxi-value-axis [maxValueMargin]=".15">
+                        </dxi-value-axis> -->
+                            <dxo-common-series-settings argumentField="tipo" type="bar" valueField="monto">
+                                <dxo-label [visible]="true" position="outside" [rotationAngle]="-90"
+                                backgroundColor="transparent" [verticalOffset]="15" [format]="formatPesosMX">
+                                    <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                                </dxo-label>
+                            </dxo-common-series-settings>
+
+                            <dxo-argument-axis> <!-- or dxi-value-axis, or dxo-common-axis-settings -->
+                                <dxo-label
+                                    displayMode="standard"
+                                    [staggeringSpacing]="10">
+                                    <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                                </dxo-label>
+                                
+                            </dxo-argument-axis>
+
+                            <dxi-value-axis>
+                                <dxo-label
+                                    displayMode="standard"
+                                    [staggeringSpacing]="10">
+                                    <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                                </dxo-label>
+                                
+                            </dxi-value-axis>
+
+                            <dxo-series-template nameField="clasificacion" [customizeSeries]="customizeSeries"></dxo-series-template>
+                            <dxo-title text=""></dxo-title>
+                            <dxo-legend verticalAlignment="bottom" horizontalAlignment="center"></dxo-legend>
+                            <dxo-export [enabled]="true" fileName="Métrica de Cobranza"></dxo-export>
+                        </dx-chart>
+                        <!--====================================Finish chart==========-->
+                    </dxi-item>
+                    <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+                    <dxi-item class="rect demo-dark" [ratio]="2">
+                        <dx-data-grid  #IOUDN id="gridContainer8" [dataSource]="metricaCombranzaIntercompania" [height]="570"[showBorders]="true" [columnAutoWidth]="true"
+                        (onRowPrepared)="onRowPreparedMC($event)" (onCellPrepared)="onCellPreparedMC($event)">
+                                
+                        <dxi-column dataField="tipo" caption="Concepto"></dxi-column>
+                        <dxi-column dataField="monto" caption="Monto" [format]="formatPesosMX"></dxi-column>
+                        <dxi-column dataField="porcentaje" caption="%" format="percent"></dxi-column>
+                        <dxi-column dataField="" caption=""></dxi-column>
+                    
+                        <dxo-group-panel [visible]="false"></dxo-group-panel>
+                        <dxo-export [enabled]="true" fileName="Metrica de Cobranza" [customizeExcelCell]="customizeExport"></dxo-export>
+
+                        </dx-data-grid>
+                    </dxi-item>
+                </dx-box>
+                </dxi-item>
+            </dx-box>
+
+            <dx-responsive-box *ngIf="screen <= 412" direction="col" width="100%">
+                <dxi-item [ratio]="3" [baseSize]="0">
+                <dx-responsive-box direction="row" width="100%">
+                    <dxi-item class="rect demo-dark" [ratio]="4">
+                        <!--==========================Bar and Line Chart==================-->
+                        <dx-chart #chart [dataSource]="graficaMCIntercompania" palette="Soft Pastel" [rotated]="false" [barGroupWidth]="100">
+                            <dxo-size [height]="570"></dxo-size>
+                            
+                            <!-- <dxi-value-axis [maxValueMargin]=".15">
+                        </dxi-value-axis> -->
+                            <dxo-common-series-settings argumentField="tipo" type="bar" valueField="monto">
+                                <dxo-label [visible]="true" position="outside" [rotationAngle]="-90"
+                                backgroundColor="transparent" [verticalOffset]="15" [format]="formatPesosMX">
+                                    <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                                </dxo-label>
+                            </dxo-common-series-settings>
+
+                            <dxo-argument-axis> <!-- or dxi-value-axis, or dxo-common-axis-settings -->
+                                <dxo-label
+                                    displayMode="standard"
+                                    [staggeringSpacing]="10">
+                                    <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                                </dxo-label>
+                                
+                            </dxo-argument-axis>
+
+                            <dxi-value-axis>
+                                <dxo-label
+                                    displayMode="standard"
+                                    [staggeringSpacing]="10">
+                                    <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                                </dxo-label>
+                                
+                            </dxi-value-axis>
+
+                            <dxo-series-template nameField="clasificacion" [customizeSeries]="customizeSeries"></dxo-series-template>
+                            <dxo-title text=""></dxo-title>
+                            <dxo-legend verticalAlignment="bottom" horizontalAlignment="center"></dxo-legend>
+                            <dxo-export [enabled]="true" fileName="Métrica de Cobranza"></dxo-export>
+                        </dx-chart>
+                        <!--====================================Finish chart==========-->
+                    </dxi-item>
+                    <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+                    <dxi-item class="rect demo-dark" [ratio]="2">
+                        <dx-data-grid  #IOUDN id="gridContainer8" [dataSource]="metricaCombranzaIntercompania" [height]="570"[showBorders]="true" [columnAutoWidth]="true"
+                        (onRowPrepared)="onRowPreparedMC($event)" (onCellPrepared)="onCellPreparedMC($event)">
+                                
+                        <dxi-column dataField="tipo" caption="Concepto"></dxi-column>
+                        <dxi-column dataField="monto" caption="Monto" [format]="formatPesosMX"></dxi-column>
+                        <dxi-column dataField="porcentaje" caption="%" format="percent"></dxi-column>
+                        <dxi-column dataField="" caption=""></dxi-column>
+                    
+                        <dxo-group-panel [visible]="false"></dxo-group-panel>
+                        <dxo-export [enabled]="true" fileName="Metrica de Cobranza" [customizeExcelCell]="customizeExport"></dxo-export>
+
+                        </dx-data-grid>
+                    </dxi-item>
+                </dx-responsive-box>
+                </dxi-item>
+            </dx-responsive-box>
+        <br><br>
+        </dxi-item>
+    </dx-tab-panel>
+
+
+
+
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+
+    <dx-toast [(visible)]="isVisible" type="warning" message="Seleccione Año y Mes">  
+        <dxo-position
+            my="top"
+            at="right"
+            of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>

@@ -1,0 +1,675 @@
+<h2 class="content-block">Ingreso por Kilómetro</h2>
+
+<div class="content-block dx-card responsive-paddings padding-10">
+
+    <dx-tab-panel>
+        <dxi-item title="INGRESO X KM MACROCICLO">
+            <br><br>
+            <dx-responsive-box>
+                <dxi-col [ratio]=".20"></dxi-col>
+                <dxi-col [ratio]=".50"></dxi-col>
+                <dxi-col [ratio]=".15"></dxi-col>
+                <dxi-col [ratio]=".30"></dxi-col>
+                <dxi-col [ratio]=".50"></dxi-col>
+                <dxi-col [ratio]=".15"></dxi-col>
+                <dxi-col [ratio]=".30"></dxi-col>
+                <dxi-col [ratio]=".80"></dxi-col>
+                <dxi-col [ratio]=".15"></dxi-col>
+                <dxi-col [ratio]=".50"></dxi-col>
+
+
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+        
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>UdN:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="1"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="unidadNegoios" displayExpr="ciudad" valueExpr="idUnidad" [value]="unidadNegoios[0].idUnidad" (onValueChanged)="selectArea($event)">
+                    </dx-select-box>
+                </dxi-item>
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="3"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Operación:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="4"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="operacion" displayExpr="operacion" valueExpr="operacion" [value]="operacion[0].operacion" (onValueChanged)="selectOperacion($event)">
+                    </dx-select-box>
+                </dxi-item>
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="6"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="0" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Estados:</div>
+                </dxi-item>
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="7"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="1" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-tag-box [items]="estados" [showSelectionControls]="true" [maxDisplayedTags]="4" [dataSource]="estados" displayExpr="estado" valueExpr="estado" (onValueChanged)="selectEstado($event)">
+                    </dx-tag-box>
+                </dxi-item>
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="9"></dxi-location>
+                    <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                    <div>
+                        <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120" (onClick)="buscarClick($event)">
+                        </dx-button>
+                    </div>
+                </dxi-item>
+
+            </dx-responsive-box>
+            <br><br>
+
+            <dx-data-grid  #ING id="gridContainer1" [dataSource]="macroCiclo" [height]="600"[showBorders]="true" [columnAutoWidth]="true"
+            (onRowPrepared)="onRowPrepared($event)" (onCellPrepared)="onCellPrepared($event)">
+
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxo-header-filter [visible]="true"></dxo-header-filter>
+            <!-- <dxo-filter-row [visible]="showFilterRow" [applyFilter]="currentFilter"></dxo-filter-row> -->
+
+            <dxi-column dataField="udN" caption="UdN" [fixed]="true" [allowSorting]="true" [width]="150"></dxi-column>
+            <dxi-column dataField="ruta" caption="Ruta" [fixed]="true" [allowSorting]="true" [width]="250"></dxi-column>
+            <dxi-column dataField="operacion" caption="Operación" [fixed]="true" [width]="130"></dxi-column>
+            <dxi-column caption="Viajes Cargados">            
+                <dxi-column dataField="viajesCargados" caption="Cantidad"  [width]="100"></dxi-column>
+                <dxi-column dataField="kmsCargados" caption="Kms" [format]="separator"  [width]="100"></dxi-column>
+                <dxi-column dataField="kmsCargadosPor" caption="%" format="percent"  [width]="100"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Viajes Vacíos">
+                <dxi-column dataField="viajesVacio" caption="Cantidad"  [width]="100"></dxi-column>
+                <dxi-column dataField="kmsVacios" caption="Kms" [format]="separator"  [width]="100"></dxi-column>
+                <dxi-column dataField="kmsVaciosPor" caption="%" format="percent"  [width]="100"></dxi-column>
+            </dxi-column>
+            <dxi-column dataField="clienteAtendido" caption="Clientes Atendidos"  [width]="150"></dxi-column>
+            <dxi-column dataField="operadorCiclo" caption="Operadores"  [width]="130"></dxi-column>
+            <dxi-column dataField="inicio" caption="Inicio" dataType="date" format="dd/MM/yyyy"  [width]="130"></dxi-column>
+            <dxi-column dataField="fin" caption="Fin" dataType="date" format="dd/MM/yyyy"  [width]="130"></dxi-column>
+            <dxi-column dataField="dias" caption="Días"  [width]="70" ></dxi-column>
+           
+            <dxi-column caption="Viajes Totales">
+                <dxi-column dataField="viajes" caption="Cantidad"  [width]="100"></dxi-column>
+                <dxi-column dataField="kms" caption="Kms" [format]="separator"  [width]="120"></dxi-column>
+                <dxi-column dataField="flete" caption="Ingreso por Flete" [format]="separatorPesos"  [width]="160"></dxi-column>
+                <dxi-column dataField="ingrXKm" caption="Ingreso por Kilómetro" [format]="redondear"  [width]="180"></dxi-column>
+            </dxi-column>
+            <!-- <dxi-column dataField="idArea" caption="ID AREA" [width]="100"></dxi-column>
+            <dxi-column dataField="ciclo" caption="Ciclo" [width]="100"></dxi-column> -->
+            <dxi-column dataField="" caption="Detalle" [fixed]="false" cellTemplate="detalleCellTemplate" [width]="100"></dxi-column>
+
+            <div *dxTemplate="let data of 'detalleCellTemplate'">
+                <dx-button icon="paste" stylingMode="outlined" type="danger" (onClick)="openDetalle(data)"></dx-button>
+            </div>
+            <!-- <dxo-summary>
+                <dxi-group-item column="saldO_SIN_CCOBRO" [customizeText]="customizeDateDetalle" [showInGroupFooter]="true"></dxi-group-item>
+                <dxi-group-item column="totaL_INTEGRADO" summaryType="sum" displayFormat="{0}" [valueFormat]="separator" [showInGroupFooter]="true"></dxi-group-item>
+
+                <dxi-total-item column="saldO_SIN_CCOBRO" [customizeText]="customizeDateDetalle"></dxi-total-item>
+                <dxi-total-item column="totaL_INTEGRADO" summaryType="sum"  displayFormat="{0}" [valueFormat]="separator"></dxi-total-item>
+            </dxo-summary> -->
+
+            <dxo-group-panel [visible]="false"></dxo-group-panel>
+            <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+            <dxo-export [enabled]="true" fileName="Macrocilo"></dxo-export>
+            <dxo-paging [pageSize]="60"></dxo-paging>
+            <dxo-sorting mode="multiple"></dxo-sorting>
+
+            </dx-data-grid>
+        </dxi-item>
+
+        <dxi-item title="Ingreso X Km Rutas">
+            <br><br>
+            <dx-responsive-box>
+                <dxi-col [ratio]=".46"></dxi-col>
+                <dxi-col [ratio]=".50"></dxi-col>
+                <dxi-col [ratio]=".25"></dxi-col>
+                <dxi-col [ratio]=".25"></dxi-col>
+                <dxi-col [ratio]=".90"></dxi-col>
+                <dxi-col [ratio]=".25"></dxi-col>
+                <dxi-col [ratio]=".45"></dxi-col>
+                <dxi-col [ratio]="1.8"></dxi-col>
+                <dxi-col [ratio]=".15"></dxi-col>
+                <dxi-col [ratio]="2"></dxi-col>
+
+
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+        
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Periodo:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="1"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="periodo" displayExpr="periodo" valueExpr="periodo" id="selectPeriodo" (onValueChanged)="selectPeriodo($event)">
+                    </dx-select-box>
+                </dxi-item>
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="3"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>UdN:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="4"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="unidadNegoios" displayExpr="ciudad" valueExpr="idUnidad" id="selectUdN" [value]="unidadNegoios[0].idUnidad" (onValueChanged)="selectUdN($event)">
+                    </dx-select-box>
+                </dxi-item>
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="6"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Operación:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="7"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="operacion" displayExpr="operacion" valueExpr="operacion" id="selectOperacion" [value]="operacion[0].operacion" (onValueChanged)="selectOperaRuta($event)">
+                    </dx-select-box>
+                </dxi-item>
+
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="9"></dxi-location>
+                    <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                    <div>
+                        <dx-button stylingMode="contained" text="CARGAR RUTAS/CLIENTES" type="normal" [width]="230" (onClick)="cargarRutaClientes($event)">
+                        </dx-button>
+                    </div>
+                </dxi-item>
+
+            </dx-responsive-box>
+            <br>
+            <dx-responsive-box>
+                <dxi-col [ratio]=".066"></dxi-col>
+                <dxi-col [ratio]=".80"></dxi-col>
+
+
+
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+        
+
+                <dxi-item *ngIf="rutaOrigen.length !== 0">
+                    <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Clientes:</div>
+                </dxi-item>
+        
+                <dxi-item *ngIf="rutaOrigen.length !== 0">
+                    <dxi-location screen="md lg" [row]="0" [col]="1"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="rutaClientes" displayExpr="nombre" valueExpr="nombre" id="selectClientes" [searchEnabled]="true"
+                    [searchExpr]="['nombre']" (onValueChanged)="selectClientes($event)">
+                    </dx-select-box>
+                </dxi-item>
+
+            </dx-responsive-box>
+            <br>
+            <dx-responsive-box>
+                <dxi-col [ratio]=".186"></dxi-col>
+                <dxi-col [ratio]=".75"></dxi-col>
+                <dxi-col [ratio]=".10"></dxi-col>
+                <dxi-col [ratio]=".17"></dxi-col>
+                <dxi-col [ratio]=".73"></dxi-col>
+                <dxi-col [ratio]=".044"></dxi-col>
+                <dxi-col [ratio]=".40"></dxi-col>
+                <dxi-col [ratio]=".10"></dxi-col>
+                <dxi-col [ratio]=".30"></dxi-col>
+
+
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+        
+
+                <dxi-item *ngIf="rutaOrigen.length !== 0">
+                    <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Ruta Origen:</div>
+                </dxi-item>
+        
+                <dxi-item *ngIf="rutaOrigen.length !== 0">
+                    <dxi-location screen="md lg" [row]="0" [col]="1"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="rutaOrigen" displayExpr="nombre" valueExpr="nombre" id="selectOrigen" [searchEnabled]="true"
+                    [searchExpr]="['nombre']" (onValueChanged)="selectRutaOri($event)">
+                    </dx-select-box>
+                </dxi-item>
+
+                <dxi-item *ngIf="rutaOrigen.length !== 0">
+                    <dxi-location screen="md lg" [row]="0" [col]="3"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Ruta Destino:</div>
+                </dxi-item>
+        
+                <dxi-item *ngIf="rutaOrigen.length !== 0">
+                    <dxi-location screen="md lg" [row]="0" [col]="4"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="rutaDestino" displayExpr="nombre" valueExpr="nombre" id="selectDestino"  [searchEnabled]="true"
+                    [searchExpr]="['nombre']"(onValueChanged)="selectRutaDestino($event)">
+                    </dx-select-box>
+                </dxi-item>
+
+                
+
+                <dxi-item *ngIf="rutaOrigen.length !== 0">
+                    <dxi-location screen="md lg" [row]="0" [col]="6"></dxi-location>
+                    <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                    <div>
+                        <dx-button stylingMode="contained" text="Buscar" type="normal" [width]="150" (onClick)="buscarRutas($event)">
+                        </dx-button>
+                    </div>
+                </dxi-item>
+
+                <dxi-item *ngIf="rutaOrigen.length !== 0">
+                    <dxi-location screen="md lg" [row]="0" [col]="8"></dxi-location>
+                    <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                    <div>
+                        <dx-button  stylingMode="contained" text="Limpiar" type="danger" [width]="150" (onClick)="limpiar()">
+                        </dx-button>
+                    </div>
+                </dxi-item>
+
+            </dx-responsive-box>
+            
+            <br><br>
+            <h3>Clientes</h3>
+            <dx-data-grid class="data-grid" [dataSource]="clientes" [showColumnLines]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true"
+            [allowColumnResizing]="true" [allowColumnReordering]="false" [columnAutoWidth]="true" [showBorders]="true">
+
+               <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+               <dxo-export [enabled]="true" fileName="Clientes"></dxo-export>
+               <dxo-header-filter [visible]="true"></dxo-header-filter>
+               
+               <dxi-column dataField="cliente" caption="Cliente"></dxi-column>               
+               <dxi-column dataField="viajes" caption="Viajes" ></dxi-column>
+               <dxi-column dataField="kms" caption="Kms" [format]="separator"></dxi-column>
+               <dxi-column dataField="flete" caption="Ingreso por Flete" [format]="enteros" ></dxi-column>
+               <dxi-column dataField="ingrXKm" caption="Ingreso Kilómetro" [format]="redondear"></dxi-column>
+
+
+
+
+
+              
+
+               <div *dxTemplate="let data of 'headerTemplate'">
+                   <div style="font-weight: bolder; color: black">
+                       {{ data.column.caption }}
+                   </div>
+               </div>
+               <div *dxTemplate="let cell of 'cellTemplateBold'">
+                   <div style="font-weight: bold;">{{cell.text}}</div>
+               </div>
+               <dxo-paging [pageSize]="20"></dxo-paging>
+               <dxo-group-panel [visible]="false"></dxo-group-panel>
+               <dxo-pager [visible]="true" [allowedPageSizes]="allowedPageSizes" displayMode="full" [showPageSizeSelector]="true" [showInfo]="true" [showNavigationButtons]="true">
+               </dxo-pager>
+               <dxo-sorting mode="multiple"></dxo-sorting>
+           </dx-data-grid>
+           <br><br>
+
+           <h3>Rutas</h3>
+           <dx-data-grid class="data-grid" [dataSource]="rutas" [showColumnLines]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true"
+           [allowColumnResizing]="true" [allowColumnReordering]="false" [columnAutoWidth]="true" [showBorders]="true">
+
+              <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+              <dxo-export [enabled]="true" fileName="Rutas"></dxo-export>
+              <dxo-header-filter [visible]="true"></dxo-header-filter>
+              
+              <dxi-column dataField="cliente" caption="Cliente"></dxi-column>
+              <dxi-column dataField="ruta" caption="Ruta"></dxi-column>
+              <dxi-column dataField="viajes" caption="Viajes"></dxi-column>
+              <dxi-column dataField="kms" caption="Kms" [format]="separator"></dxi-column>
+              <dxi-column dataField="flete" caption="Ingreso por Flete" [format]="enteros"></dxi-column>
+              <dxi-column dataField="ingrXKm" caption="Ingreso Kilómetro" [format]="redondear"></dxi-column>
+              <!-- <dxi-column dataField="estado" caption="Estado" [fixed]="true" [width]="100"></dxi-column> -->
+
+              <div *dxTemplate="let data of 'headerTemplate'">
+                  <div style="font-weight: bolder; color: black">
+                      {{ data.column.caption }}
+                  </div>
+              </div>
+              <div *dxTemplate="let cell of 'cellTemplateBold'">
+                  <div style="font-weight: bold;">{{cell.text}}</div>
+              </div>
+              <dxo-paging [pageSize]="20"></dxo-paging>
+              <dxo-group-panel [visible]="false"></dxo-group-panel>
+              <dxo-pager [visible]="true" [allowedPageSizes]="allowedPageSizes" displayMode="full" [showPageSizeSelector]="true" [showInfo]="true" [showNavigationButtons]="true">
+              </dxo-pager>
+              <dxo-sorting mode="multiple"></dxo-sorting>
+          </dx-data-grid>
+          <br><br>
+          
+          <h3>Viajes</h3>
+            <dx-data-grid class="data-grid" [dataSource]="viajes" [showColumnLines]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true"
+             [allowColumnResizing]="true" [allowColumnReordering]="false" [columnAutoWidth]="true" [showBorders]="true">
+
+                <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                <dxo-export [enabled]="true" fileName="Detalle"></dxo-export>
+                <dxo-header-filter [visible]="true"></dxo-header-filter>
+                
+                <dxi-column dataField="area" caption="UdN" [fixed]="true" [width]="150"></dxi-column>
+                <dxi-column dataField="tracto" caption="Tracto" [fixed]="true" [width]="100"></dxi-column>
+                <dxi-column dataField="operador" caption="Operador" [fixed]="true" [width]="200"></dxi-column>
+                <dxi-column dataField="operacion" caption="Operación" [fixed]="true" [width]="140"></dxi-column>
+                <dxi-column dataField="noViaje" caption="No. Viaje" [fixed]="true" [width]="100"></dxi-column>
+                <dxi-column dataField="tipoViaje" caption="Tipo de Viaje" [fixed]="true" [width]="150"></dxi-column>
+                <dxi-column dataField="ruta" caption="Ruta" [width]="250"></dxi-column>
+                <dxi-column dataField="cliente" caption="Cliente" [width]="180"></dxi-column>
+                <dxi-column caption="Origen">
+                    <dxi-column dataField="origen" caption="Origen" [width]="180"></dxi-column>
+                    <dxi-column dataField="municipioOrigen" caption="Municipio" [width]="130"></dxi-column>
+                    <dxi-column dataField="edoOrigen" caption="Estado" [width]="130"></dxi-column>
+                </dxi-column>
+                <dxi-column caption="Destino">
+                    <dxi-column dataField="destino" caption="Destino" [width]="180"></dxi-column>
+                    <dxi-column dataField="municipioDestino" caption="Municipio" [width]="130"></dxi-column>
+                    <dxi-column dataField="edoDestino" caption="Estado" [width]="130"></dxi-column>
+                </dxi-column>
+                <dxi-column dataField="inicio" caption="Inicio" dataType="date" format="dd/MM/yyyy" [width]="150"></dxi-column>
+                <dxi-column dataField="fin" caption="Fin" dataType="date" format="dd/MM/yyyy" [width]="150"></dxi-column>
+                <dxi-column caption="Ingreso Convenio Comercial">   
+                    <dxi-column dataField="kmsRuta" caption="Kms. Ruta" [format]="separator" [width]="130"></dxi-column>
+                    <dxi-column dataField="ingrXKmRuta" caption="Ingr. Km. Ruta" format="$ #,###,###.##;-$ #,##0.##" [width]="160"></dxi-column>
+                </dxi-column>
+                <dxi-column caption="Ingreso por Flete Real">
+                    <dxi-column dataField="kms" caption="Kms" [format]="separator" [width]="100"></dxi-column>
+                    <dxi-column dataField="flete" caption="Ingreso por Flete" [format]="enteros" [width]="150"></dxi-column>
+                    <dxi-column dataField="ingrXKm" caption="Ingreso Kilometro" format="$ #,###,###.##;-$ #,##0.##" [width]="150"></dxi-column>
+                </dxi-column>
+                <dxi-column caption="Desviación Kms. Comercial vs Real">
+                    <dxi-column dataField="desvKms" caption="Desv. Kms." [format]="separator" [width]="130"></dxi-column>
+                    <dxi-column dataField="desvPor" caption="Desv. Por." format="percent" [width]="130"></dxi-column>
+                </dxi-column>
+
+                <div *dxTemplate="let data of 'headerTemplate'">
+                    <div style="font-weight: bolder; color: black">
+                        {{ data.column.caption }}
+                    </div>
+                </div>
+                <div *dxTemplate="let cell of 'cellTemplateBold'">
+                    <div style="font-weight: bold;">{{cell.text}}</div>
+                </div>
+                <dxo-paging [pageSize]="20"></dxo-paging>
+                <dxo-group-panel [visible]="false"></dxo-group-panel>
+                <dxo-pager [visible]="true" [allowedPageSizes]="allowedPageSizes" displayMode="full" [showPageSizeSelector]="true" [showInfo]="true" [showNavigationButtons]="true">
+                </dxo-pager>
+                <dxo-sorting mode="multiple"></dxo-sorting>
+            </dx-data-grid>
+        </dxi-item>
+        
+        <dxi-item title="Macro Ciclo Caja Seca">
+            <br><br>
+            <div>
+                <div class="dx-field">
+                    <div class="dx-field-value d-block mr-0 ml-auto" style="width: 20%;">
+                        <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="240" (onClick)="getMCCS()">
+                        </dx-button>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            
+            <dx-data-grid  #ING id="gridContainer1" [dataSource]="macroCCS" [height]="600"[showBorders]="true" [columnAutoWidth]="true"
+            (onRowPrepared)="onRowPreparedMCCS($event)" (onCellPrepared)="onCellPreparedMCCS($event)">
+
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxo-header-filter [visible]="true"></dxo-header-filter>
+            <!-- <dxo-filter-row [visible]="showFilterRow" [applyFilter]="currentFilter"></dxo-filter-row> -->
+
+            <dxi-column dataField="ciclo" caption="Ciclo"></dxi-column>
+            <dxi-column dataField="tracto" caption="Tracto"></dxi-column>
+            <dxi-column dataField="area" caption="Area"></dxi-column>
+            <dxi-column dataField="municipioOrigen" caption="Municipio Origen"></dxi-column>
+            <dxi-column dataField="municipioDestino" caption="Municipio Destino"></dxi-column>
+            <dxi-column dataField="origen" caption="Origen"></dxi-column>
+            <dxi-column dataField="destino" caption="Destino"></dxi-column>
+            <dxi-column dataField="kms" caption="KMS"></dxi-column>
+            <dxi-column dataField="tipoViaje" caption="Tipo Viaje"></dxi-column>
+            <dxi-column dataField="flete" caption="Flete"></dxi-column>
+            <dxi-column dataField="dedicado" caption="Dedicado"></dxi-column>
+            <dxi-column dataField="convenio" caption="Convenio"></dxi-column>
+            <dxi-column dataField="operacion" caption="Operacion"></dxi-column>
+            <dxi-column dataField="numeroViaje" caption="Numero Viaje"></dxi-column>
+            <dxi-column dataField="fecha" caption="Fecha" format="dd/mm/yyyy"></dxi-column> 
+            <dxi-column dataField="" caption="" [width]="30"></dxi-column>
+
+            <!-- <dxo-summary>
+                <dxi-group-item column="saldO_SIN_CCOBRO" [customizeText]="customizeDateDetalle" [showInGroupFooter]="true"></dxi-group-item>
+                <dxi-group-item column="totaL_INTEGRADO" summaryType="sum" displayFormat="{0}" [valueFormat]="separator" [showInGroupFooter]="true"></dxi-group-item>
+
+                <dxi-total-item column="saldO_SIN_CCOBRO" [customizeText]="customizeDateDetalle"></dxi-total-item>
+                <dxi-total-item column="totaL_INTEGRADO" summaryType="sum"  displayFormat="{0}" [valueFormat]="separator"></dxi-total-item>
+            </dxo-summary> -->
+
+            <dxo-group-panel [visible]="false"></dxo-group-panel>
+            <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+            <dxo-export [enabled]="true" fileName="Macrocilo Caja Seca"></dxo-export>
+            <dxo-paging [pageSize]="60"></dxo-paging>
+            <dxo-sorting mode="multiple"></dxo-sorting>
+
+            </dx-data-grid>
+
+            <br><br>
+
+            <dx-data-grid  #ING id="gridContainer1" [dataSource]="viajesQuincenales" [height]="600"[showBorders]="true" [columnAutoWidth]="true"
+            (onRowPrepared)="onRowPreparedVQ($event)" (onCellPrepared)="onCellPreparedVQ($event)">
+
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxo-header-filter [visible]="true"></dxo-header-filter>
+            <!-- <dxo-filter-row [visible]="showFilterRow" [applyFilter]="currentFilter"></dxo-filter-row> -->
+
+            <dxi-column dataField="origen" caption="Origen" [fixed]="true"></dxi-column>
+            <dxi-column dataField="destino" caption="Destino" [fixed]="true"></dxi-column>
+
+            <dxi-column dataField="ene24Q1" caption="Enero 2024Q1"></dxi-column>
+            <dxi-column dataField="ene24Q2" caption="Enero 2024Q2"></dxi-column>
+            <dxi-column dataField="feb24Q1" caption="Febrero 2024Q1"></dxi-column>
+            <dxi-column dataField="feb24Q2" caption="Febrero 2024Q2"></dxi-column>
+            <dxi-column dataField="mar24Q1" caption="Marzo 2024Q1"></dxi-column>
+            <dxi-column dataField="mar24Q2" caption="Marzo 2024Q2"></dxi-column>
+            <dxi-column dataField="abr24Q1" caption="Abril 2024Q1"></dxi-column>
+            <dxi-column dataField="abr24Q2" caption="Abril 2024Q2"></dxi-column>
+            <dxi-column dataField="may24Q1" caption="Mayo 2024Q1"></dxi-column>
+            <dxi-column dataField="may24Q2" caption="Mayo 2024Q2"></dxi-column>
+            <dxi-column dataField="jun24Q1" caption="Junio 2024Q1"></dxi-column>
+            <dxi-column dataField="jun24Q2" caption="Junio 2024Q2"></dxi-column>
+            <dxi-column dataField="jul24Q1" caption="Julio 2024Q1"></dxi-column>
+            <dxi-column dataField="jul24Q2" caption="Julio 2024Q2"></dxi-column>
+            <dxi-column dataField="ago24Q1" caption="Agosto 2024Q1"></dxi-column>
+            <dxi-column dataField="ago24Q2" caption="Agosto 2024Q2"></dxi-column>
+            <dxi-column dataField="sep24Q1" caption="Septiembre 2024Q1"></dxi-column>
+            <dxi-column dataField="sep24Q2" caption="Septiembre 2024Q2"></dxi-column>
+            <dxi-column dataField="oct24Q1" caption="Octubre 2024Q1"></dxi-column>
+            <dxi-column dataField="oct24Q2" caption="Octubre 2024Q2"></dxi-column>
+            <dxi-column dataField="nov24Q1" caption="Noviembre 2024Q1"></dxi-column>
+            <dxi-column dataField="nov24Q2" caption="Noviembre 2024Q2"></dxi-column>
+            <dxi-column dataField="dic24Q1" caption="Diciembre 2024Q1"></dxi-column>
+            <dxi-column dataField="dic24Q2" caption="Diciembre 2024Q2"></dxi-column>
+            <dxi-column dataField="ene25Q1" caption="Enero 2025Q1"></dxi-column>
+            <dxi-column dataField="ene25Q2" caption="Enero 2025Q2"></dxi-column>
+            <dxi-column dataField="feb25Q1" caption="Febrero 2025Q1"></dxi-column>
+            <dxi-column dataField="feb25Q2" caption="Febrero 2025Q2"></dxi-column>
+            <dxi-column dataField="mar25Q1" caption="Marzo 2025Q1"></dxi-column>
+            <dxi-column dataField="mar25Q2" caption="Marzo 2025Q2"></dxi-column> 
+            <dxi-column dataField="abr25Q1" caption="Abril 2025Q1"></dxi-column>
+            <dxi-column dataField="abr25Q2" caption="Abril 2025Q2"></dxi-column> 
+            <dxi-column dataField="may25Q1" caption="Mayo 2025Q1"></dxi-column>
+            <dxi-column dataField="may25Q2" caption="Mayo 2025Q2"></dxi-column> 
+            <dxi-column dataField="jun25Q1" caption="Junio 2025Q1"></dxi-column>
+            <dxi-column dataField="jun25Q2" caption="Junio 2025Q2"></dxi-column> 
+            <dxi-column dataField="jul25Q1" caption="Julio 2025Q1"></dxi-column>
+            <dxi-column dataField="jul25Q2" caption="Julio 2025Q2"></dxi-column> 
+            <dxi-column dataField="ago25Q1" caption="Agosto 2025Q1"></dxi-column>
+            <dxi-column dataField="ago25Q2" caption="Agosto 2025Q2"></dxi-column> 
+            <dxi-column dataField="sep25Q1" caption="Septiembre 2025Q1"></dxi-column>
+            <dxi-column dataField="sep25Q2" caption="Septiembre 2025Q2"></dxi-column> 
+            <dxi-column dataField="oct25Q1" caption="Octubre 2025Q1"></dxi-column>
+            <dxi-column dataField="oct25Q2" caption="Octubre 2025Q2"></dxi-column> 
+            <dxi-column dataField="nov25Q1" caption="Noviembre 2025Q1"></dxi-column>
+            <dxi-column dataField="nov25Q2" caption="Noviembre 2025Q2"></dxi-column> 
+            <dxi-column dataField="dic25Q1" caption="Diciembre 2025Q1"></dxi-column>
+            <dxi-column dataField="dic25Q2" caption="Diciembre 2025Q2"></dxi-column> 
+            <dxi-column dataField="total" caption="Total" [fixed]="true" fixedPosition="right" [width]="100" alignment="left"></dxi-column> 
+
+            <!-- <dxo-summary>
+                <dxi-group-item column="saldO_SIN_CCOBRO" [customizeText]="customizeDateDetalle" [showInGroupFooter]="true"></dxi-group-item>
+                <dxi-group-item column="totaL_INTEGRADO" summaryType="sum" displayFormat="{0}" [valueFormat]="separator" [showInGroupFooter]="true"></dxi-group-item>
+
+                <dxi-total-item column="saldO_SIN_CCOBRO" [customizeText]="customizeDateDetalle"></dxi-total-item>
+                <dxi-total-item column="totaL_INTEGRADO" summaryType="sum"  displayFormat="{0}" [valueFormat]="separator"></dxi-total-item>
+            </dxo-summary> -->
+
+            <dxo-group-panel [visible]="false"></dxo-group-panel>
+            <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+            <dxo-export [enabled]="true" fileName="Viajes Quincenas"></dxo-export>
+            <dxo-paging [pageSize]="60"></dxo-paging>
+            <dxo-sorting mode="multiple"></dxo-sorting>
+
+            </dx-data-grid>
+        </dxi-item>
+    </dx-tab-panel>
+
+<!--==========================MODAL REAL=========================================================-->
+<dx-popup width="100%" height="100%" [showTitle]="true" title="Detalle" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modDetalle">
+    <!-- <dxo-position at="middle" my="center" [of]="positionOf"> </dxo-position>  -->
+
+
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+
+            <dx-data-grid class="data-grid" [dataSource]="detalleMacro" [showColumnLines]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true"
+             [allowColumnResizing]="true" [allowColumnReordering]="false" [columnAutoWidth]="true" [showBorders]="true">
+
+                <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                <dxo-export [enabled]="true" fileName="Detalle"></dxo-export>
+                <dxo-header-filter [visible]="true"></dxo-header-filter>
+                
+                <dxi-column dataField="area" caption="UdN" [fixed]="true" [width]="150"></dxi-column>
+                <dxi-column dataField="tracto" caption="Tracto" [fixed]="true" [width]="100"></dxi-column>
+                <dxi-column dataField="operador" caption="Operador" [fixed]="true" [width]="200"></dxi-column>
+                <dxi-column dataField="operacion" caption="Operación" [fixed]="true" [width]="140"></dxi-column>
+                <dxi-column dataField="noViaje" caption="No. Viaje" [fixed]="true" [width]="100"></dxi-column>
+                <dxi-column dataField="tipoViaje" caption="Tipo de Viaje" [fixed]="true" [width]="150"></dxi-column>
+                <dxi-column dataField="ruta" caption="Ruta" [width]="250"></dxi-column>
+                <dxi-column dataField="cliente" caption="Cliente" [width]="180"></dxi-column>
+                <dxi-column caption="Origen">
+                    <dxi-column dataField="origen" caption="Origen" [width]="180"></dxi-column>
+                    <dxi-column dataField="municipioOrigen" caption="Municipio" [width]="130"></dxi-column>
+                    <dxi-column dataField="edoOrigen" caption="Estado" [width]="130"></dxi-column>
+                </dxi-column>
+                <dxi-column caption="Destino">
+                    <dxi-column dataField="destino" caption="Destino" [width]="180"></dxi-column>
+                    <dxi-column dataField="municipioDestino" caption="Municipio" [width]="130"></dxi-column>
+                    <dxi-column dataField="edoDestino" caption="Estado" [width]="130"></dxi-column>
+                </dxi-column>
+                <dxi-column dataField="inicio" caption="Inicio" dataType="date" format="dd/MM/yyyy" [width]="150"></dxi-column>
+                <dxi-column dataField="fin" caption="Fin" dataType="date" format="dd/MM/yyyy" [width]="150"></dxi-column>
+                <dxi-column caption="Por Viaje">
+                    <dxi-column dataField="kms" caption="Kms" [format]="separator" [width]="100"></dxi-column>
+                    <dxi-column dataField="flete" caption="Ingreso por Flete" [format]="enteros" [width]="150"></dxi-column>
+                    <dxi-column dataField="ingrXKm" caption="Ingreso Kilometro" format="$ #,###,###.##;-$ #,##0.##" [width]="150"></dxi-column>
+                </dxi-column>
+                <dxi-column caption="Por Viajes Acumulados">
+                    <dxi-column dataField="kmsAcumulado" caption="Kms. Acumulado" [format]="separator" [width]="150"></dxi-column>
+                    <dxi-column dataField="fleteAcumulado" caption="Flete acumulado" [format]="enteros" [width]="150"></dxi-column>
+                    <dxi-column dataField="ingrXKmAcumulado" caption="Ingr. kms. Acumulado" format="$ #,###,###.##;-$ #,##0.##" [width]="170"></dxi-column>
+                </dxi-column>
+
+
+                <!-- <dxi-column dataField="ciclo" caption="Ciclo" [width]="100"></dxi-column>
+                <dxi-column dataField="cicloCliente" caption="Ciclo cliente" [width]="140"></dxi-column>
+                <dxi-column dataField="idArea" caption="Id área" [width]="100"></dxi-column> -->
+
+
+                <div *dxTemplate="let data of 'headerTemplate'">
+                    <div style="font-weight: bolder; color: black">
+                        {{ data.column.caption }}
+                    </div>
+                </div>
+                <div *dxTemplate="let cell of 'cellTemplateBold'">
+                    <div style="font-weight: bold;">{{cell.text}}</div>
+                </div>
+                <dxo-paging [pageSize]="20"></dxo-paging>
+                <dxo-group-panel [visible]="false"></dxo-group-panel>
+                <dxo-pager [visible]="true" [allowedPageSizes]="allowedPageSizes" displayMode="full" [showPageSizeSelector]="true" [showInfo]="true" [showNavigationButtons]="true">
+                </dxo-pager>
+                <dxo-sorting mode="multiple"></dxo-sorting>
+            </dx-data-grid>
+        </dx-scroll-view>
+    </div>
+</dx-popup>
+<!--=============================================FIN MODAL==========================================-->
+
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+
+    <dx-toast [(visible)]="isVisible" type="warning" message="Seleccione Año y Mes">  
+        <dxo-position
+            my="top"
+            at="right"
+            of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>

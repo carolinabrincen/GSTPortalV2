@@ -1,0 +1,286 @@
+<div [id]="'myDiv'" class="content-block dx-card responsive-paddings">
+    <h3>Kilómetros mensuales</h3>
+    <dx-tab-panel>
+        <dxi-item title="Resumen">
+            <dx-data-grid #dataGridVar [dataSource]="arrResumen" [showBorders]="true" (onRowPrepared)="onRowPrepared($event)">
+                <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+                <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+                <dxo-export [enabled]="true"></dxo-export>
+                <dxi-column dataField="tipoOperacion" caption="Operación" cellTemplate="cellTemplateSize" [fixed]="true"></dxi-column>
+                <dxi-column caption="Kilómetros">
+                    <dxi-column dataField="kmsCargados" caption="Cargados" cellTemplate="cellTemplateSizeNormal">
+                        <dxo-format type="fixedPoint"> </dxo-format>
+                    </dxi-column>
+                    <dxi-column dataField="kmsVacios" caption="Vacíos" cellTemplate="cellTemplateSizeNormal">
+                        <dxo-format type="fixedPoint"> </dxo-format>
+                    </dxi-column>
+                    <dxi-column dataField="kmsTotales" caption="TOTAL" cellTemplate="cellTemplateSize">
+                        <dxo-format type="fixedPoint"> </dxo-format>
+                    </dxi-column>
+                </dxi-column>
+                <dxi-column caption="Viajes">
+                    <dxi-column dataField="viajesCargados" caption="Cargados" cellTemplate="cellTemplateSizeNormal">
+                        <dxo-format type="fixedPoint"> </dxo-format>
+                    </dxi-column>
+                    <dxi-column dataField="viajesVacios" caption="Vacíos" cellTemplate="cellTemplateSizeNormal">
+                        <dxo-format type="fixedPoint"> </dxo-format>
+                    </dxi-column>
+                    <dxi-column dataField="viajesTotales" caption="TOTAL" cellTemplate="cellTemplateSize">
+                        <dxo-format type="fixedPoint"> </dxo-format>
+                    </dxi-column>
+                </dxi-column>
+                <dxi-column dataField="toneladas" caption="Toneladas" cellTemplate="cellTemplateSizeNormal">
+                    <dxo-format type="fixedPoint"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="ingreso" caption="Ingreso" cellTemplate="cellTemplateSize">
+                    <dxo-format type="fixedPoint"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="udn" caption="" [groupIndex]="0" [allowSorting]="false"></dxi-column>
+
+                <dxo-summary>
+
+                    <dxi-total-item column="kmsCargados" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint">
+                    </dxi-total-item>
+                    <dxi-total-item column="kmsVacios" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint">
+                    </dxi-total-item>
+                    <dxi-total-item column="kmsTotales" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint">
+                    </dxi-total-item>
+                    <dxi-total-item column="viajesCargados" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint">
+                    </dxi-total-item>
+                    <dxi-total-item column="viajesVacios" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint">
+                    </dxi-total-item>
+                    <dxi-total-item column="viajesTotales" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint">
+                    </dxi-total-item>
+                    <dxi-total-item column="toneladas" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint">
+                    </dxi-total-item>
+                    <dxi-total-item column="ingreso" summaryType="sum" valueFormat="currency" displayFormat="{0}">
+                    </dxi-total-item>
+
+                    <dxi-group-item column="kmsCargados" summaryType="sum" displayFormat="{0}" valueFormat=" #,###,###;-$ #,##0" [showInGroupFooter]="false" [alignByColumn]="true">
+                    </dxi-group-item>
+                    <dxi-group-item column="kmsVacios" summaryType="sum" displayFormat="{0}" valueFormat="#,###,###;-$ #,##0" [showInGroupFooter]="false" [alignByColumn]="true">
+                    </dxi-group-item>
+                    <dxi-group-item column="kmsTotales" summaryType="sum" displayFormat="{0}" valueFormat="#,###,###;-$ #,##0" [showInGroupFooter]="false" [alignByColumn]="true">
+                    </dxi-group-item>
+                    <dxi-group-item column="viajesCargados" summaryType="sum" displayFormat="{0}" valueFormat="#,###,###;-$ #,##0" [showInGroupFooter]="false" [alignByColumn]="true">
+                    </dxi-group-item>
+                    <dxi-group-item column="viajesVacios" summaryType="sum" displayFormat="{0}" valueFormat="#,###,###;-$ #,##0" [showInGroupFooter]="false" [alignByColumn]="true">
+                    </dxi-group-item>
+                    <dxi-group-item column="viajesTotales" summaryType="sum" displayFormat="{0}" valueFormat="#,###,###;-$ #,##0" [showInGroupFooter]="false" [alignByColumn]="true">
+                    </dxi-group-item>
+                    <dxi-group-item column="toneladas" summaryType="sum" displayFormat="{0}" valueFormat="#,###,###;-$ #,##0" [showInGroupFooter]="false" [alignByColumn]="true">
+                    </dxi-group-item>
+                    <dxi-group-item column="ingreso" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###;-$ #,##0" [showInGroupFooter]="false" [alignByColumn]="true">
+                    </dxi-group-item>
+
+                </dxo-summary>
+
+
+
+                <dxo-paging [pageSize]="60"></dxo-paging>
+
+                <div *dxTemplate="let cell of 'cellTemplateSize'">
+                    <div style="font-size: smaller; font-weight: bold;">{{cell.text}}</div>
+                </div>
+
+                <div *dxTemplate="let cell of 'cellTemplateSizeNormal'">
+                    <div style="font-size: smaller; ">{{cell.text}}</div>
+                </div>
+
+
+            </dx-data-grid>
+        </dxi-item>
+        <dxi-item title="Detalle">
+            <dx-data-grid #IngresosGrid id="gridContainer" [dataSource]="arrKilometros" [columnAutoWidth]="true" [showColumnLines]="true" [showBorders]="true" [rowAlternationEnabled]="true">
+                <dxo-title text="Despachados del mes actual">
+                </dxo-title>
+                <dxo-export [enabled]="true"></dxo-export>
+                <dxo-paging [pageSize]="25"></dxo-paging>
+                <dxo-filter-row [visible]="showFilterRow" [applyFilter]="currentFilter"></dxo-filter-row>
+
+                <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                <!-- <dxo-sorting mode="none"></dxo-sorting> -->
+
+                <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+
+                <dxi-column dataField="anio" caption="Año" width="50"></dxi-column>
+                <dxi-column dataField="mes" caption="Mes" width="45"></dxi-column>
+                <dxi-column dataField="udN" caption="UdN" width="125"></dxi-column>
+                <dxi-column dataField="noViaje" caption="NoViaje" width="70"></dxi-column>
+                <dxi-column dataField="operador" caption="Operador" width="250"></dxi-column>
+                <dxi-column dataField="cliente" caption="Cliente" width="300"></dxi-column>
+                <dxi-column dataField="tracto" caption="Tracto" width="80"></dxi-column>
+                <dxi-column dataField="rem1" caption="Rem1" width="80"></dxi-column>
+                <dxi-column dataField="descRem1" caption="DescRem1" width="50"></dxi-column>
+                <dxi-column dataField="rem2" caption="Rem2" width="80"></dxi-column>
+                <dxi-column dataField="descripcion" caption="Descripcion" width="120"></dxi-column>
+                <dxi-column dataField="tipoViaje" caption="TipoViaje" width="100"></dxi-column>
+                <dxi-column dataField="operacion" caption="Operación" width="130"></dxi-column>
+                <dxi-column dataField="fecha" caption="Fecha" width="100" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="origen" caption="Origen" width="150"></dxi-column>
+                <dxi-column dataField="edoOrigen" caption="EdoOrigen" width="70"></dxi-column>
+                <dxi-column dataField="destino" caption="Destino" width="150"></dxi-column>
+                <dxi-column dataField="edoDestino" caption="EdoDestino" width="70"></dxi-column>
+                <dxi-column dataField="modelo" caption="Modelo" width="70"></dxi-column>
+                <dxi-column dataField="kmsRuta" caption="KmsRuta" width="70"></dxi-column>
+                <dxi-column dataField="kmsReal" caption="KmsReal" width="70"></dxi-column>
+                <dxi-column dataField="desviacion" caption="% Desv." width="80" format="#0.##%"></dxi-column>
+                <dxi-column dataField="autorizado" caption="Autorizado" width="90"></dxi-column>
+                <dxi-column dataField="kmsReporte" caption="KmsReporte" width="95">
+                    <dxo-format type="fixedPoint"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="diesel" caption="Diesel" width="80" alignment="right" width="90">
+                    <dxo-format type="fixedPoint" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="rendimiento" caption="Rendimiento" alignment="right" width="90">
+                    <dxo-format type="fixedPoint" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="liquidado" caption="Liquidado" width="85"></dxi-column>
+                <dxi-column dataField="no_liquidacion" caption="NumLiq" width="80"></dxi-column>
+                <dxi-column dataField="fecha_liquidacion" caption="Liquidacion" width="95" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="despachoViaje" caption="Despacho" width="95" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="finViaje" caption="FinViaje" width="95" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="finalizado" caption="Finalizado" width="85" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="diasSinLiquidar" caption="DiasSinLiq" width="80"></dxi-column>
+                <dxi-column dataField="periodo" caption="Periodo" width="85"></dxi-column>
+                <dxi-column dataField="flete" caption="Flete" format="currency" precision="2" width="80"></dxi-column>
+                <dxi-column dataField="diaMes" caption="Día" precision="2" width="50"></dxi-column>
+                <dxi-column dataField="toneladas" caption="Toneladas" width="100">
+                    <dxo-format type="fixedPoint"> </dxo-format>
+                </dxi-column>
+
+
+            </dx-data-grid>
+        </dxi-item>
+        <dxi-item title="Liquidados Mes Anterior">
+
+            <dx-data-grid #IngresosGrid id="gridContainer" [dataSource]="arrKilometrosMAnt" [columnAutoWidth]="true" [showColumnLines]="true" [showBorders]="true" [rowAlternationEnabled]="true">
+
+                <dxo-export [enabled]="true"></dxo-export>
+                <dxo-paging [pageSize]="25"></dxo-paging>
+                <dxo-filter-row [visible]="showFilterRow" [applyFilter]="currentFilter"></dxo-filter-row>
+
+                <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                <!-- <dxo-sorting mode="none"></dxo-sorting> -->
+
+                <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+
+                <dxi-column dataField="anio" caption="Año" width="50"></dxi-column>
+                <dxi-column dataField="mes" caption="Mes" width="55"></dxi-column>
+                <dxi-column dataField="udN" caption="UdN" width="125"></dxi-column>
+                <dxi-column dataField="noViaje" caption="NoViaje" width="70"></dxi-column>
+                <dxi-column dataField="operador" caption="Operador" width="250"></dxi-column>
+                <dxi-column dataField="cliente" caption="Cliente" width="300"></dxi-column>
+                <dxi-column dataField="tracto" caption="Tracto" width="80"></dxi-column>
+                <dxi-column dataField="rem1" caption="Rem1" width="80"></dxi-column>
+                <dxi-column dataField="descRem1" caption="DescRem1" width="50"></dxi-column>
+                <dxi-column dataField="rem2" caption="Rem2" width="80"></dxi-column>
+                <dxi-column dataField="descripcion" caption="Descripcion" width="120"></dxi-column>
+                <dxi-column dataField="tipoViaje" caption="TipoViaje" width="100"></dxi-column>
+                <dxi-column dataField="operacion" caption="Operación" width="130"></dxi-column>
+                <dxi-column dataField="fecha" caption="Fecha" width="100" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="origen" caption="Origen" width="150"></dxi-column>
+                <dxi-column dataField="edoOrigen" caption="EdoOrigen" width="70"></dxi-column>
+                <dxi-column dataField="destino" caption="Destino" width="150"></dxi-column>
+                <dxi-column dataField="edoDestino" caption="EdoDestino" width="70"></dxi-column>
+                <dxi-column dataField="modelo" caption="Modelo" width="70"></dxi-column>
+                <dxi-column dataField="kmsRuta" caption="KmsRuta" width="70"></dxi-column>
+                <dxi-column dataField="kmsReal" caption="KmsReal" width="70"></dxi-column>
+                <dxi-column dataField="desviacion" caption="% Desv." width="80" format="#0.##%"></dxi-column>
+                <dxi-column dataField="autorizado" caption="Autorizado" width="90"></dxi-column>
+                <dxi-column dataField="kmsReporte" caption="KmsReporte" width="95">
+                    <dxo-format type="fixedPoint"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="diesel" caption="Diesel" width="80" alignment="right" width="90">
+                    <dxo-format type="fixedPoint" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="rendimiento" caption="Rendimiento" alignment="right" width="90">
+                    <dxo-format type="fixedPoint" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="liquidado" caption="Liquidado" width="85"></dxi-column>
+                <dxi-column dataField="no_liquidacion" caption="NumLiq" width="80"></dxi-column>
+                <dxi-column dataField="fecha_liquidacion" caption="Liquidacion" width="95" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="despachoViaje" caption="Despacho" width="95" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="finViaje" caption="FinViaje" width="95" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="finalizado" caption="Finalizado" width="85" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="diasSinLiquidar" caption="DiasSinLiq" width="80"></dxi-column>
+                <dxi-column dataField="periodo" caption="Periodo" width="85"></dxi-column>
+                <dxi-column dataField="flete" caption="Flete" format="currency" precision="2" width="80"></dxi-column>
+                <dxi-column dataField="diaMes" caption="DíaMes" width="55"></dxi-column>
+                <dxi-column dataField="toneladas" caption="Toneldas" width="100">
+                    <dxo-format type="fixedPoint"> </dxo-format>
+                </dxi-column>
+
+
+            </dx-data-grid>
+            <!--#endregion :::: FIN GRID PRINCIPAL ::::  -->
+
+
+        </dxi-item>
+        <dxi-item title="NO Liquidados Mes Anterior">
+
+
+
+            <dx-data-grid #IngresosGrid id="gridContainer" [dataSource]="arrKilometrosMAntNL" [columnAutoWidth]="true" [showColumnLines]="true" [showBorders]="true" [rowAlternationEnabled]="true">
+
+                <dxo-export [enabled]="true"></dxo-export>
+                <dxo-paging [pageSize]="50"></dxo-paging>
+                <dxo-filter-row [visible]="showFilterRow" [applyFilter]="currentFilter"></dxo-filter-row>
+
+                <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                <!-- <dxo-sorting mode="none"></dxo-sorting> -->
+
+                <dxo-column-fixing [enabled]="true"></dxo-column-fixing>
+
+                <dxi-column dataField="anio" caption="Año" width="50"></dxi-column>
+                <dxi-column dataField="mes" caption="Mes" width="55"></dxi-column>
+                <dxi-column dataField="udN" caption="UdN" width="125"></dxi-column>
+                <dxi-column dataField="noViaje" caption="NoViaje" width="70"></dxi-column>
+                <dxi-column dataField="operador" caption="Operador" width="250"></dxi-column>
+                <dxi-column dataField="cliente" caption="Cliente" width="300"></dxi-column>
+                <dxi-column dataField="tracto" caption="Tracto" width="80"></dxi-column>
+                <dxi-column dataField="rem1" caption="Rem1" width="80"></dxi-column>
+                <dxi-column dataField="descRem1" caption="DescRem1" width="50"></dxi-column>
+                <dxi-column dataField="rem2" caption="Rem2" width="80"></dxi-column>
+                <dxi-column dataField="descripcion" caption="Descripcion" width="120"></dxi-column>
+                <dxi-column dataField="tipoViaje" caption="TipoViaje" width="100"></dxi-column>
+                <dxi-column dataField="operacion" caption="Operación" width="130"></dxi-column>
+                <dxi-column dataField="fecha" caption="Fecha" width="100" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="origen" caption="Origen" width="150"></dxi-column>
+                <dxi-column dataField="edoOrigen" caption="EdoOrigen" width="70"></dxi-column>
+                <dxi-column dataField="destino" caption="Destino" width="150"></dxi-column>
+                <dxi-column dataField="edoDestino" caption="EdoDestino" width="70"></dxi-column>
+                <dxi-column dataField="modelo" caption="Modelo" width="70"></dxi-column>
+                <dxi-column dataField="kmsRuta" caption="KmsRuta" width="70"></dxi-column>
+                <dxi-column dataField="kmsReal" caption="KmsReal" width="70"></dxi-column>
+                <dxi-column dataField="desviacion" caption="% Desv." width="80" format="#0.##%"></dxi-column>
+                <dxi-column dataField="autorizado" caption="Autorizado" width="90"></dxi-column>
+                <dxi-column dataField="kmsReporte" caption="KmsReporte" width="95">
+                    <dxo-format type="fixedPoint"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="diesel" caption="Diesel" width="80" alignment="right" width="90">
+                    <dxo-format type="fixedPoint" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="rendimiento" caption="Rendimiento" alignment="right" width="90">
+                    <dxo-format type="fixedPoint" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="liquidado" caption="Liquidado" width="85"></dxi-column>
+                <dxi-column dataField="no_liquidacion" caption="NumLiq" width="80"></dxi-column>
+                <dxi-column dataField="fecha_liquidacion" caption="Liquidacion" width="95" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="despachoViaje" caption="Despacho" width="95" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="finViaje" caption="FinViaje" width="95" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="finalizado" caption="Finalizado" width="85" dataType="date" format="shortDate"></dxi-column>
+                <dxi-column dataField="diasSinLiquidar" caption="DiasSinLiq" width="80"></dxi-column>
+                <dxi-column dataField="periodo" caption="Periodo" width="85"></dxi-column>
+                <dxi-column dataField="flete" caption="Flete" format="currency" precision="2" width="80"></dxi-column>
+
+
+            </dx-data-grid>
+        </dxi-item>
+
+    </dx-tab-panel>
+
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+</div>

@@ -1,0 +1,19 @@
+::ng-deep .dx-scrollbar-horizontal.dx-scrollbar-hoverable {
+    height: 15px;
+  }
+  
+  ::ng-deep .dx-scrollbar-vertical.dx-scrollbar-hoverable {
+    width: 15px;
+  }
+  
+  ::ng-deep .dx-scrollbar-horizontal .dx-scrollable-scroll { 
+    height: 15px; 
+  }
+  
+  ::ng-deep .dx-scrollbar-vertical .dx-scrollable-scroll { 
+    width: 15px; 
+  }
+  
+  ::ng-deep .dx-scrollable-scroll-content { 
+    background-color:gray !important; /* optional if you want to change the color */
+  }

@@ -1,0 +1,676 @@
+<div #myDiv [id]="'myDiv'">
+  <h2 class="content-block">Rentabilidad Gerencial</h2>
+
+  <div class="content-block dx-card responsive-paddings">
+    <dx-responsive-box>
+      <!-- COLS -->
+      <dxi-col [ratio]="0.7"></dxi-col>
+      <dxi-col [ratio]="1"></dxi-col>
+      <dxi-col [ratio]="0.15"></dxi-col>
+      <dxi-col [ratio]="0.15"></dxi-col>
+      <dxi-col [ratio]="0.35"></dxi-col>
+      <!--Fin-->
+      <dxi-col [ratio]="1">"</dxi-col>
+      <dxi-col [ratio]="0.25"></dxi-col>
+      <dxi-col [ratio]="0.65"></dxi-col>
+      <dxi-col [ratio]="1"></dxi-col>
+      <dxi-col [ratio]="1"></dxi-col>
+      <dxi-col [ratio]="1"></dxi-col>
+      <dxi-col [ratio]="1"></dxi-col>
+
+      <!-- ROWS -->
+      <dxi-row [ratio]="1"></dxi-row>
+      <dxi-row [ratio]="1"></dxi-row>
+      <dxi-row [ratio]="1"></dxi-row>
+      <dxi-row [ratio]="1"></dxi-row>
+      <dxi-row [ratio]="1"></dxi-row>
+      <dxi-row [ratio]="1"></dxi-row>
+      <dxi-row [ratio]="1"></dxi-row>
+      <dxi-row [ratio]="1"></dxi-row>
+      <dxi-row [ratio]="1"></dxi-row>
+      <dxi-row [ratio]="1"></dxi-row>
+      <dxi-row [ratio]="1"></dxi-row>
+      <dxi-row [ratio]="1"></dxi-row>
+      <dxi-row [ratio]="1"></dxi-row>
+      <dxi-row [ratio]="1"></dxi-row>
+
+      <!-- CONTROLES DEL FORM -->
+      <!--#region :::: ROW 1 DEL FORM ::::  -->
+      <!--ROW 1 Unidad de Negocio -->
+      <dxi-item>
+        <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+        <dxi-location
+          style="margin-top: 1rem"
+          screen="xs sm"
+          [row]="0"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <div>Unidad de Negocio:</div>
+      </dxi-item>
+      <dxi-item>
+        <dxi-location
+          screen="md lg"
+          [row]="0"
+          [col]="1"
+          [colspan]="5"
+        ></dxi-location>
+        <dxi-location
+          style="margin-top: 0.5rem"
+          screen="xs sm"
+          [row]="1"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <dx-tag-box
+          [items]="arrUnidadesNegocio"
+          [showSelectionControls]="true"
+          [maxDisplayedTags]="4"
+          displayExpr="ciudad"
+          valueExpr="idUnidad"
+          [dataSource]="arrUnidadesNegocio"
+          (onValueChanged)="seleccionarUDN($event)"
+        >
+        </dx-tag-box>
+      </dxi-item>
+
+      <!-- ROW 1 TIPO OPERACION -->
+      <dxi-item>
+        <dxi-location screen="md lg" [row]="0" [col]="7"></dxi-location>
+        <dxi-location
+          style="margin-top: 1rem"
+          screen="xs sm"
+          [row]="2"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <div>Tipo de Operación:</div>
+      </dxi-item>
+      <dxi-item>
+        <dxi-location
+          screen="md lg"
+          [row]="0"
+          [col]="8"
+          [colspan]="4"
+        ></dxi-location>
+        <dxi-location
+          style="margin-top: 0.5rem"
+          screen="xs sm"
+          [row]="3"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <dx-tag-box
+          [items]="arrTipoOperacion"
+          [showSelectionControls]="true"
+          [maxDisplayedTags]="5"
+          displayExpr="operacion"
+          valueExpr="idTipoOperacion"
+          [dataSource]="arrTipoOperacion"
+          (onValueChanged)="seleccionarTipoOperacion($event)"
+        >
+        </dx-tag-box>
+      </dxi-item>
+      <!--#endregion :::: FIN ROW 1 ::::  -->
+
+      <!--#region :::: ROW 2 DEL FORM ::::  -->
+      <!-- MES -->
+      <dxi-item>
+        <dxi-location screen="md lg" [row]="1" [col]="0"></dxi-location>
+        <dxi-location
+          style="margin-top: 1.5rem"
+          screen="xs sm"
+          [row]="8"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <div>Mes:</div>
+      </dxi-item>
+
+      <dxi-item>
+        <dxi-location
+          style="margin-top: 0.5rem"
+          screen="md lg"
+          [row]="1"
+          [col]="1"
+          [colspan]="2"
+        ></dxi-location>
+        <dxi-location
+          style="margin-top: 0.5rem"
+          screen="xs sm"
+          [row]="9"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <dx-select-box
+          [items]="arrMeses"
+          displayExpr="nombre"
+          valueExpr="idMes"
+          (onValueChanged)="seleccionarMes($event)"
+        ></dx-select-box>
+      </dxi-item>
+
+      <!-- AÑO -->
+      <dxi-item>
+        <dxi-location screen="md lg" [row]="1" [col]="4"></dxi-location>
+        <dxi-location
+          style="margin-top: 1.5rem"
+          screen="xs sm"
+          [row]="10"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <div>Año:</div>
+      </dxi-item>
+
+      <dxi-item>
+        <dxi-location
+          style="margin-top: 0.5rem"
+          screen="md lg"
+          [row]="1"
+          [col]="5"
+          [colspan]="1"
+        ></dxi-location>
+        <dxi-location
+          style="margin-top: 0.5rem"
+          screen="xs sm"
+          [row]="11"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <dx-select-box
+          [items]="arrAnos"
+          displayExpr="anio"
+          valueExpr="idAnio"
+          (onValueChanged)="seleccionarAnio($event)"
+        ></dx-select-box>
+      </dxi-item>
+
+      <!-- CARGAR CLIENTES Y RUTAS -->
+      <dxi-item>
+        <dxi-location
+          screen="md lg"
+          [row]="1"
+          [col]="7"
+          [colspan]="2"
+        ></dxi-location>
+        <dxi-location
+          style="margin-top: 1.4rem"
+          screen="xs sm"
+          [row]="12"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <div>
+          <dx-button
+            stylingMode="contained"
+            text="Cargar Clientes y Rutas"
+            icon="search"
+            type="normal"
+            [width]="240"
+            (onClick)="clickClientesRutas($event)"
+          >
+          </dx-button>
+        </div>
+      </dxi-item>
+
+      <!--#endregion :::: FIN ROW 2 ::::  -->
+
+      <!--#region :::: ROW 3 DEL FORM ::::  -->
+      <!-- RUTAS -->
+      <dxi-item>
+        <dxi-location screen="md lg" [row]="2" [col]="0"></dxi-location>
+        <dxi-location
+          style="margin-top: 1.5rem"
+          screen="xs sm"
+          [row]="4"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <div>Ruta:</div>
+      </dxi-item>
+
+      <dxi-item>
+        <dxi-location
+          screen="md lg"
+          [row]="2"
+          [col]="1"
+          [colspan]="5"
+        ></dxi-location>
+        <dxi-location
+          style="margin-top: 1rem"
+          screen="xs sm"
+          [row]="5"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <dx-tag-box
+          [items]="arrRutas"
+          [showSelectionControls]="true"
+          [maxDisplayedTags]="4"
+          displayExpr="ruta"
+          valueExpr="idRuta"
+          [dataSource]="arrRutas"
+          (onValueChanged)="seleccionarRutas($event)"
+        ></dx-tag-box>
+      </dxi-item>
+
+      <!-- CLIENTES -->
+      <dxi-item>
+        <dxi-location screen="md lg" [row]="2" [col]="7"></dxi-location>
+        <dxi-location
+          style="margin-top: 1.5rem"
+          screen="xs sm"
+          [row]="6"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <div>Cliente:</div>
+      </dxi-item>
+
+      <dxi-item>
+        <dxi-location
+          screen="md lg"
+          [row]="2"
+          [col]="8"
+          [colspan]="4"
+        ></dxi-location>
+        <dxi-location
+          style="margin-top: 1rem"
+          screen="xs sm"
+          [row]="7"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <dx-tag-box
+          [items]="arrClientes"
+          [showSelectionControls]="true"
+          [maxDisplayedTags]="4"
+          displayExpr="cliente"
+          valueExpr="idCliente"
+          [dataSource]="arrClientes"
+          (onValueChanged)="seleccionarClientes($event)"
+        ></dx-tag-box>
+      </dxi-item>
+      <!--#endregion :::: FIN ROW 3 ::::  -->
+
+      <!--#region :::: ROW 4  ::::  -->
+      <!-- CONSULTAR DATOS -->
+      <dxi-item>
+        <dxi-location
+          screen="md lg"
+          [row]="3"
+          [col]="7"
+          [colspan]="2"
+        ></dxi-location>
+        <dxi-location
+          style="margin-top: 1.4rem"
+          screen="xs sm"
+          [row]="12"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <div>
+          <dx-button
+            stylingMode="contained"
+            text="Consultar Datos"
+            icon="search"
+            type="normal"
+            [width]="190"
+            (onClick)="clickBuscar($event)"
+          >
+          </dx-button>
+        </div>
+      </dxi-item>
+
+      <!-- PROMEDIO PONDERADO -->
+      <dxi-item>
+        <dxi-location
+          screen="md lg"
+          [row]="3"
+          [col]="10"
+          [colspan]="3"
+        ></dxi-location>
+        <dxi-location
+          style="margin-top: 1.4rem"
+          screen="xs sm"
+          [row]="13"
+          [col]="0"
+          [colspan]="12"
+        ></dxi-location>
+        <div style="font-weight: bolder; margin-bottom: 10px">
+          Promedio Ponderado:
+          <span class="badge-rg">{{ promedioPonderado | percent }}</span>
+        </div>
+      </dxi-item>
+      <!--#endregion :::: FIN ROW 4 ::::  -->
+    </dx-responsive-box>
+
+    <!--#region :::: GRID ::::  -->
+    <dx-data-grid
+      #rentGer
+      id="gridContainer"
+      [dataSource]="arrRentGer"
+      [columnAutoWidth]="true"
+      [showColumnLines]="true"
+      [showBorders]="true"
+      [rowAlternationEnabled]="true"
+      (onRowPrepared)="onRowPrepared($event)"
+    >
+      <dxi-column
+        dataField="ranking"
+        caption="Ranking"
+        [fixed]="true"
+        headerCellTemplate="headerTemplate"
+      ></dxi-column>
+      <dxi-column
+        dataField="unidaNegocio"
+        caption="UDN"
+        [fixed]="true"
+        headerCellTemplate="headerTemplate"
+      ></dxi-column>
+      <dxi-column
+        dataField="ruta"
+        caption="Ruta"
+        [fixed]="true"
+        headerCellTemplate="headerTemplate"
+      ></dxi-column>
+      <dxi-column
+        dataField="kms"
+        caption="Kms."
+        [fixed]="true"
+        headerCellTemplate="headerTemplate"
+      ></dxi-column>
+      <dxi-column
+        dataField="tipoOperacion"
+        caption="Tipo Operación"
+        [fixed]="true"
+        headerCellTemplate="headerTemplate"
+      ></dxi-column>
+      <dxi-column
+        dataField="cliente"
+        caption="Cliente"
+        [fixed]="true"
+        headerCellTemplate="headerTemplate"
+      ></dxi-column>
+      <dxi-column
+        dataField="viajes"
+        caption="Liq."
+        [fixed]="true"
+        headerCellTemplate="headerTemplate"
+      ></dxi-column>
+      <dxi-column
+        dataField="rentabilidad"
+        caption="Rentabilidad"
+        alignment="right"
+        [fixed]="true"
+        format="percent"
+        headerCellTemplate="headerTemplate"
+      ></dxi-column>
+      <dxi-column
+        dataField="rentabilidadMesAnt"
+        caption="Rent. Mes Ant."
+        alignment="right"
+        [fixed]="true"
+        format="percent"
+        headerCellTemplate="headerTemplate"
+      ></dxi-column>
+      <dxi-column
+        dataField="tendencia"
+        caption="Tendencia"
+        [fixed]="true"
+        alignment="center"
+        headerCellTemplate="headerTemplate"
+        cellTemplate="diffCellTemplate"
+      ></dxi-column>
+      <dxi-column
+        caption="Detalles"
+        headerCellTemplate="headerTemplate"
+        type="buttons"
+        [width]="60"
+      >
+        <dxi-button
+          hint="Clone"
+          icon="copy"
+          [onClick]="verDetallesClick"
+        ></dxi-button>
+      </dxi-column>
+      <!-- Liquidcion 10 -->
+      <!-- <dxi-column [caption]="'L-' + liquidaciones.data[1].L10" alignment="center" [visible]="liquidaciones.data[0].L10v" headerCellTemplate="titleHeaderTemplate">
+          <dxi-column dataField="L10" caption="Liquidación" alignment="right"></dxi-column>
+          <dxi-column dataField="%L10" caption="%" alignment="center"></dxi-column>
+      </dxi-column> -->
+
+      <div *dxTemplate="let data of 'headerTemplate'">
+        <div style="font-weight: bolder; color: black">
+          {{ data.column.caption }}
+        </div>
+      </div>
+
+      <div *dxTemplate="let info of 'titleHeaderTemplate'">
+        <div style="font-weight: bolder; color: #ff5722">
+          {{ info.column.caption }}
+        </div>
+      </div>
+
+      <div
+        *dxTemplate="let d of 'diffCellTemplate'"
+        [class]="d.text >= 0 ? 'inc' : 'dec'"
+      >
+        <div class="diff"></div>
+      </div>
+
+      <dxo-export [enabled]="true"></dxo-export>
+      <dxo-paging [pageSize]="30"></dxo-paging>
+      <dxo-sorting mode="none"></dxo-sorting>
+    </dx-data-grid>
+    <!--#endregion :::: FIN GRID ::::  -->
+
+    <!--#region :::: VENTANA MODAL ::::  -->
+    <dx-popup
+      width="80%"
+      [height]="400"
+      [showTitle]="true"
+      title="Detalle de Liquidaciones"
+      [dragEnabled]="false"
+      [closeOnOutsideClick]="true"
+      [showCloseButton]="true"
+      container=".dx-viewport"
+      [(visible)]="bolModal"
+    >
+      <dxo-position at="middle" my="center" [of]="positionOf"> </dxo-position>
+      <div *dxTemplate="let data of 'content'">
+        <!--#region :::: GRID DETALLE DE LIQUIDACIONES ::::  -->
+        <dx-data-grid
+          #rentGer
+          id="gridContainer"
+          [dataSource]="arrLiquidacionesDetalle"
+          [columnAutoWidth]="true"
+          [showColumnLines]="true"
+          [showBorders]="true"
+          [rowAlternationEnabled]="true"
+          (onRowPrepared)="onRowPreparedDetalle($event)"
+        >
+          <!-- <dxi-column
+            dataField="unidadNegocio"
+            caption="UDN"
+            headerCellTemplate="headerTemplate"
+          ></dxi-column>
+          <dxi-column
+            dataField="operacion"
+            caption="Operación"
+            headerCellTemplate="headerTemplate"
+          ></dxi-column>
+          <dxi-column
+            dataField="ruta"
+            caption="Ruta"
+            headerCellTemplate="headerTemplate"
+          ></dxi-column>
+          <dxi-column
+            dataField="cliente"
+            caption="Cliente"
+            headerCellTemplate="headerTemplate"
+          ></dxi-column> -->
+          <dxi-column
+            dataField="noLiquidacion"
+            caption="Liquidación"
+            headerCellTemplate="headerTemplate"
+          ></dxi-column>
+          <dxi-column
+            dataField="inicio"
+            caption="Inicio"
+            headerCellTemplate="headerTemplate"
+            format="dd-MM-yy"
+          ></dxi-column>
+          <dxi-column
+            dataField="fin"
+            caption="Fin"
+            headerCellTemplate="headerTemplate"
+            format="dd-MM-yy"
+          ></dxi-column>
+          <dxi-column
+            dataField="viajes"
+            caption="Viajes"
+            headerCellTemplate="headerTemplate"
+            format="fixedPoint"
+          ></dxi-column>
+          <dxi-column
+            dataField="diasViaje"
+            caption="Dias"
+            headerCellTemplate="headerTemplate"
+          ></dxi-column>
+          <dxi-column
+            dataField="kms"
+            caption="Kms."
+            headerCellTemplate="headerTemplate"
+            format="fixedPoint"
+          ></dxi-column>
+          <dxi-column
+            dataField="lstDiesel"
+            caption="Lts. Diesel"
+            headerCellTemplate="headerTemplate"
+            format="fixedPoint"
+          ></dxi-column>
+          <dxi-column
+            dataField="ingresoTotal"
+            caption="Ingreso Total"
+            headerCellTemplate="headerTemplate"
+            format="$ #,##0.##;-$ #,##0.##"
+          ></dxi-column>
+          <dxi-column
+          dataField="margenUtilida"
+          caption="Margen Utilidad"
+          headerCellTemplate="headerTemplate"
+          format="$ #,##0.##;-$ #,##0.##"
+        ></dxi-column>
+        <dxi-column
+          dataField="margenUtilidaPor"
+          caption="%"
+          format="percent"
+          headerCellTemplate="headerTemplate"
+        ></dxi-column>
+          <!-- <dxi-column
+            dataField="sueldosLiquidacion"
+            caption="Sueldos Liq."
+            headerCellTemplate="headerTemplate"
+            format="$ #,##0.##;-$ #,##0.##"
+          ></dxi-column>
+          <dxi-column
+            dataField="otros"
+            caption="Otros"
+            headerCellTemplate="headerTemplate"
+            format="$ #,##0.##;-$ #,##0.##"
+          ></dxi-column>
+          <dxi-column
+            dataField="costosDirectosViaje"
+            caption="Cto.Directo"
+            headerCellTemplate="headerTemplate"
+            format="$ #,##0.##;-$ #,##0.##"
+          ></dxi-column>
+          <dxi-column
+            dataField="sueldoBase"
+            caption="Sueldo Base"
+            headerCellTemplate="headerTemplate"
+            format="$ #,##0.##;-$ #,##0.##"
+          ></dxi-column>
+          <dxi-column
+            dataField="cargaSocialNomina"
+            caption="Carga Solcial"
+            headerCellTemplate="headerTemplate"
+            format="$ #,##0.##;-$ #,##0.##"
+          ></dxi-column>
+          <dxi-column
+            dataField="fijoMtto"
+            caption="Fijo Mtto."
+            headerCellTemplate="headerTemplate"
+            format="$ #,##0.##;-$ #,##0.##"
+          ></dxi-column>
+          <dxi-column
+            dataField="varMtto"
+            caption="Var. Mtto."
+            headerCellTemplate="headerTemplate"
+            format="$ #,##0.##;-$ #,##0.##"
+          ></dxi-column>
+          <dxi-column
+            dataField="fijoTrans"
+            caption="Fijo Trans."
+            headerCellTemplate="headerTemplate"
+            format="$ #,##0.##;-$ #,##0.##"
+          ></dxi-column>
+          <dxi-column
+            dataField="varTrans"
+            caption="Var. Trans."
+            headerCellTemplate="headerTemplate"
+            format="$ #,##0.##;-$ #,##0.##"
+          ></dxi-column>
+          <dxi-column
+            dataField="costosAdicionales"
+            caption="Ctos.Ad."
+            headerCellTemplate="headerTemplate"
+            format="$ #,##0.##;-$ #,##0.##"
+          ></dxi-column> -->
+
+
+        <!-- Templates Grid -->
+          <div *dxTemplate="let data of 'headerTemplate'">
+            <div style="font-weight: bolder; color: black">
+              {{ data.column.caption }}
+            </div>
+          </div>
+
+          <div *dxTemplate="let info of 'titleHeaderTemplate'">
+            <div style="font-weight: bolder; color: #ff5722">
+              {{ info.column.caption }}
+            </div>
+          </div>
+
+          <div
+            *dxTemplate="let d of 'diffCellTemplate'"
+            [class]="d.text >= 0 ? 'inc' : 'dec'"
+          >
+            <div class="diff"></div>
+          </div>
+
+          <dxo-export [enabled]="true"></dxo-export>
+          <dxo-paging [pageSize]="30"></dxo-paging>
+          <dxo-sorting mode="none"></dxo-sorting>
+        </dx-data-grid>
+        <!--#endregion :::: FIN GRID DETALLE LIQUIDACIONES::::  -->
+      </div>
+    </dx-popup>
+    <!--#endregion :::: FIN VENTANA MODAL ::::  -->
+  </div>
+
+  <!-- LOAD PANEL -->
+  <dx-load-panel
+    #loadPanel
+    shadingColor="rgba(0,0,0,0.4)"
+    [position]="{ of: '#myDiv34' }"
+    [(visible)]="loadingVisible"
+    [showIndicator]="true"
+    [showPane]="true"
+    [shading]="true"
+    [closeOnOutsideClick]="false"
+  >
+  </dx-load-panel>
+</div>

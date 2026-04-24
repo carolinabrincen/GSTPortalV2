@@ -1,0 +1,42 @@
+export class Provisiones{
+    //Total Provisiones
+    totalProvisionER: number = 0;
+    totalProvisionEP: number = 0;
+    totalProvisionED: number = 0;
+    totalProvisionFR: number = 0;
+    totalProvisionFP: number = 0;
+    totalProvisionFD: number = 0;
+    totalProvisionMR: number = 0;
+    totalProvisionMP: number = 0;
+    totalProvisionMD: number = 0;
+    totalProvisionAR: number = 0;
+    totalProvisionAP: number = 0;
+    totalProvisionAD: number = 0;
+    totalProvisionMYR: number = 0;
+    totalProvisionMYP: number = 0;
+    totalProvisionMYD: number = 0;
+    totalProvisionJR: number = 0;
+    totalProvisionJP: number = 0;
+    totalProvisionJD: number = 0;
+    totalProvisionJLR: number = 0;
+    totalProvisionJLP: number = 0;
+    totalProvisionJLD: number = 0;
+    totalProvisionAGR: number = 0;
+    totalProvisionAGP: number = 0;
+    totalProvisionAGD: number = 0;
+    totalProvisionSR: number = 0;
+    totalProvisionSP: number = 0;
+    totalProvisionSD: number = 0;
+    totalProvisionOR: number = 0;
+    totalProvisionOP: number = 0;
+    totalProvisionOD: number = 0;
+    totalProvisionNR: number = 0;
+    totalProvisionNP: number = 0;
+    totalProvisionND: number = 0;
+    totalProvisionDR: number = 0;
+    totalProvisionDP: number = 0;
+    totalProvisionDD: number = 0;
+    totalProvisionACR: number = 0;
+    totalProvisionACP: number = 0;
+    totalProvisionACD: number = 0;
+}

@@ -1,0 +1,422 @@
+<h2 class="content-block">Liquidación Mensual</h2>
+<div [id]="'myDiv'" class="content-block dx-card responsive-paddings">
+    <br><br>
+
+        <dx-form id="form" [formData]="formFilter">
+
+            <dxi-item itemType="group" cssClass="form-group" [colCount]="3">
+                 
+                <dxi-item itemType="group">
+                    <dxi-item dataField="Fecha" editorType="dxDateBox" [editorOptions]="{ width: '100%', displayFormat:'dd/MM/yyyy' }"></dxi-item>
+                </dxi-item>
+
+                <dxi-item itemType="group" class="styleButton">
+                    <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120" (onClick)="buscarClick($event)">
+                    </dx-button>
+                </dxi-item>
+                
+            </dxi-item>
+        </dx-form>
+            <br>
+    
+    <div>
+        <br><br>
+
+        <dx-tab-panel>
+          <dxi-item title="SUELDO">
+            <br><br>
+          
+            <!--==========================Grafica==================-->
+            <dx-scroll-view class="view-wrapper-scroll">
+              <div class="view-wrapper">
+                <!-- <toolbar-analytics titleText="Sales Analysis"> </toolbar-analytics> -->
+
+                <div class="cards wide">
+                  <!-- <sales-range-card [data]="bajasMensual" [(visualRange)]="visualRange" (salesRangeChanged)="onRangeChanged($event)"></sales-range-card> -->
+                  <sales-range-grafica [groupByPeriods]="periodoUO" [data]="graficaUO" (performancePeriodChanged)="selectionGraficaUO($event)"></sales-range-grafica>
+                  <!-- <sales-performance-card [groupByPeriods]="groupByPeriods" [salesByDateAndCategory]="bajasMensual" [visualRange]="visualRange" (performancePeriodChanged)="selectionChange($event)"></sales-performance-card> -->
+                </div>
+              </div>
+            </dx-scroll-view>
+            <dx-load-panel container=".view-wrapper" [position]="{ of: '.content' }" [visible]="isLoading" [showPane]="true"></dx-load-panel>
+              <!--====================================Finish chart==========-->   
+            <br><br><br>
+               <!--==============================================PAGOS POR DIA=================================================================================-->
+        <dx-data-grid  #gridCartera id="gridContainer2" [dataSource]="liquidacion" [height]="500"[showBorders]="true" [columnAutoWidth]="true"
+        (onRowPrepared)="onRowPreparedPXD($event)" (onCellPrepared)="onCellPreparedPXD($event)">
+
+          <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+          <dxo-paging [pageSize]="100"></dxo-paging>
+          <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+          <dxo-export [enabled]="true" fileName="MES CONSULTADO" [customizeExcelCell]="customizePXD"></dxo-export>
+          <dxo-header-filter [visible]="true"></dxo-header-filter>
+
+            <dxi-column dataField="udn" caption="UdN" [groupIndex]="0"></dxi-column>
+            <dxi-column dataField="status" caption="Status" [groupIndex]="1 "></dxi-column>
+
+            <dxi-column dataField="periodo" caption="Periodo" [fixed]="true"></dxi-column>
+            <dxi-column dataField="idPersonal" caption="Cvetra" [fixed]="true"></dxi-column>
+            <dxi-column dataField="nombre" caption="Nombre" [fixed]="true"></dxi-column>
+            <dxi-column dataField="operacion" caption="Operación"></dxi-column>
+            <dxi-column dataField="alta" caption="Alta" dataType="date" format="dd/MM/yyyy"></dxi-column>
+            <dxi-column dataField="baja" caption="Baja" dataType="date" format="dd/MM/yyyy"></dxi-column>
+            <dxi-column dataField="laborado" caption="Laborado"></dxi-column>
+
+            <dxi-column caption="MESES ANTERIORES" alignment="center" cssClass="border-right2">
+            <dxi-column [caption]="titulosMes?.mes1" cssClass="border-right" >
+              
+              <dxi-column dataField="mes1sueldo" caption="Sueldo" [format]="formatValue"></dxi-column>
+               <dxi-column dataField="mes1otros" caption="Otros" [format]="formatValue"></dxi-column>
+              <dxi-column dataField="mes1" caption="Total" [format]="formatValue" cssClass="border-right" ></dxi-column>
+            </dxi-column>
+            <dxi-column  [caption]="titulosMes?.mes2" cssClass="border-right" >
+                <dxi-column dataField="mes2sueldo" caption="Sueldo" [format]="formatValue"></dxi-column>
+               <dxi-column dataField="mes2otros" caption="Otros" [format]="formatValue"></dxi-column>
+              <dxi-column dataField="mes2" caption="Total" [format]="formatValue" cssClass="border-right"></dxi-column>
+            </dxi-column>
+            <dxi-column [caption]="titulosMes?.mes3" cssClass="border-right" >
+                <dxi-column dataField="mes3sueldo" caption="Sueldo" [format]="formatValue"></dxi-column>
+                <dxi-column dataField="mes3otros" caption="Otros" [format]="formatValue"></dxi-column>
+                <dxi-column dataField="mes3" caption="Total" [format]="formatValue"cssClass="border-right" ></dxi-column>
+            </dxi-column>
+            </dxi-column>
+            <dxi-column dataField="promedioMensual" caption="Promedio" cssClass="border-right" [format]="formatValue"></dxi-column>
+
+            <!-- <dxi-column caption="LIQUIDADO" alignment="center">
+              <dxi-column dataField="semana1" caption="Semana 1" [format]="formatValue"></dxi-column>
+              <dxi-column dataField="semana2" caption="Semana 2" [format]="formatValue"></dxi-column>
+              <dxi-column dataField="semana3" caption="Semana 3" [format]="formatValue" ></dxi-column>
+              <dxi-column dataField="semana4" caption="Semana 4" [format]="formatValue"></dxi-column>
+              <dxi-column dataField="semana5" caption="Semana 5" [format]="formatValue"></dxi-column> -->
+            <!-- </dxi-column> -->
+
+            <!-- <dxi-column caption="NO LIQUIDADO" alignment="center">
+              <dxi-column dataField="kmsCargados" caption="KMS Cargados"></dxi-column>
+              <dxi-column dataField="kmsVacios" caption="KMS Vacios"></dxi-column> -->
+            <!-- </dxi-column> -->
+
+            <dxi-column [caption]="titulosMes?.mesActual" alignment="center" cssClass="border-right">
+              <dxi-column  caption="Liquidado" cssClass="border-right" >
+                   <dxi-column dataField="liquidadoSueldo" caption="Sueldo" [format]="formatValue"></dxi-column> 
+                   <dxi-column dataField="liquidadoOtros" caption="Otros" [format]="formatValue"></dxi-column> 
+                  <dxi-column dataField="liquidado" caption="Total" [format]="formatValue" cssClass="border-right" ></dxi-column> 
+              </dxi-column> 
+              <dxi-column dataField="noLiquidado" caption="No Liquidado" cssClass="border-right" [format]="formatValue"></dxi-column>            
+            </dxi-column>  
+            <dxi-column dataField="total" caption="Total" cssClass="border-right" [format]="formatValue"></dxi-column>
+            <dxi-column caption="Ver" cellTemplate="verTotal" alignment="center"></dxi-column>
+
+            <dxi-column caption="OBSERVACIONES" alignment="center">
+              <dxi-column dataField="observaciones" caption="Observaciones" [width]="400"></dxi-column>
+              <dxi-column caption="Agregar" cellTemplate="obsevaciones" alignment="center" [width]="100"></dxi-column>
+              <dxi-column caption="Ver" cellTemplate="VerObsevaciones" alignment="center"></dxi-column>
+            </dxi-column>
+            <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+
+            <div *dxTemplate="let data of 'verTotal'">
+              <dx-button icon="search" stylingMode="outlined" type="danger" (onClick)="verTotal(data)"></dx-button>
+            </div>
+
+            <div *dxTemplate="let data of 'obsevaciones'">
+              <dx-button icon="comment" stylingMode="outlined" type="danger" (onClick)="agregarObs(data)"></dx-button>
+            </div>
+
+            <div *dxTemplate="let data of 'VerObsevaciones'">
+              <dx-button icon="comment" stylingMode="outlined" type="danger" (onClick)="VerObs(data)"></dx-button>
+            </div>
+
+          <dxo-summary>
+            <dxi-group-item column="mes1sueldo" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="mes1otros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="mes1" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="mes2sueldo" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="mes2otros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="mes2" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="mes3sueldo" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="mes3otros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="mes3" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="promedioMensual" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+
+            <dxi-group-item column="semana1" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="semana2" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="semana3" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="semana4" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="semana5" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="liquidadoSueldo" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="liquidadoOtros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="liquidado" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="noLiquidado" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+            <dxi-group-item column="total" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+
+
+            <dxi-total-item column="mes1sueldo" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="mes1otros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="mes1" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="mes2sueldo" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="mes2otros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="mes2" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="mes3sueldo" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="mes3otros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="mes3" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="promedioMensual" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+
+            <dxi-total-item column="semana1" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="semana2" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="semana3" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="semana4" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="semana5" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="liquidadoSueldo" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="liquidadoOtros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="liquidado" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="noLiquidado" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="total" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+          </dxo-summary>
+
+        </dx-data-grid>
+
+        <br><br>
+
+          </dxi-item>
+          <dxi-item title="BAJAS">
+            <!--==========================Grafica==================-->
+            <dx-scroll-view class="view-wrapper-scroll">
+              <div class="view-wrapper">
+                <!-- <toolbar-analytics titleText="Sales Analysis"> </toolbar-analytics> -->
+
+                <div class="cards wide">
+                  <!-- <sales-range-card [data]="bajasMensual" [(visualRange)]="visualRange" (salesRangeChanged)="onRangeChanged($event)"></sales-range-card> -->
+                  <sales-by-range-card [groupByPeriods]="periodoMA" [groupByUdnMen]="periodoUdnMen" [itemPer]="itemPeriodo" [itemUdnM]="itemUdnMen" [itemUdnA]="itemUdnAanu" [groupByUdnAnu]="periodoUdnAnu" [data]="bajasMA" (performancePeriodChanged)="selectionMotivosB($event)" (performanceUdnMenChanged)="selectionUdnMen($event)" (performanceUdnAnuChanged)="selectionUdnAnu($event)"></sales-by-range-card>
+                  <!-- <sales-performance-card [groupByPeriods]="groupByPeriods" [salesByDateAndCategory]="bajasMensual" [visualRange]="visualRange" (performancePeriodChanged)="selectionChange($event)"></sales-performance-card> -->
+                </div>
+              </div>
+            </dx-scroll-view>
+            <dx-load-panel container=".view-wrapper" [position]="{ of: '.content' }" [visible]="isLoading" [showPane]="true"></dx-load-panel>
+              <!--====================================Finish chart==========-->     
+              <br><br><br>
+                <dx-data-grid #resmen id="gridContainer1" [dataSource]="bajasMA" [height]="400" [showBorders]="true" [columnAutoWidth]="true"
+                  (onRowPrepared)="onRowPreparedAnu($event)" (onCellPrepared)="onCellPreparedAnu($event)">
+                    <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                    <dxo-paging [pageSize]="100"></dxo-paging>
+                    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                    <dxo-export [enabled]="true" fileName="Bajas Anual"></dxo-export>
+                    <dxi-column dataField="udn" caption="" [groupIndex]="0"></dxi-column>
+                    <dxi-column dataField="motivo" caption="Motivo"></dxi-column>
+                    <dxi-column dataField="bajas" caption="Bajas"></dxi-column>
+                    <dxi-column dataField="porcentaje" caption="Porcentaje" format="percent"></dxi-column>
+                    <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+
+                      <dxo-summary [calculateCustomSummary]="calcularPorcentajes"> 
+                            <dxi-total-item column="bajas" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="porcentaje" summaryType="sum" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
+                        </dxo-summary>
+
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+                </dx-data-grid>
+                      <!-- <dx-box direction="col" width="100%" [height]="620">
+            <dxi-item [ratio]="3" [baseSize]="0">
+                <dx-box direction="row" width="100%" [height]="125">
+
+                    <dxi-item class="rect demo-dark" [ratio]="4">
+                        <dx-data-grid #resmen id="gridContainer1" [dataSource]="bajasMem" [height]="400" [showBorders]="true" [columnAutoWidth]="true"
+                        (onRowPrepared)="onRowPreparedMen($event)" (onCellPrepared)="onCellPreparedMen($event)">
+                            
+                            <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                            <dxo-paging [pageSize]="100"></dxo-paging>
+                            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                            <dxo-export [enabled]="true" fileName="Bajas Mensual"></dxo-export>
+
+                            <dxi-column dataField="udn" caption="" [groupIndex]="0"></dxi-column>
+                            <dxi-column dataField="Motivo" caption="Motivo"></dxi-column>
+                            <dxi-column dataField="bajas" caption="Bajas"></dxi-column>
+                            <dxi-column dataField="porcentaje" caption="Porcentaje" format="percent"></dxi-column>
+                            <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+                           
+
+                            <dxo-group-panel [visible]="false"></dxo-group-panel>
+                            <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+                        </dx-data-grid>
+                        
+                    </dxi-item>
+
+                    <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+                    <dxi-item class="rect demo-dark" [ratio]="4">
+
+                        <dx-data-grid #resmen id="gridContainer1" [dataSource]="bajasAnu" [height]="400" [showBorders]="true" [columnAutoWidth]="true"
+                        (onRowPrepared)="onRowPreparedAnu($event)" (onCellPrepared)="onCellPreparedAnu($event)">
+                            
+                            <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                            <dxo-paging [pageSize]="100"></dxo-paging>
+                            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                            <dxo-export [enabled]="true" fileName="Bajas Anual"></dxo-export>
+
+                            <dxi-column dataField="udn" caption="" [groupIndex]="0"></dxi-column>
+                            <dxi-column dataField="Motivo" caption="Motivo"></dxi-column>
+                            <dxi-column dataField="bajas" caption="Bajas"></dxi-column>
+                            <dxi-column dataField="porcentaje" caption="Porcentaje" format="percent"></dxi-column>
+                            <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+                    
+
+                            <dxo-group-panel [visible]="false"></dxo-group-panel>
+                            <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+                        </dx-data-grid>
+                    </dxi-item>
+
+                </dx-box>
+            </dxi-item>
+        </dx-box> -->
+        <br><br>
+          </dxi-item>
+        </dx-tab-panel>
+
+
+        <br><br><br>
+       
+    </div>
+
+        <!--=============== MODAL Ver Total===============================-->
+     <dx-popup width="100%" height="100%" [showTitle]="true" title="DETALLES OPERADOR" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modTotal">
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+                
+              <dx-tab-panel>
+                <dxi-item title="LIQUIDACIONES PAGADAS">
+                  <dx-data-grid #LiquidacionesP id="LiquidacionesP" [dataSource]="LiqPag" [height]="450" [showBorders]="true" [columnAutoWidth]="true"
+                  (onRowPrepared)="onRowPreparedLP($event)" (onCellPrepared)="onCellPreparedLP($event)">
+                      <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                      <dxo-paging [pageSize]="100"></dxo-paging>
+                      <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                      <dxo-export [enabled]="true" fileName="LIQUIDACIONES PAGADAS" [customizeExcelCell]="customizeLP"></dxo-export>
+                      
+                      <dxi-column dataField="semana" caption="Semana" [groupIndex]="0"></dxi-column>
+                      <!-- <dxi-column dataField="semana" caption="Semana"></dxi-column> -->
+                      <dxi-column dataField="fecha" caption="Fecha" alignment="center" dataType="date" format="dd/MM/yyyy"></dxi-column> 
+                      <dxi-column dataField="concepto" caption="Concepto" alignment="center" [format]="formatValue"></dxi-column>
+                      <dxi-column dataField="total" caption="Total" alignment="center" [format]="formatValue"></dxi-column>
+                      <!-- <dxi-column dataField="" caption="" [width]="30"></dxi-column> -->
+                    
+                      <!--*ngIf="groupValue !== '0.- INDICADORES' "  -->
+                      <dxo-summary [calculateCustomSummary]="calcularPorcentajes">
+                        <!-- <dxi-group-item column="semana" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item> -->
+                        <dxi-group-item column="total" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true" [alignByColumn]="true"></dxi-group-item>
+                        <!-- <dxi-total-item column="semana" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item> -->
+                        <dxi-total-item column="total" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+                      </dxo-summary>
+                  </dx-data-grid>
+                </dxi-item>
+                  
+                <dxi-item title="VIAJES PENDIENTES">
+                  <dx-data-grid #viajesPDL id="viajesPDL" [dataSource]="viajesPenLiq" [height]="450" [showBorders]="true" [columnAutoWidth]="true"
+                  (onRowPrepared)="onRowPreparedVPL($event)" (onCellPrepared)="onCellPreparedVPL($event)">
+                      <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                      <dxo-paging [pageSize]="100"></dxo-paging>
+                      <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+
+                      <dxo-export [enabled]="true" fileName="VIAJES PENDIENTES DE LIQUIDAR" [customizeExcelCell]="customizeVPL"></dxo-export>
+                      
+                      <dxi-column dataField="udn" caption="" [groupIndex]="0"></dxi-column>
+
+                      <dxi-column dataField="noViaje" caption="No Viaje"></dxi-column> 
+                      <dxi-column dataField="despacho" caption="Despacho" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                      <dxi-column dataField="operacion" caption="Operación"></dxi-column>
+                      <dxi-column dataField="tipo" caption="Tipo"></dxi-column>
+                      <dxi-column dataField="kms" caption="Kms"></dxi-column>
+                      <dxi-column dataField="pagoCargado" caption="Cargado" [format]="formatValue"></dxi-column>
+                      <dxi-column dataField="pagoVacio" caption="Vacío" [format]="formatValue"></dxi-column>
+                      <dxi-column dataField="pagoXTonelada" caption="Por Tonelada" [format]="formatValue"></dxi-column>
+                      <dxi-column dataField="viaticoXViaje" caption="Viatico" [format]="formatValue"></dxi-column>
+                      <dxi-column dataField="maniobraAutocarga" caption="Man. Autocarga" [format]="formatValue"></dxi-column>
+                      <dxi-column dataField="maniobraFull" caption="Man. Full" [format]="formatValue"></dxi-column>
+                      <dxi-column dataField="total" caption="Total" [format]="formatValue"></dxi-column>
+                      <dxi-column dataField="" caption="" [width]="30"></dxi-column>
+
+                    
+
+                      <!--*ngIf="groupValue !== '0.- INDICADORES' "  -->
+                      <dxo-summary [calculateCustomSummary]="calcularPorcentajes">
+                        <dxi-total-item column="pagoCargado" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+                        <dxi-total-item column="pagoVacio" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+                        <dxi-total-item column="viaticoXViaje" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+                        <dxi-total-item column="total" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+
+                      </dxo-summary>
+
+                  </dx-data-grid>
+                </dxi-item>
+
+
+                
+              </dx-tab-panel>
+
+            </dx-scroll-view>
+        </div>
+    </dx-popup>
+
+    <!--=============== MODAL Crear Observaciones===============================-->
+     <dx-popup width="35%" height="35%" [showTitle]="true" title="Observación" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modObservaciones">
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+
+              <form action="" (submit)="guardarObservacion($event)">
+                <dx-form id="form" [(formData)]="formObs" validationGroup="customerData" [readOnly]="bolFormSoloLectura">
+                  
+
+                    <dxi-item dataField="observaciones" editorType="dxTextArea" [colSpan]="3">
+                            <dxi-validation-rule style="margin-top: 5rem" type="required" message="campo requerido"></dxi-validation-rule>
+                    </dxi-item>
+                  <dxi-item itemType="group" [colSpan]="2" [colCount]="2">
+                    <dxi-item itemType="button" horizontalAlignment="right" [buttonOptions]="buttonOptionsCancelar"></dxi-item> 
+                    <dxi-item itemType="button" horizontalAlignment="left" [buttonOptions]="buttonOptions"></dxi-item>
+                  </dxi-item>
+              
+                </dx-form>
+              </form>
+
+            </dx-scroll-view>
+        </div>
+    </dx-popup>
+
+    <!--=============== MODAL Ver Observaciones===============================-->
+     <dx-popup width="100%" height="100%" [showTitle]="true" title="Observaciones" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modVerObs">
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+                <br>
+                <!-- <div id="exportContainer">
+                  <dx-button text="EXPORTAR TODO" icon="xlsxfile" (onClick)="exportGrids($event)"></dx-button>
+                </div>
+                <br><br> -->
+            <!-- [customizeExportData]="customizeExportData" -->
+                <dx-data-grid #gridDetalleI id="gridContainer2" [dataSource]="observaciones" [height]="450" [showBorders]="true" [columnAutoWidth]="true"
+                 (onRowPrepared)="onRowPreparedObs($event)" (onCellPrepared)="onCellPreparedObs($event)">
+                    <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                    <dxo-paging [pageSize]="100"></dxo-paging>
+                    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+
+                    <dxo-export [enabled]="true" fileName="Observaciones"></dxo-export>
+                    
+                    <dxi-column dataField="periodo" caption="" [groupIndex]="0"></dxi-column>
+                    <dxi-column dataField="idusuario" caption="ID Usuario"></dxi-column> 
+                    <dxi-column dataField="fecha" caption="Fecha" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                    <dxi-column dataField="observaciones" caption="Observaciones"></dxi-column>
+                   
+
+                    <!--*ngIf="groupValue !== '0.- INDICADORES' "  -->
+                    <dxo-summary [calculateCustomSummary]="calcularPorcentajes">
+                
+                    </dxo-summary>
+
+                </dx-data-grid>
+            </dx-scroll-view>
+        </div>
+    </dx-popup>
+    
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+
+
+    <dx-toast [(visible)]="isVisible" type="info" message="Seleccione Año y Mes">
+        <dxo-position my="top" at="right" of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>

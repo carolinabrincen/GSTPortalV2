@@ -1,0 +1,176 @@
+<h2 class="content-block">Pagos</h2>
+<div [id]="'myDiv'" class="content-block dx-card responsive-paddings">
+    <br><br>
+
+        <dx-form id="form" [formData]="formFilter">
+
+            <dxi-item itemType="group" cssClass="form-group" [colCount]="3">
+                 
+                <dxi-item itemType="group">
+                    <dxi-item dataField="Fecha" editorType="dxDateBox" [editorOptions]="{ width: '100%', displayFormat:'dd/MM/yyyy' }"></dxi-item>
+                </dxi-item>
+
+                <dxi-item itemType="group" class="styleButton">
+                    <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120" (onClick)="buscarClick($event)">
+                    </dx-button>
+                </dxi-item>
+                
+            </dxi-item>
+        </dx-form>
+            <br>
+    
+    <div>
+        <br><br>
+        <!--==========================Bar and Line Chart PAGOS X MES==================-->
+        <!-- <dx-chart id="chart" [dataSource]="graficaPXMesResumen">
+
+            <dxi-series argumentField="dia" valueField="pagado" name="Pagos" type="bar" palette="Soft Pastel">
+                <dxo-label [visible]="true" position="outside" [rotationAngle]="-90"
+                backgroundColor="transparent" [verticalOffset]="15" [format]="formatValue">
+                    <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                </dxo-label>
+            
+            </dxi-series>
+
+            <dxo-argument-axis [visualRange]="chart_visualRange" [tickInterval]="1"></dxo-argument-axis>
+
+            <dxo-title text="Pagos">
+            </dxo-title>
+
+
+            <dxo-export [enabled]="true"></dxo-export>
+        </dx-chart> -->
+        <!--====================================Finish chart==========-->          
+
+        <!-- <br><br><br> -->
+
+        <!--==========================Bar and Line Chart PAGOS X CLASIFICADO==================-->
+        <dx-chart id="chart" title="Pagos por Mes" [dataSource]="graficaPXClasificado">
+            <dxi-series valueField="vencido" name="Vencido" color="#ed7d2a"></dxi-series>
+            <dxi-series valueField="corriente" name="Corriente" color="#6db467"></dxi-series>
+
+            <dxi-series valueField="total" name="Total" type="line" color="#65686a" [width]=".5">
+              <dxo-label [visible]="true" position="outside" [rotationAngle]="-90"
+              backgroundColor="transparent" [verticalOffset]="15" [format]="formatValue">
+                  <dxo-font size="12" color="black" weight="bold"></dxo-font>
+              </dxo-label>
+
+            </dxi-series>
+
+            <dxi-value-axis position="right">
+              <dxo-title text=""></dxo-title>
+            </dxi-value-axis>
+            
+            <dxo-argument-axis [visualRange]="chart_visualRange" [tickInterval]="1"></dxo-argument-axis>
+
+            <dxo-common-series-settings argumentField="dia" type="stackedBar">
+            </dxo-common-series-settings>
+            <dxo-legend
+              verticalAlignment="bottom"
+              horizontalAlignment="center"
+              itemTextPosition="top"
+            >
+            </dxo-legend>
+            <dxo-export [enabled]="true"></dxo-export>
+            <dxo-tooltip
+              [enabled]="true"
+              location="edge"
+              [customizeTooltip]="customizeTooltip"
+            >
+            </dxo-tooltip>
+          </dx-chart>
+          <!--====================================Finish chart==========-->     
+          <br><br><br>
+
+        <!--==============================================PAGOS POR DIA=================================================================================-->
+        <h3>Pagos Por Día</h3>
+        <dx-data-grid  #gridCartera id="gridContainer2" [dataSource]="pagosXDia" [height]="500"[showBorders]="true" [columnAutoWidth]="true"
+        (onRowPrepared)="onRowPreparedPXD($event)" (onCellPrepared)="onCellPreparedPXD($event)">
+
+          <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+          <dxo-paging [pageSize]="100"></dxo-paging>
+          <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+          <dxo-export [enabled]="true" fileName="PAGOS POR DIA"></dxo-export>
+            
+            <dxi-column dataField="cliente" caption="Cliente"></dxi-column>
+            <dxi-column dataField="pagado" caption="Pagado" [format]="formatValue"></dxi-column>
+            <dxi-column dataField="vencido" caption="Vencido" [format]="formatValue"></dxi-column>
+            <dxi-column dataField="corriente" caption="Corriente" [format]="formatValue"></dxi-column>
+            <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+
+          <dxo-summary>
+            <dxi-total-item column="pagado" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="vencido" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="corriente" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+          </dxo-summary>
+
+        </dx-data-grid>
+        <br><br>
+
+        <!--==============================================PAGOS POR DIA=================================================================================-->
+        <h3>Pagos Por Mes</h3>
+        <dx-data-grid  #gridCartera id="gridContainer2" [dataSource]="pagosXMes" [height]="500"[showBorders]="true" [columnAutoWidth]="true"
+        (onRowPrepared)="onRowPreparedPXM($event)" (onCellPrepared)="onCellPreparedPXM($event)">
+
+          <!-- <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling> -->
+          <dxo-paging [pageSize]="10" ></dxo-paging>
+          <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+          <dxo-export [enabled]="true" fileName="PAGOS POR MES"></dxo-export>
+            
+            <dxi-column dataField="cliente" caption="Cliente"></dxi-column>
+            <dxi-column caption="Pagos">
+                <dxi-column dataField="pagado" caption="PagoMes" [format]="formatValue"></dxi-column>
+                <dxi-column dataField="pagadoVencido" caption="PagoVencido" [format]="formatValue"></dxi-column>
+                <dxi-column dataField="porVencido" caption="%" format="percent"></dxi-column>
+                <dxi-column dataField="pagadoCorriente" caption="PagoCorriente" [format]="formatValue"></dxi-column>
+                <dxi-column dataField="porCorriente" caption="%" format="percent"></dxi-column>
+            </dxi-column>
+
+            <dxi-column dataField="" caption="Cartera">
+                <dxi-column dataField="sinCarta" caption="SinCarta" [format]="formatValue"></dxi-column>
+                <dxi-column dataField="corriente" caption="Corriente" [format]="formatValue"></dxi-column>
+                <dxi-column dataField="de1a30" caption="Día1a30" [format]="formatValue"></dxi-column>
+                <dxi-column dataField="dea31a60" caption="Día31a60" [format]="formatValue"></dxi-column>
+                <dxi-column dataField="dea61a60" caption="Día61a90" [format]="formatValue"></dxi-column>
+                <dxi-column dataField="masDe90" caption="MasDe90" [format]="formatValue"></dxi-column>
+                <dxi-column dataField="total" caption="Total" [format]="formatValue"></dxi-column>
+            </dxi-column>
+            <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+           
+
+          <dxo-summary [calculateCustomSummary]="calcularPorcentajes">
+            <dxi-total-item column="pagado" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="pagadoVencido" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+
+            <dxi-total-item showInColumn="porVencido" name="vencidoPor" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
+
+            <dxi-total-item column="pagadoCorriente" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+
+            <dxi-total-item showInColumn="porCorriente" name="corrientePor" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
+
+            <dxi-total-item column="sinCarta" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="corriente" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="de1a30" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="dea31a60" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="dea61a60" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="masDe90" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+            <dxi-total-item column="total" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" ></dxi-total-item>
+          </dxo-summary>
+
+        </dx-data-grid>
+
+        <br><br>
+    </div>
+
+
+    
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+
+
+    <dx-toast [(visible)]="isVisible" type="info" message="Seleccione Año y Mes">
+        <dxo-position my="top" at="right" of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>

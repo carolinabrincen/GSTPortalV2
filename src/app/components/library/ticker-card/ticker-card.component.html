@@ -1,0 +1,44 @@
+<div class="ticker">
+  <div *ngIf="titleText == 'Inicio'" class="icon-wrapper" [class]="getIconClass()" style="background-color: rgb(189, 215, 238);">
+    <i [class]="'dx-icon dx-icon-' + icon"></i>
+  </div>
+  <div *ngIf="titleText == 'Altas'" class="icon-wrapper" [class]="getIconClass()" style="background-color: rgb(198, 224, 180);">
+    <i [class]="'dx-icon dx-icon-' + icon"></i>
+  </div>
+  <div *ngIf="titleText == 'Bajas'" class="icon-wrapper" [class]="getIconClass()" style="background-color: rgb(248, 203, 173);">
+    <i [class]="'dx-icon dx-icon-' + icon"></i>
+  </div>
+  <div *ngIf="titleText == 'Fin'" class="icon-wrapper" [class]="getIconClass()" style="background-color: rgb(217, 217, 217);">
+    <i [class]="'dx-icon dx-icon-' + icon"></i>
+  </div>
+  <div class="middle">
+    <div class="title">
+      {{ titleText }}
+    </div>
+    <div class="total">
+      {{
+      total === null
+        ? (getTotal | apply: data | currency: 'USD':'$':'1.0-0')
+        : total
+      }}
+    </div>
+  </div>
+  <div *ngIf="percentage == 0 " class="percentage" style="background-color: rgb(99, 171, 212);" >
+  <!-- <div *ngIf="percentage !== 0" class="percentage" [class]="percentage > 0 ? 'positive': 'negative'"> -->
+    <div [class]="'dx-icon-'+ (percentage > 0 ? 'spinup' : 'spindown')"></div>
+    <i class="value"></i>
+    <span >{{ abs(percentage) }}%</span>
+  </div>
+  <div *ngIf="percentage < 0 " class="percentage" style="background-color: rgb(194, 122, 122);" >
+  <!-- <div *ngIf="percentage !== 0" class="percentage" [class]="percentage > 0 ? 'positive': 'negative'"> -->
+    <div [class]="'dx-icon-'+ (percentage > 0 ? 'spinup' : 'spindown')"></div>
+    <i class="value"></i>
+    <span >{{ abs(percentage) }}%</span>
+  </div>
+   <div *ngIf="percentage > 0 " class="percentage" style="background-color: rgb(142, 212, 142);" >
+  <!-- <div *ngIf="percentage !== 0" class="percentage" [class]="percentage > 0 ? 'positive': 'negative'"> -->
+    <div [class]="'dx-icon-'+ (percentage > 0 ? 'spinup' : 'spindown')"></div>
+    <i class="value"></i>
+    <span >{{ abs(percentage) }}%</span>
+  </div>
+</div>

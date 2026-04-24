@@ -1,0 +1,113 @@
+<h2 class="content-block">Indicadores</h2>
+
+<div class="content-block dx-card responsive-paddings padding-10">
+    <dx-form id="form" [formData]="employee">
+        <dxi-item itemType="group" cssClass="first-group" [colCount]="4">
+            <dxi-item itemType="group" [colSpan]="2">
+                <div class="dx-field">
+                    <div class="dx-field-label margen-25">Unidad de negocio</div>
+                    <div class="dx-field-value margen-75">
+                        <dx-drop-down-box [(value)]="treeBoxValue" valueExpr="ID" displayExpr="name" placeholder="Selecciona un valor..." [showClearButton]="true" [dataSource]="treeDataSource" (onValueChanged)="onDropDownBoxValueChanged($event)">
+                            <div *dxTemplate="let data of 'content'">
+                                <dx-tree-view [dataSource]="treeDataSource" dataStructure="plain" keyExpr="ID" parentIdExpr="categoryId" selectionMode="multiple" showCheckBoxesMode="normal" [selectNodesRecursive]="false" displayExpr="name" [selectByClick]="true" (onContentReady)="onTreeViewReady($event)"
+                                    (onItemSelectionChanged)="onTreeViewSelectionChanged($event)">
+                                </dx-tree-view>
+                            </div>
+                        </dx-drop-down-box>
+                    </div>
+                </div>
+            </dxi-item>
+
+
+            <dxi-item itemType="group" [colSpan]="2">
+                <div class="dx-field">
+                    <div class="dx-field-label margen-25">Tipo de operación</div>
+                    <div class="dx-field-value margen-75">
+                        <dx-drop-down-box [(value)]="treeTipoOperacionBoxValue" valueExpr="ID" displayExpr="name" placeholder="Selecciona un valor..." [showClearButton]="true" [dataSource]="treeTipoOperacionDataSource" (onValueChanged)="on_TO_DropDownBoxValueChanged($event)">
+                            <div *dxTemplate="let data of 'content'">
+                                <dx-tree-view [dataSource]="treeTipoOperacionDataSource" dataStructure="plain" keyExpr="ID" parentIdExpr="categoryId" selectionMode="multiple" showCheckBoxesMode="normal" [selectNodesRecursive]="false" displayExpr="name" [selectByClick]="true" (onContentReady)="on_TO_TreeViewReady($event)"
+                                    (onItemSelectionChanged)="on_TO_TreeViewSelectionChanged($event)">
+                                </dx-tree-view>
+                            </div>
+                        </dx-drop-down-box>
+                    </div>
+                </div>
+            </dxi-item>
+
+            <dxi-item itemType="group" [colSpan]="2">
+                <div class="dx-field">
+                    <div class="dx-field-label margen-25">Mes</div>
+                    <div class="dx-field-value margen-75">
+                        <dx-select-box [items]="positions"></dx-select-box>
+                    </div>
+                </div>
+            </dxi-item>
+
+            <dxi-item itemType="group" [colSpan]="2">
+                <div class="dx-field">
+                    <div class="dx-field-label">Año</div>
+                    <div class="dx-field-value">
+                        <dx-select-box [items]="anio"></dx-select-box>
+                    </div>
+                    <div class="dx-field-value">
+                        <dx-button text="Buscar" icon="find" class="send"> </dx-button>
+                    </div>
+
+                </div>
+            </dxi-item>
+
+        </dxi-item>
+        <dxi-item itemType="group" [colCount]="1">
+            <dxi-item itemType="tabbed">
+                <dxo-tab-panel-options [deferRendering]="false">
+                </dxo-tab-panel-options>
+                <dxi-tab title="Resumen">
+                    <dx-data-grid id="gridContainer" [dataSource]="customers" keyExpr="ID" [showBorders]="true">
+                        <dxo-export [enabled]="true"></dxo-export>
+                        <dxo-paging [pageSize]="30"></dxo-paging>
+                        <dxi-column dataField="CONCEPTO" cellTemplate="cellTemplate" [allowSorting]="false"></dxi-column>
+                        <dxi-column dataField="REAL" caption="REAL" cellTemplate="cellTemplateSize" alignment="center" [allowSorting]="false"></dxi-column>
+                        <dxi-column dataField="PRESUPUESTO" cellTemplate="cellTemplateSize" alignment="center" [allowSorting]="false"></dxi-column>
+                        <dxi-column caption="DESVIACION" cellTemplate="cellTemplateSize" alignment="center" [allowSorting]="false">
+                            <dxi-column dataField="DESVIACION" cellTemplate="cellTemplateSize" format="fixedPoint" alignment="center" [allowSorting]="false"></dxi-column>
+                            <dxi-column dataField="PORCENTAJE" cellTemplate="cellTemplateSize" format="percent" alignment="center" [allowSorting]="false"></dxi-column>
+                        </dxi-column>
+                        <dxi-column dataField="GRUPO" [groupIndex]="0" [allowSorting]="false"></dxi-column>
+
+
+                        <div *dxTemplate="let cell of 'cellTemplate'">
+                            <div style="font-weight: bold; font-size: medium;">{{cell.text}}</div>
+                        </div>
+                        <div *dxTemplate="let cell of 'cellTemplateSize'">
+                            <div style="font-size: medium; ">{{cell.text}}</div>
+                        </div>
+                        <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+                    </dx-data-grid>
+                </dxi-tab>
+                <dxi-tab title="Detalle">
+                    <dx-data-grid id="gridContainer" [dataSource]="employees" keyExpr="ID" [showBorders]="true">
+                        <dxi-column dataField="Prefix" [width]="70" caption="Title"></dxi-column>
+                        <dxi-column dataField="FirstName"></dxi-column>
+                        <dxi-column dataField="LastName"></dxi-column>
+                        <dxi-column dataField="Position" [width]="170"></dxi-column>
+                        <dxi-column dataField="State" [width]="125"></dxi-column>
+                        <dxi-column dataField="BirthDate" dataType="date"></dxi-column>
+                        <dxo-master-detail [enabled]="true" template="detail"></dxo-master-detail>
+                        <div *dxTemplate="let employee of 'detail'">
+                            <div class="master-detail-caption">{{ employee.data.FirstName + " " + employee.data.LastName + "'s Tasks:" }}
+                            </div>
+                            <!-- <detail-grid [key]="employee.key"></detail-grid> -->
+                        </div>
+                    </dx-data-grid>
+
+                </dxi-tab>
+            </dxi-item>
+        </dxi-item>
+
+
+
+    </dx-form>
+
+
+
+</div>

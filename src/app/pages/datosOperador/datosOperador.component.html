@@ -1,0 +1,134 @@
+<h2 class="content-block">Datos Operador</h2>
+<div [id]="'myDiv'" class="content-block dx-card responsive-paddings">
+   
+    <dx-responsive-box>
+                <dxi-col [ratio]=".10"></dxi-col>
+                <dxi-col [ratio]=".40"></dxi-col>
+                <dxi-col [ratio]="1"></dxi-col>
+                <dxi-col [ratio]=".25"></dxi-col>
+
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>UdN:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="1"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="udn" displayExpr="nombre" valueExpr="idArea" (onValueChanged)="selectUdn($event)">
+                    </dx-select-box>
+                </dxi-item>
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="3"></dxi-location>
+                    <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                    <div>
+                        <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120" (onClick)="buscarClick($event)">
+                        </dx-button>
+                    </div>
+                </dxi-item>
+
+            </dx-responsive-box>
+    <div>
+        <br>
+        <dx-data-grid #DM id="gridContainer1" [dataSource]="datosOperador" [height]="570" [showBorders]="true" [columnAutoWidth]="true"
+        (onRowPrepared)="onRowPrepared($event)" (onCellPrepared)="onCellPrepared($event)">
+        
+            <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+            <dxo-paging [pageSize]="100"></dxo-paging>
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxo-export [enabled]="true" fileName="Datos Operador" [customizeExcelCell]="customizeOp"></dxo-export>
+            <dxo-header-filter [visible]="true"></dxo-header-filter>
+            <dxo-sorting mode="multiple"></dxo-sorting>
+
+            <dxi-column dataField="udn" caption="UdN" [groupIndex]="0"></dxi-column>
+            <!-- <dxi-column dataField="puesto" caption="Puesto" [fixed]="true"></dxi-column> -->
+            <dxi-column dataField="cvetra" caption="Clave" [fixed]="true"></dxi-column>
+            <dxi-column dataField="nombre" caption="Operador"></dxi-column>
+            <dxi-column dataField="tel1" caption="Tel1"></dxi-column>
+            <dxi-column dataField="tel2" caption="Tel2"></dxi-column>
+            <dxi-column dataField="tel3" caption="Tel3"></dxi-column>
+            <dxi-column dataField="alta" caption="Alta" dataType="date" format="dd/MM/yyyy"></dxi-column>
+            <dxi-column dataField="antiguedad" caption="Antiguedad" alignment="right"></dxi-column>
+            <dxi-column dataField="ine" caption="INE"></dxi-column>
+            <dxi-column dataField="tieneINE" caption="Doc"></dxi-column>
+            <dxi-column dataField="" caption="Ver" [fixed]="false" cellTemplate="openPDF" [width]="100"></dxi-column>
+            <dxi-column dataField="curp" caption="CURP"></dxi-column>
+            <dxi-column dataField="rfc" caption="RFC"></dxi-column>
+            <dxi-column caption="Apto. Medico" alignment="center">
+                <dxi-column dataField="apto" caption="Doc."></dxi-column>
+                <dxi-column dataField="vigApto" caption="Vigencia" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                <dxi-column dataField="" caption="Ver" [fixed]="false" cellTemplate="openAptoPDF" [width]="100"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Licencia" alignment="center">
+                <dxi-column dataField="licencia" caption="Doc."></dxi-column>
+                <dxi-column dataField="licNum" caption="Número"></dxi-column>
+                <dxi-column dataField="licLIS" caption="Venc. LIS" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                <dxi-column dataField="licNOM" caption="Venc. NOM" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                <dxi-column dataField="licSt" caption="Status"></dxi-column>
+                <dxi-column dataField="" caption="Ver" [fixed]="false" cellTemplate="openLicPDF" [width]="100"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Contacto Emergencia" alignment="center">
+                <dxi-column dataField="contacto" caption="Nombre"></dxi-column>
+                <dxi-column dataField="conTel1" caption="Tel1"></dxi-column>
+                <dxi-column dataField="conTel2" caption="Tel2"></dxi-column>
+            </dxi-column>
+
+
+            <div *dxTemplate="let data of 'openPDF'">
+                <dx-button icon="pdffile" stylingMode="outlined" type="danger" (onClick)="inePDF(data)"></dx-button>
+            </div>
+
+            <div *dxTemplate="let data of 'openAptoPDF'">
+                <dx-button icon="pdffile" stylingMode="outlined" type="danger" (onClick)="aptoPDF(data)"></dx-button>
+            </div>
+
+            <div *dxTemplate="let data of 'openLicPDF'">
+                <dx-button icon="pdffile" stylingMode="outlined" type="danger" (onClick)="licenciaPDF(data)"></dx-button>
+            </div>
+
+            
+            <dxo-summary [calculateCustomSummary]="calcularPorcentajes"> 
+                <!-- <dxi-group-item column="fake" [alignByColumn]="true"></dxi-group-item> -->
+            </dxo-summary>
+            <!-- <dxo-summary [calculateCustomSummary]="calcularPorcentajes"> 
+                <dxi-group-item column="disponibles" summaryType="sum" displayFormat="{0}" [showInGroupFooter]="true" [alignByColumn]="false"></dxi-group-item>
+                <dxi-group-item column="disponiblesPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true" [alignByColumn]="false"></dxi-group-item>
+
+                <dxi-total-item column="disponibles" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                <dxi-total-item column="disponiblesPor" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
+
+            </dxo-summary> -->
+
+        <dxo-group-panel [visible]="false"></dxo-group-panel>
+        <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+        </dx-data-grid>
+    </div>
+
+    
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+
+
+    <dx-toast [(visible)]="isVisible" type="info" message="Seleccione Año y Mes">
+        <dxo-position my="top" at="right" of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>

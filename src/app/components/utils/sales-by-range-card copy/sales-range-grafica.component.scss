@@ -1,0 +1,36 @@
+@use "../../../../variables.scss" as *;
+@use "sass:math";
+
+.sales-pie,
+.sales-bars {
+  display: inline-block;
+  height: 100%;
+}
+
+.sales-pie {
+  width: 400px;
+}
+
+.sales-bars {
+  width: 100%;
+}
+
+.sales-filter {
+  display: initial;
+}
+
+
+@media only screen and (max-width: 600px) {
+  .sales-pie,
+  .sales-bars {
+    display: block;
+  }
+
+  .sales-pie {
+    width: 320px;
+  }
+
+  .sales-bars {
+    width: 320px;
+  }
+}

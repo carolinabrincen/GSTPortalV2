@@ -1,0 +1,220 @@
+<h2 class="content-block">Multipartidas</h2>
+
+<div class="content-block dx-card responsive-paddings padding-10">
+
+    <div >
+        <dx-box direction="row" width="100%" [height]="40">
+          <dxi-item [ratio]="1">
+
+              <div>
+                <p class="titulo-graficas"><b>Estado:</b> Edición</p>
+              </div>
+          </dxi-item>
+        </dx-box>
+    </div>
+    <br><br>
+
+      <!--====================FORM=============================-->
+      <div >
+        <dx-box direction="row" width="100%" [height]="560">
+          <dxi-item [ratio]="1">
+  
+              <form action="" (submit)="guardarModulo($event)">
+                <dx-form id="form" [(formData)]="formCierre" validationGroup="customerData" [colCount]="4" [readOnly]="bolFormSoloLectura">
+                    
+                  <dxi-item [colSpan]="2">
+                    <div class="dx-field">
+                      <div class="dx-field-label">Almacen</div>
+                      <!-- <dx-text-box class="dx-field-value-alm" value=" ALMACEN TEISA(TRANSPORTADORA ESPECIALIZASDA)"></dx-text-box> -->
+                      <dx-select-box
+                      class="dx-field-value-alm"
+                      style="margin-top: 10px"
+                      [items]="almacen"
+                      displayExpr="descripcion"
+                      valueExpr="id"
+                      placeholder="Seleccione"
+                      [showClearButton]="false"
+                      [value]="almacen[0].id"
+                    ></dx-select-box>
+                    </div>
+                  </dxi-item>
+                  <dxi-item [colSpan]="2">
+                    <div class="dx-field">
+                      <div class="dx-field-label">Fecha</div>
+                      <dx-text-box class="dx-field-value"[inputAttr]="{ 'aria-label': 'BASE' }" value="29/01/2024"></dx-text-box>
+                    </div>
+                  </dxi-item>
+
+                  <dxi-item [colSpan]="2">
+                      <div class="dx-field">
+                        <div class="dx-field-label-mtto">Tipo Mtto</div>
+                        <div class="dx-field-value-mtto">
+                          <dx-radio-group
+                            [items]="priorities"
+                            [value]="priorities[0]"
+                            layout="horizontal"
+                          >
+                          </dx-radio-group>
+                        </div>
+                    </div>
+                  </dxi-item>
+                  <dxi-item [colSpan]="2">
+                    <div class="dx-field">
+                      <div class="dx-field-label">Depto. Destino</div>
+                      <!-- <dx-text-box class="dx-field-value" [inputAttr]="{ 'aria-label': 'FECHA / HORA' }"></dx-text-box> -->
+                      <dx-select-box
+                      class="dx-field-value"
+                      style="margin-top: 10px"
+                      [items]="dptoDestino"
+                      displayExpr="descripcion"
+                      valueExpr="id"
+                      placeholder="Seleccione"
+                      [showClearButton]="false"
+                      [value]="dptoDestino[0].id"
+                      [disabled]="true"
+                    ></dx-select-box>
+                    </div>
+                  </dxi-item>
+
+                  <dxi-item [colSpan]="4">
+                    <div class="dx-field">
+                      <div class="dx-field-label-com">Area orden Mtto</div>
+                      <!-- <dx-text-box class="dx-field-value-com" [inputAttr]="{ 'aria-label': 'VALIDACION' }"></dx-text-box> -->
+                      <dx-select-box
+                      class="dx-field-value-com"
+                      style="margin-top: 10px"
+                      [items]="areaMtto"
+                      displayExpr="descripcion"
+                      valueExpr="id"
+                      placeholder="Seleccione"
+                      [showClearButton]="false"
+                      [value]="areaMtto[0].id"
+                    ></dx-select-box>
+                    </div>
+                  </dxi-item>
+
+                  <dxi-item [colSpan]="1">
+                    <div class="dx-field">
+                      <div class="dx-field-label-NoO">No. Orden Mtto</div>
+                      <dx-text-box class="dx-field-value" [inputAttr]="{ 'aria-label': 'GEOCERCA' }" value="1949"></dx-text-box>
+                    </div>
+                  </dxi-item>
+                  <dxi-item [colSpan]="1">
+                    <div class="dx-field">
+                      <div class="dx-field-label-NoU">No. Unidad</div>
+                      <dx-text-box class="dx-field-value" [inputAttr]="{ 'aria-label': 'VELOCIDAD' }" value="TT5056" [disabled]="true"></dx-text-box>
+                    </div>
+                  </dxi-item>
+                  <dxi-item [colSpan]="2">
+                    <div class="dx-field">
+                      <div class="dx-field-label">Autorizo</div>
+                      <dx-text-box class="dx-field-value" [inputAttr]="{ 'aria-label': 'STATUS' }"></dx-text-box>
+                    </div>
+                  </dxi-item>
+
+                  <dxi-item [colSpan]="2">
+                      <div class="dx-field">
+                          <div class="dx-field-label-sal">Salidad de</div>
+                          <div class="dx-field-value-sal">
+                            <dx-radio-group
+                              [items]="salidas"
+                              [value]="salidas[1]"
+                              layout="horizontal"
+                            >
+                            </dx-radio-group>
+                          </div>
+                    </div>
+                  </dxi-item>
+                  <dxi-item [colSpan]="2">
+                    <div class="dx-field">
+                      <div class="dx-field-label">Entrego</div>
+                      <dx-text-box class="dx-field-value" [inputAttr]="{ 'aria-label': 'TIEMPO' }"></dx-text-box>
+                    </div>
+                  </dxi-item>
+
+                  <dxi-item [colSpan]="2">
+                    <div class="dx-field">
+                      <div class="dx-field-label">Solicitudes</div>
+                      <!-- <dx-text-box class="dx-field-value-sol" [inputAttr]="{ 'aria-label': 'TIEMPO' }"></dx-text-box> -->
+                      <dx-select-box
+                      class="dx-field-value-sol"
+                      style="margin-top: 10px"
+                      [items]="salida"
+                      displayExpr="descripcion"
+                      valueExpr="id"
+                      placeholder="Seleccione"
+                      [showClearButton]="false"
+                      [value]="salida[0].id"
+                    ></dx-select-box>
+                    </div>
+                  </dxi-item>
+                  <dxi-item [colSpan]="2">
+                    <div class="dx-field">
+                      <div class="dx-field-label">Recibió</div>
+                      <dx-text-box class="dx-field-value" [inputAttr]="{ 'aria-label': 'TIEMPO' }" value="GOMEZ RIOS ALBERTO JOAQUIN"></dx-text-box>
+                    </div>
+                  </dxi-item>
+
+                  <dxi-item [colSpan]="4">
+                    <div class="dx-fieldset" id="notes-container">
+                      <div class="dx-field">
+                        <div class="dx-field-label-obs">Observaciones</div>
+                        <dx-text-area
+                          class="dx-field-value-obs"
+                          [height]="100"
+                          [inputAttr]="{ 'aria-label': 'Notes' }"
+                        >
+                        </dx-text-area>
+                      </div>
+                    </div>
+                  </dxi-item>
+
+                  <!-- <dxi-item itemType="group" [colSpan]="1" [colCount]="1">
+                    <dxi-item itemType="button" horizontalAlignment="left" [buttonOptions]="buttonOptions"></dxi-item>
+                  </dxi-item> -->
+                </dx-form>
+              </form>
+              
+          </dxi-item>
+        </dx-box>
+      </div>
+
+      <br><br>
+    <dx-data-grid  #ING id="gridContainer1" [dataSource]="multipartidaGrid" [height]="600"[showBorders]="true" [columnAutoWidth]="true"
+    (onRowPrepared)="onRowPrepared($event)" (onCellPrepared)="onCellPrepared($event)">
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxo-header-filter [visible]="true"></dxo-header-filter>
+        <!-- <dxo-filter-row [visible]="showFilterRow" [applyFilter]="currentFilter"></dxo-filter-row> -->
+        
+        <dxi-column dataField="componentePieza" caption="COMPONENTE PIEZA"></dxi-column>
+        <dxi-column
+           dataField="parte"
+           [width]="100"
+           [allowFiltering]="false"
+           [allowSorting]="false"
+           cellTemplate="cellTemplate"
+         ></dxi-column>
+
+         <div *dxTemplate="let data of 'cellTemplate'">
+            <img [src]="data" />
+          </div>
+        
+        <dxo-group-panel [visible]="false"></dxo-group-panel>
+        <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+        <dxo-export [enabled]="true" fileName="Macrocilo"></dxo-export>
+        <dxo-paging [pageSize]="60"></dxo-paging>
+        <dxo-sorting mode="multiple"></dxo-sorting>
+    </dx-data-grid>
+    
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+
+    <dx-toast [(visible)]="isVisible" type="warning" message="Seleccione Año y Mes">  
+        <dxo-position
+            my="top"
+            at="right"
+            of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>

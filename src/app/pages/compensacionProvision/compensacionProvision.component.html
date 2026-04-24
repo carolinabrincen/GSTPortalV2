@@ -1,0 +1,176 @@
+<h2 class="content-block">Compensación Provisión</h2>
+
+<div class="content-block dx-card responsive-paddings padding-10">
+
+      <!--====================FORM=============================-->
+      <div >
+        <dx-box direction="row" width="100%" [height]="320">
+          <dxi-item [ratio]="1">
+  
+              <form action="" (submit)="guardarModulo($event)">
+                <dx-form id="form" [(formData)]="formCierre" validationGroup="customerData" [colCount]="2" [readOnly]="bolFormSoloLectura">
+                    
+                  <dxi-item [colSpan]="1">
+                    <div class="dx-field">
+                      <div class="dx-field-label">Cliente</div>
+                      <dx-select-box
+                        class="dx-field-value-alm"
+                        style="margin-top: 10px"
+                        [items]="cliente"
+                        displayExpr="descripcion"
+                        valueExpr="id"
+                        placeholder="Seleccione"
+                        [showClearButton]="false"
+                      ></dx-select-box>
+                    </div>
+                  </dxi-item>
+                  <dxi-item [colSpan]="1">
+                    <div class="dx-field">
+                      <div class="dx-field-label">UdN</div>
+                      <dx-select-box
+                        class="dx-field-value-alm"
+                        style="margin-top: 10px"
+                        [items]="udn"
+                        displayExpr="ciudad"
+                        valueExpr="id"
+                        placeholder="Seleccione"
+                        [showClearButton]="false"
+                      ></dx-select-box>
+                    </div>
+                  </dxi-item>
+
+                  <dxi-item [colSpan]="1">
+                    <div class="dx-field">
+                      <div class="dx-field-label">Tipo</div>
+                      <dx-select-box
+                        class="dx-field-value-alm"
+                        style="margin-top: 10px"
+                        [items]="tipo"
+                        displayExpr="descripcion"
+                        valueExpr="id"
+                        placeholder="Seleccione"
+                        [showClearButton]="false"
+                      ></dx-select-box>
+                    </div>
+                  </dxi-item>
+                  <dxi-item [colSpan]="1">
+                    <div class="dx-field">
+                      <div class="dx-field-label">Carta Porte</div>
+                      <dx-select-box
+                        class="dx-field-value-alm"
+                        style="margin-top: 10px"
+                        [items]="cartaPorte"
+                        displayExpr="descripcion"
+                        valueExpr="id"
+                        placeholder="Seleccione"
+                        [showClearButton]="false"
+                      ></dx-select-box>
+                    </div>
+                  </dxi-item>
+
+                  <dxi-item [colSpan]="">
+                    <div class="dx-field">
+                      <div class="dx-field-label">Monto</div>
+                      <dx-text-box class="dx-field-value-txt"[inputAttr]="{ 'aria-label': 'BASE' }"></dx-text-box>
+                    </div>
+                  </dxi-item>
+                  <dxi-item [colSpan]="1">
+                    <div class="dx-field">
+                      <div class="dx-field-label">Pendiete</div>
+                      <dx-text-box class="dx-field-value-txt"[inputAttr]="{ 'aria-label': 'BASE' }"></dx-text-box>
+                    </div>
+                  </dxi-item>
+                    
+                  <br>
+                  <dxi-item itemType="group" [colSpan]="2" [colCount]="1">
+                    <dxi-item itemType="button" [buttonOptions]="buttonOptions"></dxi-item>
+                  </dxi-item>
+                </dx-form>
+              </form>
+              
+          </dxi-item>
+        </dx-box>
+      </div>
+
+      <dx-tab-panel>
+        <dxi-item title="Seleccionar">
+          <dx-data-grid  #ING id="gridContainer1" [dataSource]="multipartidaGrid" [height]="600"[showBorders]="true" [columnAutoWidth]="true"
+          (onRowPrepared)="onRowPrepared($event)" (onCellPrepared)="onCellPrepared($event)">
+              <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+              <dxo-header-filter [visible]="true"></dxo-header-filter>
+              <!-- <dxo-filter-row [visible]="showFilterRow" [applyFilter]="currentFilter"></dxo-filter-row> -->
+              
+              <dxi-column dataField="" caption="Seleccionar"></dxi-column>
+              <dxi-column dataField="" caption="Cliente"></dxi-column>
+              <dxi-column dataField="" caption="Opereación"></dxi-column>
+              <dxi-column dataField="" caption="Carta Porte"></dxi-column>
+              <dxi-column dataField="" caption="Factura"></dxi-column>
+              <dxi-column dataField="" caption="Monto"></dxi-column>
+              <dxi-column dataField="" caption="Tipo"></dxi-column>
+      
+              <dxo-group-panel [visible]="false"></dxo-group-panel>
+              <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+              <dxo-export [enabled]="true" fileName="Compensación Provisión"></dxo-export>
+              <dxo-paging [pageSize]="60"></dxo-paging>
+              <dxo-sorting mode="multiple"></dxo-sorting>
+          </dx-data-grid>
+        </dxi-item>
+        <dxi-item title="Flete">
+          <dx-data-grid  #ING id="gridContainer1" [dataSource]="multipartidaGrid" [height]="600"[showBorders]="true" [columnAutoWidth]="true"
+          (onRowPrepared)="onRowPrepared($event)" (onCellPrepared)="onCellPrepared($event)">
+              <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+              <dxo-header-filter [visible]="true"></dxo-header-filter>
+              <!-- <dxo-filter-row [visible]="showFilterRow" [applyFilter]="currentFilter"></dxo-filter-row> -->
+              
+              <dxi-column dataField="" caption="Seleccionar"></dxi-column>
+              <dxi-column dataField="" caption="Cliente"></dxi-column>
+              <dxi-column dataField="" caption="Opereación"></dxi-column>
+              <dxi-column dataField="" caption="Carta Porte"></dxi-column>
+              <dxi-column dataField="" caption="Factura"></dxi-column>
+              <dxi-column dataField="" caption="Monto"></dxi-column>
+              <dxi-column dataField="" caption="Tipo"></dxi-column>
+      
+              <dxo-group-panel [visible]="false"></dxo-group-panel>
+              <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+              <dxo-export [enabled]="true" fileName="Compensación Provisión"></dxo-export>
+              <dxo-paging [pageSize]="60"></dxo-paging>
+              <dxo-sorting mode="multiple"></dxo-sorting>
+          </dx-data-grid>
+        </dxi-item>
+        <dxi-item title="Otros Ingresos">
+          <dx-data-grid  #ING id="gridContainer1" [dataSource]="multipartidaGrid" [height]="600"[showBorders]="true" [columnAutoWidth]="true"
+          (onRowPrepared)="onRowPrepared($event)" (onCellPrepared)="onCellPrepared($event)">
+              <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+              <dxo-header-filter [visible]="true"></dxo-header-filter>
+              <!-- <dxo-filter-row [visible]="showFilterRow" [applyFilter]="currentFilter"></dxo-filter-row> -->
+              
+              <dxi-column dataField="" caption="Seleccionar"></dxi-column>
+              <dxi-column dataField="" caption="Cliente"></dxi-column>
+              <dxi-column dataField="" caption="Opereación"></dxi-column>
+              <dxi-column dataField="" caption="Carta Porte"></dxi-column>
+              <dxi-column dataField="" caption="Factura"></dxi-column>
+              <dxi-column dataField="" caption="Monto"></dxi-column>
+              <dxi-column dataField="" caption="Tipo"></dxi-column>
+      
+              <dxo-group-panel [visible]="false"></dxo-group-panel>
+              <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+              <dxo-export [enabled]="true" fileName="Compensación Provisión"></dxo-export>
+              <dxo-paging [pageSize]="60"></dxo-paging>
+              <dxo-sorting mode="multiple"></dxo-sorting>
+          </dx-data-grid>
+        </dxi-item>
+      </dx-tab-panel>      
+
+    
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+
+    <dx-toast [(visible)]="isVisible" type="warning" message="Seleccione Año y Mes">  
+        <dxo-position
+            my="top"
+            at="right"
+            of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>

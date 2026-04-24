@@ -1,0 +1,37 @@
+export class CAAuxiliar {
+    areaPoliza: string;
+    centroCosto: string;
+    centroCosto1: string;
+    centroCosto2: any;
+    centroCosto3: any;
+    centroCostoCia: string;
+    centroCostoCta: string;
+    conceptoIndividual: string;
+    descCuenta: string;
+    descEstatus: string;
+    descripcion: string;
+    descripcionTipo: string;
+    estatus: number;
+    fechaCreacion: string;
+    fechaIngreso: string;
+    fechaModifico: string;
+    idAreaPoliza: number;
+    idCompania: number;
+    idConsecutivo: number;
+    idCuenta: number;
+    idIngreso: string;
+    idModifico: string;
+    idPoliza: number;
+    idTipoPoliza: number;
+    identificadorPoliza: string;
+    mmAbono: number;
+    mmCargo: number;
+    nombre: string;
+    numCuentaFormat: string;
+    numPartida: number;
+    periodo: number;
+    referencia: string;
+    total: number;
+    totalAbono: number;
+    totalCargo: number;
+}

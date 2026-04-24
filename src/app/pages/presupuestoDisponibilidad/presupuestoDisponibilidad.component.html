@@ -1,0 +1,143 @@
+<h2 class="content-block">Presupuesto Disponibilidad</h2>
+<div [id]="'myDiv'" class="content-block dx-card responsive-paddings">
+
+  <dx-form id="form">
+
+    <dxi-item itemType="group" cssClass="form-group" [colCount]="3">
+         
+        <dxi-item itemType="group">
+            <dxi-item dataField="filtro">  
+                <dx-select-box [dataSource]="filtros" valueExpr="value" displayExpr="value" (onValueChanged)="selectFiltro($event)"></dx-select-box>  
+            </dxi-item>  
+        </dxi-item>
+        
+        <dxi-item itemType="group" class="styleButton">
+            <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120" (onClick)="buscarClick($event)">
+            </dx-button>
+        </dxi-item>
+        
+    </dxi-item>
+  </dx-form>
+
+    <div id="data-grid-demo">
+        <dx-data-grid #gridPresupuesto id="gridContainer" [dataSource]="disponiblidadPresupuesto" keyExpr="ID" [showBorders]="true" (onSaving)="GuardarPresupuesto($event)">
+          <dxo-paging [enabled]="false"></dxo-paging>
+          
+          <dxo-editing mode="popup" [allowAdding]="true">
+            <dxo-popup title="" [showTitle]="true" [width]="550" [height]="350">
+              <dxi-toolbar-item widget="dxButton" location="after" toolbar="bottom"
+                [options]="{ text: 'Guardar', onClick: saveButton}">
+              </dxi-toolbar-item>
+              <dxi-toolbar-item widget="dxButton" location="after" toolbar="bottom"
+                [options]="{ text: 'Cancelar', onClick: cancelButton }">
+              </dxi-toolbar-item>
+            </dxo-popup>
+            <dxo-form>
+              <dxi-item itemType="group" [colCount]="2" [colSpan]="2">
+                <dxi-item dataField="area"></dxi-item>
+                <dxi-item dataField="tipo"></dxi-item>
+                <dxi-item dataField="clasificacion"></dxi-item>
+                <dxi-item dataField="cantidad" editorType="dxNumberBox"></dxi-item>
+                <!-- <dxi-item dataField="periodo"></dxi-item> -->
+              </dxi-item>
+            </dxo-form>
+          </dxo-editing>
+
+          <dxi-column dataField="area" caption="UdN">
+            <dxo-lookup [dataSource]="ciudad" displayExpr="area" valueExpr="area">
+            </dxo-lookup>
+          </dxi-column>
+          <dxi-column dataField="tipo" caption="Tipo">
+            <dxo-lookup [dataSource]="tipoOp" displayExpr="tipo" valueExpr="tipo">
+            </dxo-lookup>
+          </dxi-column>
+          <dxi-column dataField="clasificacion" caption="Clasificación">
+            <dxo-lookup [dataSource]="clasificacion" displayExpr="clasificacion" valueExpr="clasificacion">
+            </dxo-lookup>
+          </dxi-column>
+          <dxi-column dataField="cantidad" caption="Cantidad"> </dxi-column>
+          <!-- <dxi-column dataField="periodo" caption="Periodo">
+            <dxo-lookup [dataSource]="periodo" displayExpr="periodo" valueExpr="periodo">
+            </dxo-lookup>
+          </dxi-column> -->
+
+          <dxi-column dataField="" caption="Editar" [fixed]="false" cellTemplate="EditarCellTemplate" [width]="80"></dxi-column>
+          <dxi-column dataField="" caption="Borrar" [fixed]="false" cellTemplate="BorrarCellTemplate" [width]="80"></dxi-column>
+
+          <div *dxTemplate="let data of 'EditarCellTemplate'">
+              <dx-button icon="edit" stylingMode="outlined" type="danger" (onClick)="editar(data)"></dx-button>
+          </div>
+          <div *dxTemplate="let data of 'BorrarCellTemplate'">
+              <dx-button icon="trash" stylingMode="outlined" type="danger" (onClick)="borrar(data)"></dx-button>
+          </div>
+        </dx-data-grid>
+      </div>
+      
+<!--=================================EDITAR=============================================-->
+      <dx-popup #cerrarOperacion style="margin-top: 0px" [showTitle]="true" title="Modificar Presupuesto" [dragEnabled]="false" [closeOnOutsideClick]="true"
+       [showCloseButton]="true" container=".dx-viewport" [(visible)]="modEditar" height="50%" width="50%">
+        <dxo-position at="botom" my="center" > </dxo-position>
+      
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+                <form action="" (submit)="EditarPresupuesto($event)">
+                    <dx-form id="form" [(formData)]="formPresupuesto" validationGroup="customerData" [readOnly]="bolFormSoloLectura">
+                      
+                      <dxi-item itemType="group" [colCount]="2" [colSpan]="2">
+                        <dxi-item dataField="area" [disabled]="true"></dxi-item>
+                        <dxi-item dataField="tipo" [disabled]="true"></dxi-item>
+                        <dxi-item dataField="clasificacion" [disabled]="true"></dxi-item>
+                        <dxi-item dataField="cantidad"></dxi-item>
+                      </dxi-item>
+
+                      <dxi-item itemType="group" [colSpan]="2" [colCount]="2">
+                        <dxi-item itemType="button" horizontalAlignment="right" [buttonOptions]="buttonOptionsCancelar"></dxi-item> 
+                        <dxi-item itemType="button" horizontalAlignment="left" [buttonOptions]="buttonOptions"></dxi-item>
+                      </dxi-item>
+                  
+
+                    </dx-form>
+                  </form>
+                  
+            </dx-scroll-view>
+        </div>
+    </dx-popup>
+
+<!--=================================BORRAR=============================================-->
+<dx-popup #cerrarOperacion style="margin-top: 0px" [showTitle]="true" title="Eliminar Presupuesto" [dragEnabled]="false" [closeOnOutsideClick]="true"
+[showCloseButton]="true" container=".dx-viewport" [(visible)]="modBorrar" height="30%" width="30%">
+ <dxo-position at="botom" my="center" > </dxo-position>
+
+ <div *dxTemplate="let data of 'content'">
+     <dx-scroll-view width="100%" height="100%">
+
+      <div class="long-title">
+        <h4>ESTA APUNTO DE ELIMINAR ESTE REGISTRO.</h4>
+      </div>
+
+         <form action="" (submit)="BorrarPresupuesto($event)">
+             <dx-form id="form" [(formData)]="formPresupuesto" validationGroup="customerData" [readOnly]="bolFormSoloLectura">
+               
+              
+               <dxi-item itemType="group" [colSpan]="2" [colCount]="2">
+                 <dxi-item itemType="button" horizontalAlignment="right" [buttonOptions]="buttonCancelarDlt"></dxi-item> 
+                 <dxi-item itemType="button" horizontalAlignment="left" [buttonOptions]="buttonBorrar"></dxi-item>
+               </dxi-item>
+           
+
+             </dx-form>
+           </form>
+           
+     </dx-scroll-view>
+ </div>
+</dx-popup>
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false">
+    </dx-load-panel>
+
+
+    <dx-toast [(visible)]="isVisible" type="info" message="Seleccione Año y Mes">
+        <dxo-position my="top" at="right" of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>

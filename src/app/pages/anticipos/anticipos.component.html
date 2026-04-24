@@ -1,0 +1,603 @@
+<!-- Card principal  -->
+<div class="content-block dx-card responsive-paddings padding-10">
+            <br><br>
+            <dx-responsive-box>
+                <dxi-col [ratio]=".20"></dxi-col>
+                <dxi-col [ratio]=".80"></dxi-col>
+                <dxi-col [ratio]=".10"></dxi-col>
+                <dxi-col [ratio]=".40"></dxi-col>
+                <!-- <dxi-col [ratio]=".10"></dxi-col>
+                <dxi-col [ratio]=".40"></dxi-col> -->
+
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <!-- <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row> -->
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Operador:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="1"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+
+
+                     <dx-select-box
+                      [dataSource]="operador" displayExpr="nombre" valueExpr="cvetra" [searchMode]="searchModeOption" [searchExpr]="searchExprOption" [searchTimeout]="searchTimeoutOption"
+                      [minSearchLength]="minSearchLengthOption" [searchEnabled]="true" [showDataBeforeSearch]="showDataBeforeSearchOption" (onValueChanged)="seleccionarPeriodo($event)"></dx-select-box>
+                </dxi-item>
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="3"></dxi-location>
+                    <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                    <div>
+                        <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120" (onClick)="buscarClick($event)">
+                        </dx-button>
+                    </div>
+                </dxi-item>
+
+                <!-- <dxi-item>
+                  <dxi-location screen="md lg" [row]="0" [col]="5"></dxi-location>
+                  <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                  <div>
+                      <dx-button stylingMode="contained" text="Actualizar" type="normal" [width]="120" (onClick)="ActualizarCartera()">
+                      </dx-button>
+                  </div>
+              </dxi-item> -->
+
+            </dx-responsive-box>
+
+            <br>
+    
+              <!-- <dx-responsive-box>
+                <dxi-col [ratio]="1"></dxi-col>
+                <dxi-col [ratio]="1"></dxi-col>
+
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="0" [rowspan]="1"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0"></dxi-location>
+                    <div><h5>Clave Trabajador: <b>{{ printOperador?.cvetra }}</b></h5></div>
+                </dxi-item>
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="1" [rowspan]="1"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0"></dxi-location>
+                    <div><h5>Status: <b>{{ printOperador?.status }}</b></h5></div>
+                </dxi-item>
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="1" [col]="0" [rowspan]="1"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0"></dxi-location>
+                    <div><h5>Nombre: <b>{{ printOperador?.nombre }}</b></h5></div>
+                </dxi-item>
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="2" [col]="0" [rowspan]="1"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0"></dxi-location>
+                    <div><h5>Alta: <b>{{  printOperador?.alta |date:'dd/MM/yyyy'}}</b></h5></div>
+                </dxi-item>
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="2" [col]="1" [rowspan]="1"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0"></dxi-location>
+                    <div><h5>Baja: <b>{{ printOperador?.baja |date:'dd/MM/yyyy'}}</b></h5></div>
+                </dxi-item>
+            </dx-responsive-box> -->
+
+            <div >
+              <h5>
+                Clave Trabajador:
+                <span><b>{{ printOperador?.cvetra }}</b></span>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+                Status:
+                <span><b>{{ printOperador?.status }}</b></span>
+              </h5>
+              <h5>
+                <dd>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                Nombre:
+                <span><b>{{ printOperador?.nombre }}</b></span>
+                </dd>
+              </h5>
+              <h5>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                Alta:
+                <span><b>{{ printOperador?.alta |date:'dd/MM/yyyy' }}</b></span>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                Baja:
+                <span><b>{{ printOperador?.baja |date:'dd/MM/yyyy' }}</b></span>
+              </h5>
+            </div>
+
+            <br>
+              <div id="exportContainer">
+                <dx-button text="EXPORTAR" icon="xlsxfile" (onClick)="exportGridsAva($event)"></dx-button>
+              </div>
+
+              <br><br>
+
+                <dx-data-grid  #Ant1 id="gridContainer1" [dataSource]="anticipos" [showBorders]="true" [wordWrapEnabled]="true"
+                (onRowPrepared)="onRowPreparedB($event)" (onCellPrepared)="onCellPreparedB($event)">
+
+                  <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                  <dxo-paging [pageSize]="100"></dxo-paging>
+                  <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                  <!-- <dxo-export [enabled]="true" fileName="CARTERA CLIENTES" [customizeExcelCell]="customizeCAER"></dxo-export> -->
+                    
+                  <dxi-column dataField="clasificacionB" caption="Clasificación"></dxi-column>
+                 
+                  <dxi-column caption="Anticipo" alignment="center">
+                    <dxi-column dataField="antBanPagado" caption="Depositado/Asignado" [width]="200" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="antBanContabilizado" caption="Contabilizado" [format]="formatMoneda"></dxi-column>
+                    <dxi-column caption="Ver" cellTemplate="verAnticipoB"></dxi-column>
+                  </dxi-column>
+
+                  <dxi-column caption="Liquidación" alignment="center">
+                    <dxi-column dataField="antBanLiq" caption="Liquidado" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="antBanLiqCont" caption="Contabilizado" [format]="formatMoneda"></dxi-column>
+                    <dxi-column caption="Ver" cellTemplate="verLiquidacionB"></dxi-column>
+                  </dxi-column>
+                 
+                  <dxi-column dataField="banLiqSinContabilizar" caption="Liquidado Sin Depósito Contabilizado" [format]="formatMoneda"></dxi-column>
+                  <dxi-column caption="Ver" cellTemplate="verLSCB"></dxi-column>
+                  <dxi-column dataField="total_renglon1" caption="Por Liquidar(Por Cobrar)" [format]="formatMoneda"></dxi-column>
+                  <dxi-column dataField="antBanTotal" caption="Total Anticipos" [format]="formatMoneda"></dxi-column>
+
+
+                    <div *dxTemplate="let data of 'verAnticipoB'">
+                      <dx-button icon="search" stylingMode="outlined" type="danger" (onClick)="verAnticipoB(data)"></dx-button>
+                    </div>
+                    <div *dxTemplate="let data of 'verLiquidacionB'">
+                      <dx-button icon="search" stylingMode="outlined" type="danger" (onClick)="verLiquidacionB(data)"></dx-button>
+                    </div>
+                    <div *dxTemplate="let data of 'verLSCB'">
+                      <dx-button icon="search" stylingMode="outlined" type="danger" (onClick)="verLSCB(data)"></dx-button>
+                    </div>
+                  <!-- <dxo-summary>
+                    <dxi-total-item column="porLiquidar" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="totalAnticipos" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                  </dxo-summary> -->
+
+                </dx-data-grid>
+                <dx-data-grid  #Ant2 id="gridContainer2" [dataSource]="anticipos" [showBorders]="true" [wordWrapEnabled]="true" [showColumnHeaders]="false"
+                (onRowPrepared)="onRowPreparedCaj($event)" (onCellPrepared)="onCellPreparedCaj($event)">
+                  
+                  <dxi-column dataField="clasificacionC"></dxi-column>
+
+                  <dxi-column caption="">
+                    <dxi-column dataField="antCajaPagado" [width]="200" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="antCajaContabilizado" [format]="formatMoneda"></dxi-column>
+                    <dxi-column caption="Ver" cellTemplate="verAnticipoC"></dxi-column>
+                  </dxi-column>
+                  
+                  <dxi-column caption="">
+                    <dxi-column dataField="antCajaLiq" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="antCajaLiqCont" [format]="formatMoneda"></dxi-column>
+                    <dxi-column caption="Ver" cellTemplate="verLiquidacionC"></dxi-column>
+                  </dxi-column>
+                  
+                  <dxi-column dataField="cajLiqSinContabilizar" [format]="formatMoneda"></dxi-column>
+                  <dxi-column caption="Ver" cellTemplate="verLSCC"></dxi-column>
+                  <dxi-column dataField="total_renglon2" [format]="formatMoneda"></dxi-column>
+                  <dxi-column dataField="antCajaTotal" [format]="formatMoneda"></dxi-column>
+
+                    <div *dxTemplate="let data of 'verAnticipoC'">
+                      <dx-button icon="search" stylingMode="outlined" type="danger" (onClick)="verAnticipoC(data)"></dx-button>
+                    </div>
+                    <div *dxTemplate="let data of 'verLiquidacionC'">
+                      <dx-button icon="search" stylingMode="outlined" type="danger" (onClick)="verLiquidacionC(data)"></dx-button>
+                    </div>
+                    <div *dxTemplate="let data of 'verLSCC'">
+                      <dx-button icon="search" stylingMode="outlined" type="danger" (onClick)="verLSCC(data)"></dx-button>
+                    </div>
+
+                  <dxo-summary>
+                    <dxi-total-item column="cajLiqSinContabilizar" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                     <dxi-total-item column="total_renglon2" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="antCajaTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                  </dxo-summary>
+
+                </dx-data-grid>
+                <br><br>
+
+                <dx-data-grid  #gridCartera id="gridContainer2" [dataSource]="rembolsos" [showBorders]="true" [wordWrapEnabled]="true"
+                (onRowPrepared)="onRowPreparedRem($event)" (onCellPrepared)="onCellPreparedRem($event)">
+
+                  <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                  <dxo-paging [pageSize]="100"></dxo-paging>
+                  <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                  <dxo-export [enabled]="true" fileName="Rembolso" [customizeExcelCell]="customizeCAER"></dxo-export>
+                    
+                  <dxi-column caption="Rembolsos" alignment="center">
+                    <dxi-column dataField="liqReembolso" caption="Liquidación desde LIS" [format]="formatMoneda"></dxi-column>
+                    <dxi-column caption="Liquidación desde NOM" alignment="center">
+                      <dxi-column dataField="reemCargos" caption="Cargos" [format]="formatMoneda"></dxi-column>
+                      <dxi-column dataField="reemAbonos" caption="Abonos" [format]="formatMoneda"></dxi-column>
+                    </dxi-column>
+                    <dxi-column dataField="diferencia" caption="Diferencia" [format]="formatMoneda"></dxi-column>
+                    <dxi-column caption="Ver" cellTemplate="verRembolso"></dxi-column>
+                  </dxi-column>
+
+                  <div *dxTemplate="let data of 'verRembolso'">
+                    <dx-button icon="search" stylingMode="outlined" type="danger" (onClick)="verRembolso(data)"></dx-button>
+                  </div>
+              
+
+                  <!-- <dxo-summary>
+                    <dxi-total-item column="porLiquidar" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="totalAnticipos" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                  </dxo-summary> -->
+
+                </dx-data-grid>
+   <!--==========================MODAL REMBOLSO=========================================================-->
+        <dx-popup width="100%" height="100%" [showTitle]="true" title="Detalle Reembolso" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modRembolso">
+            <div *dxTemplate="let data of 'content'">
+                <dx-scroll-view width="100%" height="100%">
+                    <br>
+
+                <dx-data-grid #gridDetalleI id="gridContainer2" [dataSource]="detalleReembolso" [height]="500" [showBorders]="true" [columnAutoWidth]="true"
+                 (onRowPrepared)="onRowPreparedDAB($event)" (onCellPrepared)="onCellPreparedDAB($event)" >
+                    <!-- <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling> -->
+                    <dxo-paging [pageSize]="0"></dxo-paging>
+                    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+
+                    <dxo-export [enabled]="true" fileName="Detalle Liquidado Sin Contablizar Banco"></dxo-export>
+                    
+                    
+                    <dxi-column dataField="cvetra" caption="Cvetra" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="idUdn" caption="Id Udn" [fixed]="true"></dxi-column>                    
+                    <dxi-column dataField="udn" caption="Udn" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="poliza" caption="Póliza" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="fecha" caption="Fecha" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                    <dxi-column dataField="referencia" caption="Referencia" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="concepto" caption="Concepto" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="cargo" caption="Cargo" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="abono" caption="Abono" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="" caption="" [width]="50" [fixed]="true"></dxi-column>
+
+                    <!--*ngIf="groupValue !== '0.- INDICADORES' "  -->
+                    <dxo-summary [calculateCustomSummary]="calcularPorcentajes">
+                      <dxi-total-item column="cargo" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                      <dxi-total-item column="abono" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    </dxo-summary>
+                </dx-data-grid>
+                </dx-scroll-view>
+            </div>
+        </dx-popup>
+    <!--==========================FIN MODAL==========================================-->
+    
+
+
+
+
+
+
+   <!--==========================MODAL=========================================================-->
+        <dx-popup width="100%" height="100%" [showTitle]="true" title="Detalle Anticipos Banco" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modDetalleAB">
+            <div *dxTemplate="let data of 'content'">
+                <dx-scroll-view width="100%" height="100%">
+                    <br>
+
+                <dx-data-grid #gridDetalleI id="gridContainer2" [dataSource]="detalleAB" [height]="500" [showBorders]="true" [columnAutoWidth]="true"
+                 (onRowPrepared)="onRowPreparedDAB($event)" (onCellPrepared)="onCellPreparedDAB($event)" >
+                    <!-- <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling> -->
+                    <dxo-paging [pageSize]="0"></dxo-paging>
+                    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+
+                    <dxo-export [enabled]="true" fileName="Detalle Anticipos Banco" ></dxo-export>
+                    
+                    <dxi-column dataField="clasificacion" caption="Clasificación" [groupIndex]="0"></dxi-column>
+                    <dxi-column dataField="idArea" caption="Id Área" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="udN" caption="UdN" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="noViaje" caption="No. Viaje" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="fechaAnticipo" caption="Fehca Anticipo" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                    <dxi-column dataField="status" caption="Status" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="observaciones" caption="Observaciones" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="noAnticipo" caption="No. Anticipo" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="montoAnticipo" caption="Monto Anticipo" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="chequeReposición" caption="Cheque Reposición" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="poliza" caption="Poliza" [fixed]="true"></dxi-column>
+
+                    <!--*ngIf="groupValue !== '0.- INDICADORES' "  -->
+                    <dxo-summary [calculateCustomSummary]="calcularPorcentajes">
+                      
+                    </dxo-summary>
+
+                </dx-data-grid>
+                </dx-scroll-view>
+            </div>
+        </dx-popup>
+    <!--==========================FIN MODAL==========================================-->
+
+       <!--==========================MODAL=========================================================-->
+        <dx-popup width="100%" height="100%" [showTitle]="true" title="Detalle Anticipos Caja" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modDetalleAC">
+            <div *dxTemplate="let data of 'content'">
+                <dx-scroll-view width="100%" height="100%">
+                    <br>
+
+                <dx-data-grid #gridDetalleI id="gridContainer2" [dataSource]="detalleAC" [height]="500" [showBorders]="true" [columnAutoWidth]="true"
+                 (onRowPrepared)="onRowPreparedDAB($event)" (onCellPrepared)="onCellPreparedDAB($event)" >
+                    <!-- <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling> -->
+                    <dxo-paging [pageSize]="0"></dxo-paging>
+                    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+
+                    <dxo-export [enabled]="true" fileName="Detalle Anticipos Caja"></dxo-export>
+                    
+                    <dxi-column dataField="clasificacion" caption="Clasificación" [groupIndex]="0"></dxi-column>
+                    <dxi-column dataField="idArea" caption="Id Área" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="udN" caption="UdN" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="noViaje" caption="No. Viaje" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="fechaAnticipo" caption="Fehca Anticipo" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                    <dxi-column dataField="status" caption="Status" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="observaciones" caption="Observaciones" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="noAnticipo" caption="No. Anticipo" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="montoAnticipo" caption="Monto Anticipo" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="chequeReposición" caption="Cheque Reposición" [fixed]="true"></dxi-column>
+                    <dxi-column dataField="poliza" caption="Poliza" [fixed]="true"></dxi-column>
+
+
+
+                    <!--*ngIf="groupValue !== '0.- INDICADORES' "  -->
+                    <dxo-summary [calculateCustomSummary]="calcularPorcentajes">
+                      
+                    </dxo-summary>
+
+                </dx-data-grid>
+                </dx-scroll-view>
+            </div>
+        </dx-popup>
+    <!--==========================FIN MODAL==========================================-->
+
+       <!--==========================MODAL=========================================================-->
+        <dx-popup width="100%" height="100%" [showTitle]="true" title="Detalle Liquidacion Banco" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modDetalleLB">
+            <div *dxTemplate="let data of 'content'">
+                <dx-scroll-view width="100%" height="100%">
+                    <br>
+
+                <dx-data-grid #gridDetalleI id="gridContainer2" [dataSource]="detalleLB" [height]="500" [showBorders]="true" [columnAutoWidth]="true"
+                 (onRowPrepared)="onRowPreparedDAB($event)" (onCellPrepared)="onCellPreparedDAB($event)" >
+                    <!-- <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling> -->
+                    <dxo-paging [pageSize]="0"></dxo-paging>
+                    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+
+                    <dxo-export [enabled]="true" fileName="Detalle Liquidación Banco"></dxo-export>
+                    
+                    <dxi-column dataField="clasificacion" caption="" [fixed]="true" [groupIndex]="0"></dxi-column>
+                    
+                    <dxi-column caption="ANTICIPOS" alignment="center">
+                      <dxi-column dataField="idArea" caption="Id Area" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="udN" caption="UdN" [fixed]="true"></dxi-column>                    
+                      <dxi-column dataField="noViaje" caption="No. Viaje" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="fechaAnticipo" caption="Fecha Anticipo" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                      <dxi-column dataField="status" caption="Status" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="observaciones" caption="Observaciones" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="noAnticipo" caption="No. Anticipo" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="montoAnticipo" caption="Monto Anticipo" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                      <dxi-column dataField="chequeReposicion" caption="Cheque Reposición" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="poliza" caption="Poliza" [fixed]="true"></dxi-column>
+                    </dxi-column>
+                    <dxi-column caption="LIQUIDACIONES" alignment="center">
+                      <dxi-column dataField="liquidacion" caption="Liquidacion" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="fechaLiquidacion" caption="Fecha Liquidacion" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                      <dxi-column dataField="idConcepto" caption="Id Concepto" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="concepto" caption="Concepto" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="importe" caption="Importe" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                      <dxi-column dataField="totalLiquidacion" caption="Total Liquidación" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                      <dxi-column dataField="polizaLiq" caption="Poliza Liq." [fixed]="true"></dxi-column>
+                      <dxi-column dataField="fechaContabilizado" caption="Fecha Contabilizado" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                    </dxi-column>
+                    <!--*ngIf="groupValue !== '0.- INDICADORES' "  -->
+                    <dxo-summary [calculateCustomSummary]="calcularPorcentajes">
+                      <dxi-total-item column="importe" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    </dxo-summary>
+
+                </dx-data-grid>
+                </dx-scroll-view>
+            </div>
+        </dx-popup>
+    <!--==========================FIN MODAL==========================================-->
+
+       <!--==========================MODAL=========================================================-->
+        <dx-popup width="100%" height="100%" [showTitle]="true" title="Detalle Liquidacion Caja" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modDetalleLC">
+            <div *dxTemplate="let data of 'content'">
+                <dx-scroll-view width="100%" height="100%">
+                    <br>
+
+                <dx-data-grid #gridDetalleI id="gridContainer2" [dataSource]="detalleLC" [height]="500" [showBorders]="true" [columnAutoWidth]="true"
+                 (onRowPrepared)="onRowPreparedDAB($event)" (onCellPrepared)="onCellPreparedDAB($event)" >
+                    <!-- <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling> -->
+                    <dxo-paging [pageSize]="0"></dxo-paging>
+                    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+
+                    <dxo-export [enabled]="true" fileName="Detalle Liquidación Caja"></dxo-export>
+                    
+                     <dxi-column dataField="clasificacion" caption="" [fixed]="true" [groupIndex]="0"></dxi-column>
+                    
+                    <dxi-column caption="ANTICIPOS" alignment="center">
+                      <dxi-column dataField="idArea" caption="Id Area" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="udN" caption="UdN" [fixed]="true"></dxi-column>                    
+                      <dxi-column dataField="noViaje" caption="No. Viaje" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="fechaAnticipo" caption="Fecha Anticipo" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                      <dxi-column dataField="status" caption="Status" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="observaciones" caption="Observaciones" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="noAnticipo" caption="No. Anticipo" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="montoAnticipo" caption="Monto Anticipo" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                      <dxi-column dataField="chequeReposicion" caption="Cheque Reposición" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="poliza" caption="Poliza" [fixed]="true"></dxi-column>
+                    </dxi-column>
+                    <dxi-column caption="LIQUIDACIONES" alignment="center">
+                      <dxi-column dataField="liquidacion" caption="Liquidacion" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="fechaLiquidacion" caption="Fecha Liquidacion" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                      <dxi-column dataField="idConcepto" caption="Id Concepto" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="concepto" caption="Concepto" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="importe" caption="Importe" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                      <dxi-column dataField="totalLiquidacion" caption="Total Liquidación" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                      <dxi-column dataField="polizaLiq" caption="Poliza Liq." [fixed]="true"></dxi-column>
+                      <dxi-column dataField="fechaContabilizado" caption="Fecha Contabilizado" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                    </dxi-column>
+
+
+
+                    <!--*ngIf="groupValue !== '0.- INDICADORES' "  -->
+                    <dxo-summary [calculateCustomSummary]="calcularPorcentajes">
+                        <dxi-total-item column="importe" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    </dxo-summary>
+
+                </dx-data-grid>
+                </dx-scroll-view>
+            </div>
+        </dx-popup>
+    <!--==========================FIN MODAL==========================================-->
+
+       <!--==========================MODAL=========================================================-->
+        <dx-popup width="100%" height="100%" [showTitle]="true" title="Detalle Liquidado Sin Contablizar Banco" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modDetalleLSCB">
+            <div *dxTemplate="let data of 'content'">
+                <dx-scroll-view width="100%" height="100%">
+                    <br>
+
+                <dx-data-grid #gridDetalleI id="gridContainer2" [dataSource]="detalleLSCB" [height]="500" [showBorders]="true" [columnAutoWidth]="true"
+                 (onRowPrepared)="onRowPreparedDAB($event)" (onCellPrepared)="onCellPreparedDAB($event)" >
+                    <!-- <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling> -->
+                    <dxo-paging [pageSize]="0"></dxo-paging>
+                    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+
+                    <dxo-export [enabled]="true" fileName="Detalle Liquidado Sin Contablizar Banco"></dxo-export>
+                    
+                    <dxi-column dataField="clasificacion" caption="" [fixed]="true" [groupIndex]="0"></dxi-column>
+                    
+                    <dxi-column caption="ANTICIPOS" alignment="center">
+                      <dxi-column dataField="idArea" caption="Id Area" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="udN" caption="UdN" [fixed]="true"></dxi-column>                    
+                      <dxi-column dataField="noViaje" caption="No. Viaje" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="fechaAnticipo" caption="Fecha Anticipo" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                      <dxi-column dataField="status" caption="Status" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="observaciones" caption="Observaciones" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="noAnticipo" caption="No. Anticipo" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="montoAnticipo" caption="Monto Anticipo" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                      <dxi-column dataField="chequeReposicion" caption="Cheque Reposición" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="poliza" caption="Poliza" [fixed]="true"></dxi-column>
+                    </dxi-column>
+                    <dxi-column caption="LIQUIDACIONES" alignment="center">
+                      <dxi-column dataField="liquidacion" caption="Liquidacion" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="fechaLiquidacion" caption="Fecha Liquidacion" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                      <dxi-column dataField="idConcepto" caption="Id Concepto" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="concepto" caption="Concepto" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="importe" caption="Importe" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                      <dxi-column dataField="totalLiquidacion" caption="Total Liquidación" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                      <dxi-column dataField="polizaLiq" caption="Poliza Liq." [fixed]="true"></dxi-column>
+                      <dxi-column dataField="fechaContabilizado" caption="Fecha Contabilizado" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                    </dxi-column>
+
+
+
+                    <!--*ngIf="groupValue !== '0.- INDICADORES' "  -->
+                    <dxo-summary [calculateCustomSummary]="calcularPorcentajes">
+                      <dxi-total-item column="importe" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    </dxo-summary>
+
+                </dx-data-grid>
+                </dx-scroll-view>
+            </div>
+        </dx-popup>
+    <!--==========================FIN MODAL==========================================-->
+
+       <!--==========================MODAL=========================================================-->
+        <dx-popup width="100%" height="100%" [showTitle]="true" title="Detalle Liquidado Sin Contablizar Caja" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modDetalleLSCC">
+            <div *dxTemplate="let data of 'content'">
+                <dx-scroll-view width="100%" height="100%">
+                    <br>
+
+                <dx-data-grid #gridDetalleI id="gridContainer2" [dataSource]="detalleLSCC" [height]="500" [showBorders]="true" [columnAutoWidth]="true"
+                 (onRowPrepared)="onRowPreparedDAB($event)" (onCellPrepared)="onCellPreparedDAB($event)" >
+                    <!-- <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling> -->
+                    <dxo-paging [pageSize]="0"></dxo-paging>
+                    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+
+                    <dxo-export [enabled]="true" fileName="Detalle Liquidado Sin Contablizar Banco"></dxo-export>
+                    
+                    <dxi-column dataField="clasificacion" caption="" [fixed]="true" [groupIndex]="0"></dxi-column>
+                    
+                    <dxi-column caption="ANTICIPOS" alignment="center">
+                      <dxi-column dataField="idArea" caption="Id Area" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="udN" caption="UdN" [fixed]="true"></dxi-column>                    
+                      <dxi-column dataField="noViaje" caption="No. Viaje" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="fechaAnticipo" caption="Fecha Anticipo" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                      <dxi-column dataField="status" caption="Status" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="observaciones" caption="Observaciones" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="noAnticipo" caption="No. Anticipo" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="montoAnticipo" caption="Monto Anticipo" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                      <dxi-column dataField="chequeReposicion" caption="Cheque Reposición" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="poliza" caption="Poliza" [fixed]="true"></dxi-column>
+                    </dxi-column>
+                    <dxi-column caption="LIQUIDACIONES" alignment="center">
+                      <dxi-column dataField="liquidacion" caption="Liquidacion" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="fechaLiquidacion" caption="Fecha Liquidacion" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                      <dxi-column dataField="idConcepto" caption="Id Concepto" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="concepto" caption="Concepto" [fixed]="true"></dxi-column>
+                      <dxi-column dataField="importe" caption="Importe" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                      <dxi-column dataField="totalLiquidacion" caption="Total Liquidación" [fixed]="true" [format]="formatMoneda"></dxi-column>
+                      <dxi-column dataField="polizaLiq" caption="Poliza Liq." [fixed]="true"></dxi-column>
+                      <dxi-column dataField="fechaContabilizado" caption="Fecha Contabilizado" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                    </dxi-column>
+
+
+
+                    <!--*ngIf="groupValue !== '0.- INDICADORES' "  -->
+                    <dxo-summary [calculateCustomSummary]="calcularPorcentajes">
+                      <dxi-total-item column="importe" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    </dxo-summary>
+
+                </dx-data-grid>
+                </dx-scroll-view>
+            </div>
+        </dx-popup>
+    <!--==========================FIN MODAL==========================================-->
+    
+
+
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+
+    <dx-toast [(visible)]="isVisible" type="warning" message="Seleccione Año y Mes">  
+        <dxo-position
+            my="top"
+            at="right"
+            of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>

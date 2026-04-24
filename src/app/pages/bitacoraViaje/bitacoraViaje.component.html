@@ -1,0 +1,108 @@
+<h2 class="content-block">Bitácora Viaje</h2>
+<div [id]="'myDiv'" class="content-block dx-card responsive-paddings">
+
+        <dx-form id="form" [formData]="formFilter">
+
+            <dxi-item itemType="group" cssClass="form-group" [colCount]="5">
+                 
+                <dxi-item itemType="group">
+                    <dxi-item dataField="UdN">  
+                        <dx-select-box [dataSource]="unidadNegoios" valueExpr="idUnidad" displayExpr="ciudad" (onValueChanged)="seleccionarUDN($event)"></dx-select-box>  
+                    </dxi-item>  
+                </dxi-item>
+
+                <dxi-item itemType="group">
+                    <dxi-item dataField="inicio" text="Inicio" editorType="dxDateBox" [editorOptions]="{ width: '100%', displayFormat:'dd/MM/yyyy' }"></dxi-item>
+                </dxi-item>
+
+                <dxi-item itemType="group">
+                    <dxi-item dataField="fin" text="Fin" editorType="dxDateBox" [editorOptions]="{ width: '100%', displayFormat:'dd/MM/yyyy' }"></dxi-item>
+                </dxi-item>
+
+                <dxi-item itemType="group">
+                    <dxi-item dataField="Tracto">  
+                    <dx-select-box #selectTracto id="selectTracto" style="width: 50%;" [items]="arrTractos" [searchEnabled]="true" [searchExpr]="['']" [showClearButton]="true" (onValueChanged)="seleccionarTracto($event)">
+                    <div title="Borrar tracto">
+                        <dx-button  icon="trash" [width]="20" (onClick)="borrarClick($event)" ></dx-button>
+                    </div>
+                    </dx-select-box>  
+                    </dxi-item>  
+                </dxi-item>
+
+                <dxi-item itemType="group" class="styleButton">
+                    <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120" (onClick)="buscarClick($event)">
+                    </dx-button>
+                </dxi-item>
+                
+            </dxi-item>
+        </dx-form>
+            <br>
+
+    <div>
+     
+        <dx-data-grid #resmen id="gridContainer1" [dataSource]="bitacoraViaje" [height]="570" [showBorders]="true" [columnAutoWidth]="true"
+        (onRowPrepared)="onRowPreparedResumenO($event)" (onCellPrepared)="onCellPreparedResumenO($event)">
+        
+            <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+            <dxo-paging [pageSize]="100"></dxo-paging>
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxo-export [enabled]="true" fileName="Disponiblidad-Operadores" [customizeExcelCell]="customizeOp"></dxo-export>
+            
+          <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
+            
+            <dxi-column dataField="udn" caption="UdN" [fixed]="true" [width]="115"></dxi-column>
+            <dxi-column dataField="tracto" caption="Tracto" [fixed]="true" [width]="78"></dxi-column>
+            <dxi-column dataField="operacion" caption="Operación" [fixed]="true"></dxi-column>
+            <dxi-column dataField="operador" caption="Operador" [fixed]="true"></dxi-column>
+
+            <dxi-column dataField="tipo" caption="Tipo" [width]="85"></dxi-column>
+            <dxi-column dataField="vcNo" caption="Num" [width]="68"></dxi-column>
+            <dxi-column dataField="programacion" caption="Asignación" [width]="145" dataType="date" format="dd/MM/yyyy HH:mm:ss"></dxi-column>
+            <dxi-column dataField="hProg" caption="Hrs" [width]="64" alignment="left"></dxi-column>
+            <dxi-column dataField="cita" caption="Cita" [width]="145" dataType="date" format="dd/MM/yyyy HH:mm:ss"></dxi-column>
+            <dxi-column dataField="hCita" caption="Hrs" [width]="64" alignment="left"></dxi-column>
+
+            <dxi-column caption="Seguimiento Viaje" alignment="center">     
+                <dxi-column dataField="vC1" caption="Lleg. Cliente/Salida" [width]="160" dataType="date" format="dd/MM/yyyy HH:mm:ss"></dxi-column>
+                <dxi-column dataField="vCh1" caption="Hrs" [width]="64"dataType="number" [format]="{ type: 'fixedPoint', precision: 1 }"></dxi-column>
+                <dxi-column dataField="vC2" caption="Entr. Carga" [width]="150" dataType="date" format="dd/MM/yyyy HH:mm:ss"></dxi-column>
+                <dxi-column dataField="vCh2" caption="Hrs" [width]="64"></dxi-column>
+                <dxi-column dataField="vC3" caption="En Ruta" [width]="150" dataType="date" format="dd/MM/yyyy HH:mm:ss"></dxi-column>
+                <dxi-column dataField="vCh3" caption="Hrs" [width]="64"></dxi-column>
+                <dxi-column dataField="vC4" caption="Lleg. Descarga" [width]="150" dataType="date" format="dd/MM/yyyy HH:mm:ss"></dxi-column>
+                <dxi-column dataField="vCh4" caption="Hrs" [width]="64"></dxi-column>
+                <dxi-column dataField="vC5" caption="Ini. Descarga" [width]="150" dataType="date" format="dd/MM/yyyy HH:mm:ss"></dxi-column>
+                <dxi-column dataField="vCh5" caption="Hrs" [width]="64"></dxi-column>
+                <dxi-column dataField="vC6" caption="Sal. Descarga/Fin" [width]="150" dataType="date" format="dd/MM/yyyy HH:mm:ss"></dxi-column>
+            </dxi-column>
+            
+            <dxi-column dataField="tot" caption="Total" [width]="80"></dxi-column>
+            <dxi-column dataField="kms" caption="Kms." [width]="80"></dxi-column>
+            <dxi-column dataField="cliente" caption="Cliente" [width]="350"></dxi-column>
+            <dxi-column dataField="ruta" caption="Ruta" [width]="400"></dxi-column>
+            <!-- <dxi-column dataField="tot" caption="Total" [width]="70" [fixed]="true" fixedPosition="right"></dxi-column> -->
+            <dxi-column dataField="fake" caption="" [width]="30"></dxi-column>
+
+            
+            <!-- <dxo-summary [calculateCustomSummary]="calcularPorcentajes"> 
+                <dxi-group-item column="" summaryType="sum" displayFormat="{0}" [showInGroupFooter]="true" [alignByColumn]="false"></dxi-group-item>
+                <dxi-total-item column="" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+            </dxo-summary> -->
+            
+            <dxo-group-panel [visible]="false"></dxo-group-panel>
+            <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+        </dx-data-grid>
+               
+            
+    </div>
+    
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+
+
+    <dx-toast [(visible)]="isVisible" type="info" message="Seleccione Año y Mes">
+        <dxo-position my="top" at="right" of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>

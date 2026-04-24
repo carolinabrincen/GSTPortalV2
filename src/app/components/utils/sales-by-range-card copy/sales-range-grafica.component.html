@@ -1,0 +1,36 @@
+<card-analytics titleText="" contentClass="sales-by-category">
+
+  <div filter class="sales-filter">
+    <dx-drop-down-button stylingMode="text" [useSelectMode]="true" [items]="groupByPeriods" [selectedItemKey]="groupByPeriods[0]" (onSelectionChanged)="selectBA($event)"></dx-drop-down-button>
+  </div>
+ 
+   <dx-chart class="sales-bars" [dataSource]="data" [rotated]="false">
+        <!-- <dxi-value-axis [maxValueMargin]=".15"></dxi-value-axis> -->
+        <dxo-common-series-settings argumentField="mes" type="bar" valueField="promedio" [barWidth]="20">
+            <dxo-label [visible]="true" position="outside" [format]="formatSliderTooltip" [rotationAngle]="-90"
+             backgroundColor="transparent" [verticalOffset]="15">
+                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+            </dxo-label>
+        </dxo-common-series-settings>
+        <dxo-series-template nameField="clasificacion"></dxo-series-template>
+        <dxo-title text="Sueldo promedio operadores"></dxo-title>
+        <dxo-legend verticalAlignment="bottom" horizontalAlignment="center"></dxo-legend>
+        <dxo-export [enabled]="true" fileName="Sueldo promedio operadores"></dxo-export>
+        <dxo-size [height]="400"></dxo-size>
+    </dx-chart>
+
+  <!-- <dx-chart class="sales-bars" [dataSource]="data" [rotated]="true">
+    <dxo-common-axis-settings [visible]="false">
+      <dxo-tick [visible]="false"></dxo-tick>
+    </dxo-common-axis-settings>
+
+    <dxo-legend [visible]="false"></dxo-legend>
+
+    <dxo-common-series-settings
+      argumentField="mes" valueField="promedio" type="bar" [ignoreEmptyPoints]="true">
+    </dxo-common-series-settings>
+
+    <dxo-series-template nameField="mes"> </dxo-series-template>
+    <dxo-size [height]="270"></dxo-size>
+  </dx-chart> -->
+</card-analytics>

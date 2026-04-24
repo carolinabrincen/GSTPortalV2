@@ -1,0 +1,524 @@
+<h2 class="content-block">Rendimiento Diesel</h2>
+
+<!-- Card principal  -->
+<div class="content-block dx-card responsive-paddings padding-10">
+
+
+    <dx-responsive-box>
+        <!-- COLS -->
+        <!--UDN-->
+        <dxi-col [ratio]="1"></dxi-col>
+        <dxi-col [ratio]="2"></dxi-col>
+        <!--vacia-->
+        <dxi-col [ratio]=".25"></dxi-col>
+        <!--Mes-->
+        <dxi-col [ratio]=".30"></dxi-col>
+        <dxi-col [ratio]=".80"></dxi-col>
+        <!--vacia-->
+        <dxi-col [ratio]=".25"></dxi-col>
+        <!--Año-->
+        <dxi-col [ratio]=".30"></dxi-col>
+        <dxi-col [ratio]=".60"></dxi-col>
+        <!--vacia-->
+        <dxi-col [ratio]=".25"></dxi-col>
+        <!--Tracto-->
+        <dxi-col [ratio]=".40"></dxi-col>
+        <dxi-col [ratio]="2"></dxi-col>
+        <!--vacia-->
+        <dxi-col [ratio]=".25"></dxi-col>
+        <!--Buscar-->
+        <dxi-col [ratio]="1"></dxi-col>
+        
+
+        <!-- ROWS -->
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+        <dxi-row [ratio]="1"></dxi-row>
+
+        <!-- CONTROLES DEL FORM -->
+        <!--#region :::: ROW 1 DEL FORM ::::  -->
+        <!--ROW 1 Unidad de Negocio -->
+        <dxi-item>
+            <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+            <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="0" [col]="0" [colspan]="12"></dxi-location>
+            <div>Unidad de Negocio:</div>
+        </dxi-item>
+        <dxi-item>
+            <dxi-location screen="md lg" [row]="0" [col]="1"></dxi-location>
+            <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="1" [col]="0" [colspan]="12"></dxi-location>
+            <dx-tag-box [items]="arrUnidadesNegocio" [showSelectionControls]="true" [maxDisplayedTags]="4" [dataSource]="arrUnidadesNegocio" displayExpr="ciudad" valueExpr="idUnidad" (onValueChanged)="seleccionarUDN($event)">
+            </dx-tag-box>
+        </dxi-item>
+
+        <!-- MES -->
+        <dxi-item>
+            <dxi-location screen="md lg" [row]="0" [col]="3"></dxi-location>
+            <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="2" [col]="0" [colspan]="12"></dxi-location>
+            <div>Mes:</div>
+        </dxi-item>
+        <dxi-item>
+            <dxi-location screen="md lg" [row]="0" [col]="4"></dxi-location>
+            <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="3" [col]="0" [colspan]="12"></dxi-location>
+            <dx-select-box [items]="arrMeses" displayExpr="nombre" valueExpr="idMes" (onValueChanged)="seleccionarMes($event)">
+            </dx-select-box>
+        </dxi-item>
+
+        <!-- AÑO -->
+        <dxi-item>
+            <dxi-location screen="md lg" [row]="0" [col]="6"></dxi-location>
+            <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+            <div>Año:</div>
+        </dxi-item>
+
+        <dxi-item>
+            <dxi-location screen="md lg" [row]="0" [col]="7"></dxi-location>
+            <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+            <dx-select-box [items]="arrAnos" displayExpr="anio" valueExpr="idAnio" (onValueChanged)="seleccionarAnio($event)">
+            </dx-select-box>
+        </dxi-item>
+
+        <!-- TRACTO -->
+        <dxi-item>
+            <dxi-location screen="md lg" [row]="0" [col]="9"></dxi-location>
+            <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+            <div>Tracto:</div>
+        </dxi-item>
+
+        <dxi-item>
+            <dxi-location screen="md lg" [row]="0" [col]="10"></dxi-location>
+            <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+            <div style="display: flex;">
+              <dx-select-box #selectTracto id="selectTracto" style="width: 80%;"
+              [items]="arrTractos"
+              (onValueChanged)="seleccionarTracto($event)">
+                  ></dx-select-box>
+                  <div title="Borrar tracto">
+                    <dx-button  icon="trash" [width]="20" (onClick)="borrarClick($event)" >
+                    </dx-button>
+                  </div>
+            </div>
+        </dxi-item>
+
+        <!-- BUSCAR -->
+        <dxi-item>
+            <dxi-location screen="md lg" [row]="2" [col]="12"></dxi-location>
+            <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+            <div>
+                <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120" (onClick)="buscarClick($event)">
+                </dx-button>
+            </div>
+        </dxi-item>
+        <!--#endregion :::: FIN ROW 1 ::::  -->
+    </dx-responsive-box>
+    <br>
+    <!-- <dx-data-grid #rentCont2 id="gridContainer2" [dataSource]="arrRentContItems" [height]="920" [showColumnLines]="true" [rowAlternationEnabled]="true" [columnAutoWidth]="true" [allowColumnResizing]="true" [allowColumnReordering]="false" [columnAutoWidth]="true" [showBorders]="true"
+        (onRowPrepared)="onRowPrepared($event)" (onContentReady)="onContentReady($event)" (onCellPrepared)="onCellPrepared($event)">
+        
+        <dxi-column dataField="unidadNegocio" caption="Unidad Negocio" [fixed]="true" headerCellTemplate="headerTemplate" [groupIndex]="0"></dxi-column>
+        <dxi-column dataField="tractoOperador" caption="Tracto" [fixed]="true" headerCellTemplate="headerTemplate" [groupIndex]="1"></dxi-column>
+        <dxi-column dataField="noLiquidacion" caption="Liquidación" [fixed]="true" headerCellTemplate="headerTemplate" [groupIndex]="2"></dxi-column>
+
+        <dxi-column dataField="operador" caption="Operador" [fixed]="true" headerCellTemplate="headerTemplate" [width]="5"></dxi-column>
+
+        <dxi-column dataField="noviaje" caption="No. Viaje" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="operacion" caption="Operación" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="tipoViaje" caption="Tipo Viaje" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="tipoSegumiento" caption="Tipo Seguimiento" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="cliente" caption="Cliente" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="ruta" caption="Ruta" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+
+
+        <dxi-column dataField="inicio" caption="Inicio" format="dd-MM-yy HH:mm" type="date" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="fin" caption="Fin" [fixed]="false" format="dd-MM-yy HH:mm" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="ingresoTotal" caption="Ingreso Total" [fixed]="false" format="$ #,##0.##;-$ #,##0.##" headerCellTemplate="headerTemplate" cellTemplate="cellTemplateBold"></dxi-column>
+
+        <dxi-column dataField="margenUtilida" caption="Margen Utilidad" [fixed]="false" format="$ #,###,###.##;-$ #,##0.##" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="margenUtilidaPor" caption="%" [fixed]="false" format="percent" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="diasViaje" caption="Días Viaje" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="kms" caption="Kilómentros" [fixed]="false" format="fixedPoint" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="lstDiesel" caption="Lts. Diesel" [fixed]="false" format="fixedPoint" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="rendimiento" caption="Rendimiento" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="combustible" caption="Combustible" [fixed]="false" format="$ #,##0.##;-$ #,##0.##" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="combustiblePor" caption="%" format="percent" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="casetas" caption="Casetas" [fixed]="false" format="$ #,##0.##;-$ #,##0.##" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="casetasPor" caption="%" format="percent" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="sueldosLiquidacion" caption="Sueldos Liquidación" [fixed]="false" format="$ #,##0.##;-$ #,##0.##" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="sueldosLiquidacionPor" caption="%" format="percent" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="otros" caption="Otros" format="$ #,##0.##;-$ #,##0.##" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="otrosPor" caption="%" format="percent" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="costosDirectosViaje" caption="COSTOS DIRECTOS" format="$ #,##0.##;-$ #,##0.##" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="costosDirectosViajePor" caption="%" format="percent" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="sueldoBase" caption="Sueldo Base" format="$ #,##0.##;-$ #,##0.##" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="sueldoBasePor" caption="%" format="percent" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="cargaSocialNomina" caption="Carga Social Nómina" format="$ #,##0.##;-$ #,##0.##" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="cargaSocialNominaPor" caption="%" format="percent" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="fijoMtto" caption="Fijo Mtto." format="$ #,##0.##;-$ #,##0.##" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="fijoMttoPor" caption="%" format="percent" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="varMtto" caption="Var. Mtto" format="$ #,##0.##;-$ #,##0.##" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="varMttoPor" caption="%" format="percent" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="fijoTrans" caption="Fijo Trans." format="$ #,##0.##;-$ #,##0.##" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="fijoTransPor" caption="%" [fixed]="false" format="percent" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="varTrans" caption="Var Trans." format="$ #,##0.##;-$ #,##0.##" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="varTransPor" caption="%" [fixed]="false" format="percent" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="costosAdicionales" caption="COSTOS ADICIONALES" format="$ #,##0.##;-$ #,##0.##" [fixed]="false" headerCellTemplate="headerTemplate"></dxi-column>
+        <dxi-column dataField="costosAdicionalesPor" caption="%" [fixed]="false" format="percent" headerCellTemplate="headerTemplate"></dxi-column>
+
+        <dxo-group-panel [visible]="false"></dxo-group-panel>
+        <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+
+        <dxo-summary [calculateCustomSummary]="calcularPorcentajes">
+       
+            <dxi-total-item column="ingresoTotal" summaryType="sum" valueFormat="$ #,##0.##;-$ #,##0.##" displayFormat="{0}">
+            </dxi-total-item>
+            <dxi-total-item column="margenUtilida" summaryType="sum" valueFormat="$ #,##0.##;-$ #,##0.##" displayFormat="{0}">
+            </dxi-total-item>
+            <dxi-total-item column="fin" summaryType="sum" displayFormat="TOTAL UDN'S">
+            </dxi-total-item>
+            <dxi-total-item column="diasViaje" summaryType="sum" valueFormat="fixedPoint" displayFormat="{0}">
+            </dxi-total-item>
+            <dxi-total-item column="viajes" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint">
+            </dxi-total-item>
+            <dxi-total-item column="kms" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint">
+            </dxi-total-item>
+            <dxi-total-item column="lstDiesel" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint">
+            </dxi-total-item>
+            <dxi-total-item column="rendimiento" summaryType="avg" displayFormat="{0}" valueFormat="#,###,###.##;-$ #,##0.##">
+            </dxi-total-item>
+            <dxi-total-item column="combustible" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+            </dxi-total-item>
+            <dxi-total-item column="casetas" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+            </dxi-total-item>
+            <dxi-total-item column="sueldosLiquidacion" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+            </dxi-total-item>
+            <dxi-total-item column="otros" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+            </dxi-total-item>
+            <dxi-total-item column="costosDirectosViaje" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+            </dxi-total-item>
+            <dxi-total-item column="sueldoBase" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+            </dxi-total-item>
+            <dxi-total-item column="cargaSocialNomina" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+            </dxi-total-item>
+            <dxi-total-item column="fijoMtto" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+            </dxi-total-item>
+            <dxi-total-item column="varMtto" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+            </dxi-total-item>
+            <dxi-total-item column="fijoTrans" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+            </dxi-total-item>
+            <dxi-total-item column="varTrans" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+            </dxi-total-item>
+            <dxi-total-item column="costosAdicionales" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+            </dxi-total-item>
+
+
+            <dxi-total-item column="margenUtilidaPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+            <dxi-total-item column="combustiblePor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+            <dxi-total-item column="casetasPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+            <dxi-total-item column="sueldosLiquidacionPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+            <dxi-total-item column="otrosPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+            <dxi-total-item column="costosDirectosViajePor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+            <dxi-total-item column="sueldoBasePor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+            <dxi-total-item column="cargaSocialNominaPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+            <dxi-total-item column="fijoMttoPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+            <dxi-total-item column="varMttoPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+            <dxi-total-item column="fijoTransPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+            <dxi-total-item column="varTransPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+            <dxi-total-item column="costosAdicionalesPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+
+            <dxi-group-item column="margenUtilida" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="diasViaje" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="viajes" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="kms" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="lstDiesel" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item showInColumn="rendimiento" summaryType="custom" displayFormat="{0}" valueFormat="#,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="ingresoTotal" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="combustible" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="casetas" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="sueldosLiquidacion" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="otros" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="costosDirectosViaje" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="sueldoBase" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="cargaSocialNomina" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="fijoMtto" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="varMtto" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="fijoTrans" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="varTrans" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item column="costosAdicionales" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item showInColumn="fin"column="fin" summaryType="sum" displayFormat="SUBTOTAL" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+            </dxi-group-item>
+
+            <dxi-group-item showInColumn="margenUtilidaPor" name="grupMargenUtilidaPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item showInColumn="combustiblePor" name="grupCombustiblePor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item showInColumn="casetasPor" name="grupCasetasPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item showInColumn="sueldosLiquidacionPor" name="grupSueldosLiquidacionPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item showInColumn="otrosPor" name="grupOtrosPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item showInColumn="costosDirectosViajePor" name="grupCostosDirectosViajePor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item showInColumn="sueldoBasePor" name="grupSueldoBasePor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item showInColumn="cargaSocialNominaPor" name="grupCargaSocialNominaPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item showInColumn="fijoMttoPor" name="grupFijoMttoPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item showInColumn="varMttoPor" name="grupVarMttoPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item showInColumn="fijoTransPor" name="grupFijoTransPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item showInColumn="varTransPor" name="grupVarTransPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+            </dxi-group-item>
+            <dxi-group-item showInColumn="costosAdicionalesPor" name="grupCostosAdicionalesPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+            </dxi-group-item>
+        </dxo-summary>
+
+        <div *dxTemplate="let data of 'headerTemplate'">
+            <div style="font-weight: bolder; color: black">
+                {{ data.column.caption }}
+            </div>
+        </div>
+        <div *dxTemplate="let cell of 'cellTemplateBold'">
+            <div style="font-weight: bold;">{{cell.text}}</div>
+        </div>
+        <dxo-export [enabled]="true"></dxo-export>
+        <dxo-paging [pageSize]="10"></dxo-paging>
+        <dxo-pager [visible]="true" [allowedPageSizes]="allowedPageSizes" displayMode="full" [showPageSizeSelector]="true" [showInfo]="true" [showNavigationButtons]="true">
+        </dxo-pager>
+        <dxo-sorting mode="none"></dxo-sorting>
+    </dx-data-grid> -->
+
+
+    <dx-data-grid  #INGXKMS id="gridContainer3" [dataSource]="arrRentContItems" [height]="920"[showBorders]="true" [columnAutoWidth]="true"
+                   (onRowPrepared)="onRowPrepared($event)" (onContentReady)="onContentReady($event)" (onCellPrepared)="onCellPrepared($event)">
+    
+                   <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                        <dxo-header-filter [visible]="true"></dxo-header-filter>
+
+                        <dxi-column dataField="unidadNegocio" caption="Unidad Negocio" [fixed]="true" [groupIndex]="0"></dxi-column>
+                        <dxi-column dataField="tractoOperador" caption="Tracto" [fixed]="true" [groupIndex]="1"></dxi-column>
+                        <dxi-column dataField="noLiquidacion" caption="Liquidación" [fixed]="true"  [groupIndex]="2"></dxi-column>
+                
+                        <dxi-column dataField="operador" caption="Operador" [fixed]="true"  [width]="5"></dxi-column>
+                
+                        <dxi-column dataField="noviaje" caption="No. Viaje" [fixed]="true"></dxi-column>
+                        <dxi-column dataField="operacion" caption="Operación" [fixed]="true"></dxi-column>
+                        <dxi-column dataField="tipoViaje" caption="Tipo" [fixed]="true"></dxi-column>
+                        <!-- <dxi-column dataField="tipoSegumiento" caption="Tipo Seguimiento" [fixed]="true" [width]="140"></dxi-column> -->
+                        <dxi-column dataField="cliente" caption="Cliente" [fixed]="true" [width]="200"></dxi-column>
+                        <dxi-column dataField="ruta" caption="Ruta" [fixed]="true" [width]="250"></dxi-column>
+                
+                
+                        <!-- <dxi-column dataField="inicio" caption="Inicio" format="dd-MM-yy HH:mm" type="date" [fixed]="false" [width]="130"></dxi-column>
+                        <dxi-column dataField="fin" caption="Fin" [fixed]="false" format="dd-MM-yy HH:mm" [width]="130"></dxi-column>
+                        <dxi-column dataField="ingresoTotal" caption="Ingreso Total" [fixed]="false" format="$ #,##0.##;-$ #,##0.##" [width]="140"></dxi-column>
+                
+                        <dxi-column dataField="margenUtilida" caption="Margen Utilidad" [fixed]="false" format="$ #,###,###.##;-$ #,##0.##" [width]="150"></dxi-column>
+                        <dxi-column dataField="margenUtilidaPor" caption="%" [fixed]="false" format="percent" [width]="60"></dxi-column>
+                        <dxi-column dataField="diasViaje" caption="Días Viaje" [fixed]="false" [width]="100"></dxi-column> -->
+                        <dxi-column dataField="kms" caption="Kilómentros" [fixed]="false" format="fixedPoint" ></dxi-column>
+                        <dxi-column dataField="lstDiesel" caption="Lts. Diesel" [fixed]="false" format="fixedPoint" ></dxi-column>
+                        <dxi-column dataField="rendimiento" caption="Rendimiento" [fixed]="false" ></dxi-column>
+                        <dxi-column dataField="" caption=""[width]="20"></dxi-column>
+                        <!-- <dxi-column dataField="combustible" caption="Combustible" [fixed]="false" format="$ #,##0.##;-$ #,##0.##" [width]="130"></dxi-column>
+                        <dxi-column dataField="combustiblePor" caption="%" format="percent" [fixed]="false" [width]="60"></dxi-column>
+                        <dxi-column dataField="casetas" caption="Casetas" [fixed]="false" format="$ #,##0.##;-$ #,##0.##" [width]="100"></dxi-column>
+                        <dxi-column dataField="casetasPor" caption="%" format="percent" [fixed]="false" [width]="60"></dxi-column>
+                        <dxi-column dataField="sueldosLiquidacion" caption="Sueldos Liquidación" [fixed]="false" format="$ #,##0.##;-$ #,##0.##" [width]="170"></dxi-column>
+                        <dxi-column dataField="sueldosLiquidacionPor" caption="%" format="percent" [fixed]="false" [width]="60"></dxi-column>
+                        <dxi-column dataField="otros" caption="Otros" format="$ #,##0.##;-$ #,##0.##" [fixed]="false" [width]="100"></dxi-column>
+                        <dxi-column dataField="otrosPor" caption="%" format="percent" [fixed]="false" [width]="60"></dxi-column>
+                        <dxi-column dataField="costosDirectosViaje" caption="COSTOS DIRECTOS" format="$ #,##0.##;-$ #,##0.##" [fixed]="false" [width]="170"></dxi-column>
+                        <dxi-column dataField="costosDirectosViajePor" caption="%" format="percent" [fixed]="false" [width]="60"></dxi-column>
+                        <dxi-column dataField="sueldoBase" caption="Sueldo Base" format="$ #,##0.##;-$ #,##0.##" [fixed]="false" [width]="150"></dxi-column>
+                        <dxi-column dataField="sueldoBasePor" caption="%" format="percent" [fixed]="false" [width]="60"></dxi-column>
+                        <dxi-column dataField="cargaSocialNomina" caption="Carga Social Nómina" format="$ #,##0.##;-$ #,##0.##" [fixed]="false" [width]="170"></dxi-column>
+                        <dxi-column dataField="cargaSocialNominaPor" caption="%" format="percent" [fixed]="false" [width]="60"></dxi-column>
+                        <dxi-column dataField="fijoMtto" caption="Fijo Mtto." format="$ #,##0.##;-$ #,##0.##" [fixed]="false" [width]="100"></dxi-column>
+                        <dxi-column dataField="fijoMttoPor" caption="%" format="percent" [fixed]="false" [width]="60"></dxi-column>
+                        <dxi-column dataField="varMtto" caption="Var. Mtto" format="$ #,##0.##;-$ #,##0.##" [fixed]="false" [width]="100"></dxi-column>
+                        <dxi-column dataField="varMttoPor" caption="%" format="percent" [fixed]="false" [width]="60"></dxi-column>
+                        <dxi-column dataField="fijoTrans" caption="Fijo Trans." format="$ #,##0.##;-$ #,##0.##" [fixed]="false" [width]="100"></dxi-column>
+                        <dxi-column dataField="fijoTransPor" caption="%" [fixed]="false" format="percent" [width]="60"></dxi-column>
+                        <dxi-column dataField="varTrans" caption="Var Trans." format="$ #,##0.##;-$ #,##0.##" [fixed]="false" [width]="100"></dxi-column>
+                        <dxi-column dataField="varTransPor" caption="%" [fixed]="false" format="percent" [width]="60"></dxi-column>
+                        <dxi-column dataField="costosAdicionales" caption="COSTOS ADICIONALES" format="$ #,##0.##;-$ #,##0.##" [fixed]="false" [width]="190"></dxi-column>
+                        <dxi-column dataField="costosAdicionalesPor" caption="%" [fixed]="false" format="percent" [width]="60"></dxi-column> -->
+                
+                        <dxo-summary [calculateCustomSummary]="calcularPorcentajes">
+                       
+                            <!-- <dxi-total-item column="ingresoTotal" summaryType="sum" valueFormat="$ #,##0.##;-$ #,##0.##" displayFormat="{0}">
+                            </dxi-total-item>
+                            <dxi-total-item column="margenUtilida" summaryType="sum" valueFormat="$ #,##0.##;-$ #,##0.##" displayFormat="{0}">
+                            </dxi-total-item>
+
+                            <dxi-total-item column="diasViaje" summaryType="sum" valueFormat="fixedPoint" displayFormat="{0}">
+                            </dxi-total-item>
+                            <dxi-total-item column="viajes" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint">
+                            </dxi-total-item> -->
+                            <dxi-total-item column="ruta" summaryType="sum" displayFormat="TOTAL UDN'S">
+                            </dxi-total-item>
+                            <dxi-total-item column="kms" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint">
+                            </dxi-total-item>
+                            <dxi-total-item column="lstDiesel" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint">
+                            </dxi-total-item>
+                            <dxi-total-item column="rendimiento" summaryType="avg" displayFormat="{0}" valueFormat="#,###,###.##;-$ #,##0.##">
+                            </dxi-total-item>
+                            <!-- <dxi-total-item column="combustible" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+                            </dxi-total-item>
+                            <dxi-total-item column="casetas" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+                            </dxi-total-item>
+                            <dxi-total-item column="sueldosLiquidacion" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+                            </dxi-total-item>
+                            <dxi-total-item column="otros" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+                            </dxi-total-item>
+                            <dxi-total-item column="costosDirectosViaje" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+                            </dxi-total-item>
+                            <dxi-total-item column="sueldoBase" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+                            </dxi-total-item>
+                            <dxi-total-item column="cargaSocialNomina" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+                            </dxi-total-item>
+                            <dxi-total-item column="fijoMtto" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+                            </dxi-total-item>
+                            <dxi-total-item column="varMtto" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+                            </dxi-total-item>
+                            <dxi-total-item column="fijoTrans" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+                            </dxi-total-item>
+                            <dxi-total-item column="varTrans" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+                            </dxi-total-item>
+                            <dxi-total-item column="costosAdicionales" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##">
+                            </dxi-total-item> -->
+                
+                
+                            <!-- <dxi-total-item column="margenUtilidaPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="combustiblePor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="casetasPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="sueldosLiquidacionPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="otrosPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="costosDirectosViajePor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="sueldoBasePor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="cargaSocialNominaPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="fijoMttoPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="varMttoPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="fijoTransPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="varTransPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="costosAdicionalesPor" summaryType="avg" [valueFormat]="separatorIV" displayFormat="{0}"></dxi-total-item> -->
+                
+                          <!-- SUMARY DE GRUPO -->
+                            <!-- <dxi-group-item column="margenUtilida" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="diasViaje" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="viajes" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint" [showInGroupFooter]="true">
+                            </dxi-group-item> -->
+                            <!-- <dxi-group-item column="kmsCargados" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint" [showInGroupFooter]="true">
+                            </dxi-group-item> -->
+                            <dxi-group-item showInColumn="ruta" column="ruta" summaryType="sum" displayFormat="SUBTOTAL" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="kms" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="lstDiesel" summaryType="sum" displayFormat="{0}" valueFormat="fixedPoint" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item showInColumn="rendimiento" summaryType="custom" displayFormat="{0}" valueFormat="#,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <!-- <dxi-group-item column="ingresoTotal" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="combustible" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="casetas" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="sueldosLiquidacion" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="otros" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="costosDirectosViaje" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="sueldoBase" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="cargaSocialNomina" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="fijoMtto" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="varMtto" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="fijoTrans" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="varTrans" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item column="costosAdicionales" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###.##;-$ #,##0.##" [showInGroupFooter]="true">
+                            </dxi-group-item>
+
+                            <!-- PORCENTAJES GRUPO -->
+                            <!-- <dxi-group-item showInColumn="margenUtilidaPor" name="grupMargenUtilidaPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item showInColumn="combustiblePor" name="grupCombustiblePor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item showInColumn="casetasPor" name="grupCasetasPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item showInColumn="sueldosLiquidacionPor" name="grupSueldosLiquidacionPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item showInColumn="otrosPor" name="grupOtrosPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item showInColumn="costosDirectosViajePor" name="grupCostosDirectosViajePor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item showInColumn="sueldoBasePor" name="grupSueldoBasePor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item showInColumn="cargaSocialNominaPor" name="grupCargaSocialNominaPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item showInColumn="fijoMttoPor" name="grupFijoMttoPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item showInColumn="varMttoPor" name="grupVarMttoPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item showInColumn="fijoTransPor" name="grupFijoTransPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item showInColumn="varTransPor" name="grupVarTransPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-group-item showInColumn="costosAdicionalesPor" name="grupCostosAdicionalesPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true">
+                            </dxi-group-item> -->
+                        </dxo-summary>
+
+                        <dxo-group-panel [visible]="false"></dxo-group-panel>
+                        <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+                        <dxo-export [enabled]="true" fileName="Rentabilidad Viajes"></dxo-export>
+                        <dxo-paging [pageSize]="60"></dxo-paging>
+                        <dxo-sorting mode="none"></dxo-sorting>
+
+                   </dx-data-grid>
+
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+</div>

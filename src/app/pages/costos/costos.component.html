@@ -1,0 +1,188 @@
+<div #myDiv [id]="'myDiv'">
+    <h2 class="content-block">Costos mensuales</h2>
+
+    <div class="content-block dx-card responsive-paddings">
+        <dx-responsive-box>
+            <!-- COLS -->
+            <dxi-col [ratio]="0.7"></dxi-col>
+            <dxi-col [ratio]="1"></dxi-col>
+            <dxi-col [ratio]="0.15"></dxi-col>
+            <dxi-col [ratio]="0.15"></dxi-col>
+            <dxi-col [ratio]="0.35"></dxi-col>
+            <!--Fin-->
+            <dxi-col [ratio]="1">"</dxi-col>
+            <dxi-col [ratio]="0.25"></dxi-col>
+            <dxi-col [ratio]="0.65"></dxi-col>
+            <dxi-col [ratio]="1"></dxi-col>
+            <dxi-col [ratio]="1"></dxi-col>
+            <dxi-col [ratio]="1"></dxi-col>
+            <dxi-col [ratio]="1"></dxi-col>
+
+            <!-- ROWS -->
+            <dxi-row [ratio]="1"></dxi-row>
+            <dxi-row [ratio]="1"></dxi-row>
+            <dxi-row [ratio]="1"></dxi-row>
+            <dxi-row [ratio]="1"></dxi-row>
+            <dxi-row [ratio]="1"></dxi-row>
+            <dxi-row [ratio]="1"></dxi-row>
+            <dxi-row [ratio]="1"></dxi-row>
+            <dxi-row [ratio]="1"></dxi-row>
+            <dxi-row [ratio]="1"></dxi-row>
+            <dxi-row [ratio]="1"></dxi-row>
+            <dxi-row [ratio]="1"></dxi-row>
+            <dxi-row [ratio]="1"></dxi-row>
+            <dxi-row [ratio]="1"></dxi-row>
+            <dxi-row [ratio]="1"></dxi-row>
+
+            <!-- CONTROLES DEL FORM -->
+            <!--#region :::: ROW 1 DEL FORM ::::  -->
+            <!--ROW 1 Consulta -->
+            <dxi-item>
+                <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+                <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="0" [col]="0" [colspan]="12"></dxi-location>
+                <div>Año:</div>
+            </dxi-item>
+            <dxi-item>
+                <dxi-location screen="md lg" [row]="0" [col]="1" [colspan]="3"></dxi-location>
+                <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="1" [col]="0" [colspan]="12"></dxi-location>
+                <dx-select-box [items]="arrAnos" displayExpr="anio" valueExpr="idAnio" (onValueChanged)="seleccionarAnio($event)"></dx-select-box>
+            </dxi-item>
+            <dxi-item>
+                <dxi-location screen="md lg" [row]="0" [col]="5"></dxi-location>
+                <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="2" [col]="0" [colspan]="12"></dxi-location>
+                <div>Mes:</div>
+            </dxi-item>
+            <dxi-item>
+                <dxi-location screen="md lg" [row]="0" [col]="6" [colspan]="3"></dxi-location>
+                <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="3" [col]="0" [colspan]="12"></dxi-location>
+                <dx-select-box [items]="arrMeses" displayExpr="nombre" valueExpr="idMes" (onValueChanged)="seleccionarMes($event)">
+                </dx-select-box>
+            </dxi-item>
+            <dxi-item>
+                <dxi-location screen="md lg" [row]="0" [col]="10" [colspan]="2"></dxi-location>
+                <dxi-location style="margin-top: 1.4rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                <div>
+                    <dx-button stylingMode="contained" text="Consultar Datos" icon="search" type="normal" [width]="190" (onClick)="verDetallesClick($event)">
+                    </dx-button>
+                </div>
+            </dxi-item>
+            <!--#endregion :::: FIN ROW 1 ::::  -->
+
+            <!--ROW 2 Datos -->
+            <dxi-item>
+                <dxi-location screen="md lg" [row]="1" [col]="0" [colspan]="3"></dxi-location>
+                <dxi-location style="margin-top: 1.4rem" screen="xs sm" [row]="13" [col]="0" [colspan]="12"></dxi-location>
+                <div style="font-weight: bolder; margin-bottom: 10px">
+                    Día del mes:
+                    <span class="badge-rg">{{ diaMes}}</span>
+                </div>
+            </dxi-item>
+            <dxi-item>
+                <dxi-location screen="md lg" [row]="1" [col]="4" [colspan]="3"></dxi-location>
+                <dxi-location style="margin-top: 1.4rem" screen="xs sm" [row]="13" [col]="0" [colspan]="12"></dxi-location>
+                <div style="font-weight: bolder; margin-bottom: 10px">
+                    Días totales:
+                    <span class="badge-rg">{{ diasTotales }}</span>
+                </div>
+            </dxi-item>
+            <dxi-item>
+                <dxi-location screen="md lg" [row]="1" [col]="7" [colspan]="3"></dxi-location>
+                <dxi-location style="margin-top: 1.4rem" screen="xs sm" [row]="13" [col]="0" [colspan]="12"></dxi-location>
+                <div style="font-weight: bolder; margin-bottom: 10px">
+                    Promedio:
+                    <span class="badge-rg">{{ promedio | percent }}</span>
+                </div>
+            </dxi-item>
+
+
+
+            <!--#endregion :::: FIN ROW 1 ::::  -->
+
+
+        </dx-responsive-box>
+
+        <!--#region :::: GRID ::::  -->
+        <dx-data-grid #rentGer id="gridContainer" [dataSource]="arrCostos" [columnAutoWidth]="true" [showColumnLines]="true" [showBorders]="true" [rowAlternationEnabled]="true" (onRowPrepared)="onRowPrepared($event)">
+            <dxo-scrolling mode="virtual"></dxo-scrolling>
+            <dxo-grouping #expand [autoExpandAll]="true" [allowCollapsing]="false"></dxo-grouping>
+            <!-- <dxi-column dataField="udn" caption="UDN" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column> -->
+            <dxi-column dataField="udn" [groupIndex]="0"></dxi-column>
+            <!-- <dxi-column dataField="tipo" [groupIndex]="1"></dxi-column> -->
+            <dxi-column dataField="concepto" caption="Concepto" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+            <dxi-column caption="Real" headerCellTemplate="headerTemplate">
+                <dxi-column dataField="real" caption="$" format="currency" precision="2" headerCellTemplate="headerTemplate" [width]="120"></dxi-column>
+                <dxi-column dataField="porReal" caption="%" alignment="right" format="##0.#%" headerCellTemplate="headerTemplate" [width]="70"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Presupuesto" headerCellTemplate="headerTemplate">
+                <dxi-column dataField="presupuesto" caption="$" headerCellTemplate="headerTemplate" [width]="120" format="currency" precision="2"></dxi-column>
+                <dxi-column dataField="porPresupuesto" caption="%" alignment="right" format="##0.#%" headerCellTemplate="headerTemplate" [width]="70"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Desviación RealVSPrespuesto" headerCellTemplate="headerTemplate">
+                <dxi-column dataField="desviacionDiaria" caption="$" headerCellTemplate="headerTemplate" [width]="120" format="currency" precision="2"></dxi-column>
+                <dxi-column dataField="porDesviacion" caption="%" alignment="right" format="##0.#%" precision="2" headerCellTemplate="headerTemplate" [width]="70"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Promedios Diarios" headerCellTemplate="headerTemplate">
+                <dxi-column dataField="proyDiaria" caption="Real" headerCellTemplate="headerTemplate" [width]="100" format="currency" precision="2"></dxi-column>
+                <dxi-column dataField="promDiario" caption="Presupuesto" headerCellTemplate="headerTemplate" [width]="100" format="currency" precision="2"></dxi-column>
+                <dxi-column dataField="porAvanceDiario" caption="%" alignment="right" format="##0.#%" headerCellTemplate="headerTemplate" [width]="60"></dxi-column>
+            </dxi-column>
+
+            <dxi-column caption="Mensual" headerCellTemplate="headerTemplate">
+                <dxi-column dataField="proyeccion" caption="Proyección" headerCellTemplate="headerTemplate" [width]="120" format="currency" precision="2"></dxi-column>
+                <dxi-column dataField="porProyeccion" caption="%" alignment="right" format="##0.#%" headerCellTemplate="headerTemplate" [width]="60"></dxi-column>
+                <dxi-column dataField="desviacionMensual" caption="Desviación" headerCellTemplate="headerTemplate" [width]="120" format="currency" precision="2"></dxi-column>
+                <dxi-column dataField="porDesviacionMensual" caption="% " alignment="right" format="##0.#%" headerCellTemplate="headerTemplate" [width]="70"></dxi-column>
+            </dxi-column>
+
+
+            <!-- <dxo-summary>
+
+                <dxi-total-item column="real" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###;-$ #,##0">
+                </dxi-total-item>
+                
+                <dxi-total-item column="presupuesto" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###;-$ #,##0">
+                </dxi-total-item>
+                <dxi-total-item column="porPresupuesto" summaryType="avg" displayFormat="{0}" valueFormat="percent">
+                </dxi-total-item> 
+
+
+                <dxi-group-item column="real" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###;-$ #,##0" [showInGroupFooter]="false" [alignByColumn]="true">
+                </dxi-group-item>
+                <dxi-group-item column="porReal" summaryType="sum" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="false" [alignByColumn]="true">
+                </dxi-group-item>
+                <dxi-group-item column="presupuesto" summaryType="sum" displayFormat="{0}" valueFormat="$ #,###,###;-$ #,##0" [showInGroupFooter]="false" [alignByColumn]="true">
+                </dxi-group-item>
+                <dxi-group-item column="porPresupuesto" summaryType="sum" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="false" [alignByColumn]="true">
+                </dxi-group-item>
+
+
+            </dxo-summary> -->
+
+            <div *dxTemplate="let data of 'headerTemplate'">
+                <div style="font-weight: bolder; color: black">
+                    {{ data.column.caption }}
+                </div>
+            </div>
+
+            <div *dxTemplate="let info of 'titleHeaderTemplate'">
+                <div style="font-weight: bolder; color: #ff5722">
+                    {{ info.column.caption }}
+                </div>
+            </div>
+
+            <div *dxTemplate="let d of 'diffCellTemplate'" [class]="d.text >= 0 ? 'inc' : 'dec'">
+                <div class="diff"></div>
+            </div>
+
+            <dxo-export [enabled]="true"></dxo-export>
+            <dxo-paging [pageSize]="100"></dxo-paging>
+            <dxo-sorting mode="none"></dxo-sorting>
+        </dx-data-grid>
+        <!--#endregion :::: FIN GRID ::::  -->
+
+
+
+        <!-- LOAD PANEL -->
+        <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#myDiv34' }" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false">
+        </dx-load-panel>
+    </div>

@@ -1,0 +1,54 @@
+<card-analytics titleText="Motivos Baja" contentClass="sales-by-category">
+
+  <div filter class="sales-filter">
+    <!-- [selectedItemKey]="groupByPeriods[0]" -->
+    <dx-drop-down-button *ngIf="data.length !== 0" [text]="itemPer" stylingMode="text" [useSelectMode]="true"  [items]="groupByPeriods" (onSelectionChanged)="selectBA($event)" [width]="100"></dx-drop-down-button>
+    <dx-drop-down-button *ngIf="itemPer == 'Mensual'" [text]="itemUdnM" stylingMode="text" [useSelectMode]="true" [items]="groupByUdnMen" (onSelectionChanged)="selectUdnMensual($event)" [width]="130"></dx-drop-down-button>  
+    <dx-drop-down-button *ngIf="itemPer == 'Anual'" [text]="itemUdnA" stylingMode="text" [useSelectMode]="true" [items]="groupByUdnAnu" (onSelectionChanged)="selectUdnAnual($event)" [width]="130"></dx-drop-down-button>  
+  </div>
+  <dx-pie-chart class="sales-pie" [dataSource]="data" type="doughnut" [diameter]="0.8" [innerRadius]="0.6" >
+    <dxi-series argumentField="motivo" valueField="porcentaje">
+      <dxo-label backgroundColor="none" [radialOffset]="-20" [visible]="true" format="percent">
+        <dxo-font color="#757575" [size]="15"></dxo-font>
+      </dxo-label>
+    </dxi-series>
+
+    <dxo-legend>
+      <dxo-margin [top]="70"></dxo-margin>
+    </dxo-legend>
+
+    <dxo-size [height]="270"></dxo-size>
+
+    <dxo-legend [visible]="false"></dxo-legend>
+  </dx-pie-chart>
+
+  <dx-chart class="sales-bars" [dataSource]="data" [rotated]="true">
+    <dxo-common-axis-settings [visible]="false">
+      <dxo-tick [visible]="false"></dxo-tick>
+    </dxo-common-axis-settings>
+
+    <dxo-legend [visible]="false"></dxo-legend>
+
+    <dxo-common-series-settings
+      argumentField="motivo" valueField="bajas" type="bar" [ignoreEmptyPoints]="true">
+    </dxo-common-series-settings>
+
+    <dxo-series-template nameField="motivo"> </dxo-series-template>
+    <dxo-size [height]="270"></dxo-size>
+  </dx-chart>
+
+   <!-- <dx-chart class="sales-bars" [dataSource]="data" [rotated]="true">
+
+        <dxo-common-series-settings argumentField="motivo" type="bar" valueField="bajas" [barWidth]="20">
+            <dxo-label [visible]="true" position="outside" [rotationAngle]="90"
+             backgroundColor="transparent" [verticalOffset]="15">
+                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+            </dxo-label>
+        </dxo-common-series-settings>
+        <dxo-series-template nameField="udn"></dxo-series-template>
+        <dxo-title text=""></dxo-title>
+        <dxo-legend verticalAlignment="bottom" horizontalAlignment="center"></dxo-legend>
+        <dxo-export [enabled]="true" fileName=""></dxo-export>
+        <dxo-size [height]="400"></dxo-size>
+    </dx-chart> -->
+</card-analytics>

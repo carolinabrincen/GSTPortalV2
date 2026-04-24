@@ -1,0 +1,79 @@
+.badge-rg {
+  background-color: #ff5722;
+  border-radius: 6px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  color: white;
+  font-size: large;
+  font-weight: 500;
+}
+
+::ng-deep #gridContainer .current-value {
+  display: inline-block;
+}
+
+::ng-deep #gridContainer .diff {
+  position: relative;
+  display: table-cell;
+  font-size: 16px;
+}
+
+::ng-deep #gridContainer .inc .diff {
+  color: #2ab71b;
+}
+
+::ng-deep #gridContainer .inc .diff::before {
+  content: '';
+}
+
+::ng-deep #gridContainer .dec .diff::before {
+  content: '';
+}
+
+::ng-deep #gridContainer .dec .diff {
+  color: #f00;
+}
+
+::ng-deep #gridContainer .inc .diff::after,
+::ng-deep #gridContainer .dec .diff::after {
+  content: '';
+  display: block;
+  height: 15px;
+  width: 15px;
+  right: -30px;
+  top: 6px;
+  background-repeat: no-repeat;
+  background-size: 15px 15px;
+  margin-left: 28px;
+}
+
+::ng-deep #gridContainer .inc .diff::after {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADKSURBVHjaYtTaLs1ABEiG0nPRJa56PEHhsxBhmCUQT4OyrwHxcXyKmQgYJgHE64CYDYrXQcXIMhCbAcgWkGzgNKh38QUB0QamIUUErkhKI9ZAGyCeTERkTYaqxWsgKA2txhdG6GGsvUNGGpeBRMUiGhCFGsqGzUBQQJsxkA5AemaiG5hDIBIIgQSgK0FmMDACs549kN5FZLjhA7+A2A2U9YSAOBeLAk4gnoBDczoOcSFGPIUDPxB/wCHHiKtwYGKgMhg1cBAaCBBgAJTUIL3ToPZfAAAAAElFTkSuQmCC');
+}
+
+::ng-deep #gridContainer .dec .diff::after {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADJSURBVHjaYvzPgBfgkhYA4o8QFahKmBioDEYNHIQGsgBxIBCLkqgvAYi/g1mMjMjir0EJzR6If/6HpChKMMgMe3DKBeIcKhiY8x/MYoDj+RQYNgdkGLqBbEB8kgzDToL1YjEQhKWB+BUJhj0H64Eahs1AELYhMpJ+gtUiGYbLQBBOI8LANLBaIg1kAAc0vkiAqSPBQFAkHcNi2DGoHMkGgrAENOCRI0ECRQ2JBoKwJTQCfkLZDPgMZPxPXN5NhtJzMSsJVBMAAgwAyWSY2svfmrwAAAAASUVORK5CYII=');
+}
+
+::ng-deep .dx-scrollbar-horizontal.dx-scrollbar-hoverable {
+  height: 15px;
+}
+
+::ng-deep .dx-scrollbar-vertical.dx-scrollbar-hoverable {
+  width: 15px;
+}
+
+::ng-deep .dx-scrollbar-horizontal .dx-scrollable-scroll { 
+  height: 15px; 
+}
+
+::ng-deep .dx-scrollbar-vertical .dx-scrollable-scroll { 
+  width: 15px; 
+}
+
+::ng-deep .dx-scrollable-scroll-content { 
+  background-color:gray !important; /* optional if you want to change the color */
+}
+

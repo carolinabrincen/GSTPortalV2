@@ -1,0 +1,539 @@
+<!-- Card principal  -->
+<div class="content-block dx-card responsive-paddings padding-10">
+
+    <dx-tab-panel>
+        <dxi-item title="Cartera cliente">
+            <br><br>
+            <dx-responsive-box>
+                <dxi-col [ratio]=".15"></dxi-col>
+                <dxi-col [ratio]=".40"></dxi-col>
+                <dxi-col [ratio]=".10"></dxi-col>
+                <dxi-col [ratio]=".20"></dxi-col>
+                <dxi-col [ratio]="1"></dxi-col>
+                <dxi-col [ratio]=".10"></dxi-col>
+                <dxi-col [ratio]=".40"></dxi-col>
+                <dxi-col [ratio]=".10"></dxi-col>
+                <dxi-col [ratio]=".40"></dxi-col>
+
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Periodo:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="1"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="periodo" displayExpr="periodo" valueExpr="periodo" (onValueChanged)="seleccionarPeriodo($event)">
+                    </dx-select-box>
+                </dxi-item>
+
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="3"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Compañía:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="4"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="boxCartera" displayExpr="cartera" valueExpr="id" (onValueChanged)="selectBoxCartera($event)">
+                    </dx-select-box>
+                </dxi-item>
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="6"></dxi-location>
+                    <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                    <div>
+                        <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120" (onClick)="buscarClick($event)">
+                        </dx-button>
+                    </div>
+                </dxi-item>
+
+                <dxi-item>
+                  <dxi-location screen="md lg" [row]="0" [col]="8"></dxi-location>
+                  <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                  <div>
+                      <dx-button stylingMode="contained" text="Actualizar" type="normal" [width]="120" (onClick)="Actualizar()">
+                      </dx-button>
+                  </div>
+              </dxi-item>
+
+            </dx-responsive-box>
+
+            <br>
+
+            <div class="dx-field">
+                <h5>PERIODO: <b>{{ periodoActual }}</b></h5>
+                <div class="dx-field-value d-block mr-0 ml-auto" style="width: 30%;">
+                    
+                    <h5>Facturas con carta cobro: <b>{{carteraInfo?.facturasConCarta}}</b></h5>
+                    <h5>Facturas sin carta cobro:&nbsp; <b>{{carteraInfo?.facturasSinCarta}}</b></h5>
+                    <h5>Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <b>{{carteraInfo?.facturasTotal}}</b></h5>                
+                </div>
+
+            </div>
+            <br><br>
+            <dx-tab-panel>
+            <dxi-item title="Cartera cliente">
+                <br>
+                <div id="exportContainer">
+                  <dx-button text="EXPORTAR TODO" icon="xlsxfile" (onClick)="exportGrids($event)"></dx-button>
+                </div>
+                <br><br>
+<!--==============================================GRID 1 CARTERA CLIENTE=================================================================================-->
+                <dx-data-grid  #gridCartera id="gridContainer2" [dataSource]="carteraClientes" [height]="500"[showBorders]="true" [columnAutoWidth]="true"
+                (onRowPrepared)="onRowPreparedCC($event)" (onCellPrepared)="onCellPreparedCC($event)">
+
+                  <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                  <dxo-paging [pageSize]="100"></dxo-paging>
+                  <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                  <dxo-export [enabled]="true" fileName="CARTERA CLIENTES" [customizeExcelCell]="customizeCAER"></dxo-export>
+                    
+                  <dxi-column caption="{{printValue+' - '+ printPeriodo}}">
+                    <dxi-column dataField="cliente" caption="Nombre de cliente"></dxi-column>
+                    <dxi-column dataField="sinCartera" caption="Sin Carta Cobro" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="corriente" caption="Corriente" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="per1a30" caption="1 A 30" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="per31a60" caption="31 A 60" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="per61a90" caption="61 A 90" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="permayor90" caption="MAS 90" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="total" caption="Total" cssClass="styletotal" [format]="formatMoneda" ></dxi-column>
+                   
+                  </dxi-column>
+
+                  <dxo-summary>
+                    <dxi-total-item column="cliente" [customizeText]="customizeDate"></dxi-total-item>
+                    <dxi-total-item column="sinCartera" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="corriente" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="per1a30" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="per31a60" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="per61a90" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="permayor90" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="total" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                  </dxo-summary>
+
+                </dx-data-grid>
+                <br><br>
+<!--==============================================GRID 2 SIN CARTERA=====================================================================================-->
+                <dx-data-grid  #gridSinCart id="gridContainer3" [dataSource]="sinCartera" [height]="340"[showBorders]="true" [columnAutoWidth]="true"
+                (onRowPrepared)="onRowPreparedSinC($event)" (onCellPrepared)="onCellPreparedSinC($event)">
+
+                  <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                  <dxo-paging [pageSize]="100"></dxo-paging>
+                  <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                  <dxo-export [enabled]="true" fileName="CARTERA CLIENTES" [customizeExcelCell]="customizeCAER"></dxo-export>
+                    
+                  <dxi-column caption="{{printValue+' - '+ printPeriodo}}">
+
+                    <!-- <dxi-column dataField="sinCartera" caption="Sin cartera" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="corriente" caption="Corriente" [format]="formatMoneda"></dxi-column> -->
+                    <dxi-column dataField="cliente" caption="Nombre de cliente"></dxi-column>
+                    <dxi-column dataField="per1a30" caption="1 A 30" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="per31a60" caption="31 A 60" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="per61a90" caption="61 A 90" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="permayor90" caption="MAS 90" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="sinCartera" caption="Total" cssClass="styletotal" [format]="formatMoneda" ></dxi-column>
+                  
+                  </dxi-column>
+
+                  <dxo-summary>
+                    <!-- <dxi-total-item column="corriente" summaryType="sum" displayFormat="{0}" [valueFormat]="separator" ></dxi-total-item> -->
+                    <dxi-total-item column="cliente" [customizeText]="CustomizeSinCart"></dxi-total-item>
+                    <dxi-total-item column="per1a30" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="per31a60" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="per61a90" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="permayor90" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="sinCartera" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                  </dxo-summary>
+
+                </dx-data-grid>
+                <br><br>
+<!--================================================GRID 3 CARTERA INTERCOMPANIAS =======================================================================-->
+                <dx-data-grid  #gridInter id="gridContainer4" [dataSource]="carteraMI" [height]="500"[showBorders]="true" [columnAutoWidth]="true"
+                (onRowPrepared)="onRowPreparedCMI($event)" (onCellPrepared)="onCellPreparedCMI($event)">
+
+                  <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                  <dxo-paging [pageSize]="100"></dxo-paging>
+                  <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                  <dxo-export [enabled]="true" fileName="CARTERA Inter Compañia" [customizeExcelCell]="customizeCAER"></dxo-export>
+                  <!-- <dxo-grouping #expand [autoExpandAll]="false" [allowCollapsing]="false"></dxo-grouping> -->
+                    
+                  <dxi-column caption="{{printValue+' - '+ printPeriodo}}">
+                    <dxi-column dataField="cliente" caption="" [groupIndex]="0"></dxi-column>
+                    <dxi-column dataField="intercompania" caption="Intercompañia"></dxi-column>
+                    <dxi-column dataField="sinCartera" caption="Sin Carta Cobro" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="corriente" caption="Corriente" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="per1a30" caption="1 A 30" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="per31a60" caption="31 A 60" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="per61a90" caption="61 A 90" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="permayor90" caption="MAS 90" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="total" caption="Total" cssClass="styletotal" [format]="formatMoneda" ></dxi-column>
+                   
+                    <!-- <dxi-column dataField="" caption="" [width]="20"></dxi-column> -->
+                  </dxi-column>
+
+                  <dxo-summary>
+                    <dxi-total-item column="cliente"></dxi-total-item>
+                    <dxi-total-item column="intercompania" [customizeText]="customizeIC"></dxi-total-item>
+                    <dxi-total-item column="sinCartera" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="corriente" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="per1a30" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="per31a60" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="per61a90" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="permayor90" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="total" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                  </dxo-summary>
+
+                </dx-data-grid>
+                <br><br>
+<!--==============================================GRID 4 SIN CARTERA INTERCOMPAÑIAS======================================================================-->
+                <dx-data-grid  #gridInerSinCart id="gridContainer4" [dataSource]="carteraInterSinC" [height]="340"[showBorders]="true" [columnAutoWidth]="true"
+                (onRowPrepared)="onRowPreparedISC($event)" (onCellPrepared)="onCellPreparedISC($event)">
+
+                  <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                  <dxo-paging [pageSize]="100"></dxo-paging>
+                  <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                  <dxo-export [enabled]="true" fileName="CARTERA Inter Compañia" [customizeExcelCell]="customizeCAER"></dxo-export>
+                    
+                  <dxi-column caption="{{printValue+' - '+ printPeriodo}}">
+                    <dxi-column dataField="cliente" caption="" [groupIndex]="0"></dxi-column>
+                    <dxi-column dataField="intercompania" caption="Nombre de cliente"></dxi-column>
+                    <!-- <dxi-column dataField="intercompania" caption="Intercompañia"></dxi-column>
+                    <dxi-column dataField="sinCartera" caption="Sin cartera" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="corriente" caption="Corriente" [format]="formatMoneda"></dxi-column> -->
+                    <dxi-column dataField="per1a30" caption="1 A 30" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="per31a60" caption="31 A 60" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="per61a90" caption="61 A 90" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="permayor90" caption="MAS 90" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="sinCartera" caption="Total" cssClass="styletotal" [format]="formatMoneda"></dxi-column>
+                  
+                    <!-- <dxi-column dataField="" caption="" [width]="20"></dxi-column> -->
+                  </dxi-column>
+
+                  <dxo-summary>
+                    <dxi-total-item column="cliente"></dxi-total-item>
+                     <dxi-total-item column="intercompania" [customizeText]="customizeISC"></dxi-total-item>
+                    <!--<dxi-total-item column="sinCartera" summaryType="sum" displayFormat="{0}" [valueFormat]="separator" ></dxi-total-item>
+                    <dxi-total-item column="corriente" summaryType="sum" displayFormat="{0}" [valueFormat]="separator" ></dxi-total-item> -->
+                    <dxi-total-item column="per1a30" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="per31a60" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="per61a90" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="permayor90" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                    <dxi-total-item column="sinCartera" summaryType="sum" displayFormat="{0}" [valueFormat]="formatMoneda" ></dxi-total-item>
+                  </dxo-summary>
+
+                </dx-data-grid>
+<!--=========================================GRID 5 TOTAL CARTERA CIENTE Y CARTERA INTER=================================================================-->
+                <dx-data-grid  #gridCliCartInt id="gridContainer5" class="grid3" [dataSource]="myTotal" [showBorders]="true" [height]="120" [columnAutoWidth]="true"
+                (onRowPrepared)="onRowPreparedCCI($event)" (onCellPrepared)="onCellPreparedCCI($event)">
+
+                  <dxo-scrolling showScrollbar="never"></dxo-scrolling>
+                <!--  <dxo-paging [pageSize]="100"></dxo-paging>
+                  <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel> -->
+                  <dxo-export [enabled]="true" fileName="Total carteras" [customizeExcelCell]="customizeCAER"></dxo-export>
+                
+                    <dxi-column dataField="intercompania" caption=""></dxi-column>
+                    <dxi-column dataField="sinCarta" caption="Sin Carta Cobro" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="corriente" caption="Corriente" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="unoA30" caption="1 A 30" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="tre1A60" caption="31 A 60" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="ses0A90" caption="61 A 90" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="mas90" caption="MAS 90" [format]="formatMoneda"></dxi-column>
+                    <dxi-column dataField="total" caption="Total" [format]="formatMoneda"></dxi-column>
+                  
+                    <!-- <dxo-summary>
+                        <dxi-total-item column="1" [customizeText]="customizeTotal"></dxi-total-item>
+                        <dxi-total-item column="2" summaryType="sum" displayFormat="{0}" [valueFormat]="separator" ></dxi-total-item>
+                        <dxi-total-item column="3" summaryType="sum" displayFormat="{0}" [valueFormat]="separator" ></dxi-total-item>
+                        <dxi-total-item column="4" summaryType="sum" displayFormat="{0}" [valueFormat]="separator" ></dxi-total-item>
+                        <dxi-total-item column="5" summaryType="sum" displayFormat="{0}" [valueFormat]="separator" ></dxi-total-item>
+                        <dxi-total-item column="6" summaryType="sum" displayFormat="{0}" [valueFormat]="separator" ></dxi-total-item>
+                        <dxi-total-item column="7" summaryType="sum" displayFormat="{0}" [valueFormat]="separator" ></dxi-total-item>
+                      </dxo-summary> -->
+
+                </dx-data-grid>
+
+<!--================================================POPUP CERRAR PERIODO=================================================================================-->
+                <dx-speed-dial-action label="CERRAR PERIODO" [index]="1" (onClick)="changePeriodoClick()" style="left: -1132px; top: -699px">
+                </dx-speed-dial-action>
+
+                <dx-popup #cerrarOperacion style="margin-top: 0px" [showTitle]="true" title="CERRAR PERIODO" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modPeriodo">
+                    <dxo-position at="botom" my="center" [of]="positionOf"> </dxo-position>
+                  
+                    <div *dxTemplate="let data of 'content'">
+                        <dx-scroll-view width="100%" height="100%">
+
+                            <div class="long-title">
+                                <h4>ESTA POR CAMBIAR EL PERIODO DE LA CARTERA, UNA VEZ REALIZADO ESTE PROCESO NO SE PODRA REVERTIR.</h4>
+                              </div>
+            
+                            <form action="" (submit)="guardarCotizacionClick($event)">
+                                <dx-form id="form" [(formData)]="formCierre" validationGroup="customerData" [readOnly]="bolFormSoloLectura">
+                                  
+                                    <dxi-item itemType="group">
+                                    <dxi-item dataField="Contraseña" [editorOptions]="passwordOptions">
+                                      <dxi-validation-rule type="required" message="Contraseña es requerida">
+                                      </dxi-validation-rule>
+                                    </dxi-item>
+                                    
+                                  </dxi-item>
+
+                                  <dxi-item itemType="group" [colSpan]="2" [colCount]="2">
+                                    <dxi-item itemType="button" horizontalAlignment="right" [buttonOptions]="buttonOptionsCancelar"></dxi-item> 
+                                    <dxi-item itemType="button" horizontalAlignment="left" [buttonOptions]="buttonOptions"></dxi-item>
+                                  </dxi-item>
+                              
+
+                                </dx-form>
+                              </form>
+                              
+                        </dx-scroll-view>
+                    </div>
+                </dx-popup>
+                
+            </dxi-item>
+            <dxi-item title="% DE AVANCE">
+              <br><br>
+<!--===============================================% DE AVANCE=============================================================================================-->
+              <br>
+              <div>
+                <h5 class="avance">GST FLETES Y SERVICIOS, S.A. DE C.V.</h5>
+                <h5 class="avance">{{ printPAvance }}</h5>
+              </div>
+              <br>
+
+              <div id="exportContainer">
+                <dx-button text="EXPORTAR AVANCE" icon="xlsxfile" (onClick)="exportGridsAva($event)"></dx-button>
+              </div>
+              <br>
+              <dx-data-grid  #grid1 id="gridContainer1" [dataSource]="avance1" [height]="82"[showBorders]="true" [columnAutoWidth]="true"
+              (onRowPrepared)="onRowPreparedA($event)" (onCellPrepared)="onCellPreparedA($event)">
+                  
+                  <dxi-column dataField="concepto" caption="TOTAL" [width]="200" alignment="left"></dxi-column>
+                  <dxi-column dataField="sinCartera1a30" caption="Sin Carta Cobro 1 a 30" [format]="separator" width="100%" alignment="right"></dxi-column>
+                  <dxi-column dataField="sinCarteraMas30" caption="Sin Carta Cobro Más 30" [format]="separator" width="100%" alignment="right"></dxi-column>
+                  <dxi-column dataField="corriente" caption="Corriente" [format]="separator" width="100%" alignment="right"></dxi-column>
+                  <dxi-column dataField="de1a30" caption="1 A 30" [format]="separator" width="100%" alignment="right"></dxi-column>
+                  <dxi-column dataField="de31a60" caption="31 A 60" [format]="separator" width="100%" alignment="right"></dxi-column>
+                  <dxi-column dataField="de61a90" caption="61 A 90" [format]="separator" width="100%" alignment="right"></dxi-column>
+                  <dxi-column dataField="mas90" caption="MAS 90" [format]="separator" width="100%" alignment="right"></dxi-column>
+                  <dxi-column dataField="total" caption="Total" [format]="separator" width="100%" alignment="right"></dxi-column>
+              </dx-data-grid>
+
+              <dx-data-grid  #grid2 id="gridContainer2" [dataSource]="avance2" [height]="40"[showBorders]="true" [columnAutoWidth]="true" [showColumnHeaders]="false"
+              (onRowPrepared)="onRowPreparedA($event)">
+                  <dxi-column dataField="concepto" [width]="200" alignment="left"></dxi-column>
+                  <dxi-column dataField="sinCartera1a30" format="percent" width="100%" alignment="right"></dxi-column>
+                  <dxi-column dataField="sinCarteraMas30" format="percent" width="100%" alignment="right"></dxi-column>
+                  <dxi-column dataField="corriente" format="percent" width="100%" alignment="right"></dxi-column>
+                  <dxi-column dataField="de1a30" format="percent" width="100%" alignment="right"></dxi-column>
+                  <dxi-column dataField="de31a60" format="percent" width="100%" alignment="right"></dxi-column>
+                  <dxi-column dataField="de61a90" format="percent" width="100%" alignment="right"></dxi-column>
+                  <dxi-column dataField="mas90" format="percent" width="100%" alignment="right"></dxi-column>
+                  <dxi-column dataField="total" format="percent" width="100%" alignment="right"></dxi-column>
+              </dx-data-grid>
+
+              <dx-data-grid  #grid3 id="gridContainer3" [dataSource]="avance3" [height]="40"[showBorders]="true" [columnAutoWidth]="true" [showColumnHeaders]="false"
+              (onRowPrepared)="onRowPreparedAT($event)">
+                <dxi-column dataField="concepto" [width]="200" alignment="left"></dxi-column>
+                <dxi-column dataField="sinCartera1a30" format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="sinCarteraMas30" format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="corriente"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="de1a30"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="de31a60"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="de61a90"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="mas90"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="total"  format="percent" width="100%" alignment="right"></dxi-column>
+              </dx-data-grid>
+
+              <dx-data-grid  #grid4 id="gridContainer4" [dataSource]="avance4" [height]="40"[showBorders]="true" [columnAutoWidth]="true" [showColumnHeaders]="false"
+              (onRowPrepared)="onRowPreparedA($event)">
+                <dxi-column dataField="concepto" [width]="200" alignment="left"></dxi-column>
+                <dxi-column dataField="sinCartera1a30" [format]="separator" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="sinCarteraMas30" [format]="separator" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="corriente" [format]="separator" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="de1a30" [format]="separator" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="de31a60" [format]="separator" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="de61a90" [format]="separator" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="mas90" [format]="separator" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="total" [format]="separator" width="100%" alignment="right"></dxi-column>
+              </dx-data-grid>
+
+              <dx-data-grid  #grid5 id="gridContainer5" [dataSource]="avance5" [height]="40"[showBorders]="true" [columnAutoWidth]="true" [showColumnHeaders]="false"
+              (onRowPrepared)="onRowPreparedA($event)">
+                <dxi-column dataField="concepto" [width]="200" alignment="left"></dxi-column>
+                <dxi-column dataField="sinCartera1a30" format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="sinCarteraMas30" format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="corriente"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="de1a30"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="de31a60"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="de61a90"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="mas90"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="total"  format="percent" width="100%" alignment="right"></dxi-column>
+              </dx-data-grid>
+
+              <dx-data-grid  #grid6 id="gridContainer6" [dataSource]="avance6" [height]="40"[showBorders]="true" [columnAutoWidth]="true" [showColumnHeaders]="false"
+              (onRowPrepared)="onRowPreparedAT($event)">
+                <dxi-column dataField="concepto" [width]="200" alignment="left"></dxi-column>
+                <dxi-column dataField="sinCartera1a30" format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="sinCarteraMas30" format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="corriente"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="de1a30"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="de31a60"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="de61a90"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="mas90"  format="percent" width="100%" alignment="right"></dxi-column>
+                <dxi-column dataField="total"  format="percent" width="100%" alignment="right"></dxi-column>
+              </dx-data-grid>
+            </dxi-item>
+            </dx-tab-panel>
+        </dxi-item>
+
+        <dxi-item title="Detalle">
+            <br>
+            <div id="exportContainer">
+              <dx-button text="EXPORTAR DETALLE" icon="xlsxfile" (onClick)="exportGridsDetll($event)"></dx-button>
+            </div>
+            <br>
+            <dx-data-grid  #gridDetalle id="gridContainer1" [dataSource]="detalle" [height]="600"[showBorders]="true" [columnAutoWidth]="true"
+            (onRowPrepared)="onRowPreparedD($event)" (onCellPrepared)="onCellPreparedD($event)">
+
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxo-header-filter [visible]="true"></dxo-header-filter>
+
+            <dxi-column dataField="compania" caption="" [groupIndex]="0"></dxi-column>
+            <dxi-column dataField="nombre" caption="" [groupIndex]="1"></dxi-column>
+            
+            <dxi-column dataField="iD_AREA" caption="ID" [width]="80" [fixed]="true"></dxi-column>
+            <dxi-column dataField="compania" caption="COMPAÑIA" [width]="120" [fixed]="true"></dxi-column>
+            <dxi-column dataField="cliente" caption="CLIENTE" [width]="100" [fixed]="true"></dxi-column>
+            <dxi-column dataField="nombre" caption="NOMBRE" [width]="250" [fixed]="true"></dxi-column>
+            <dxi-column dataField="anio" caption="Año" [width]="80" [fixed]="true"></dxi-column>
+            <dxi-column dataField="mes" caption="Mes" [width]="80" [fixed]="true"></dxi-column>
+            <dxi-column dataField="fechaViaje" caption="FechaViaje" [width]="120" [fixed]="true" dataType="date" format="dd/MM/yyyy"></dxi-column>
+            <dxi-column dataField="evidencia" caption="Evidencia" [width]="100" [fixed]="true"></dxi-column>
+
+
+
+            <dxi-column dataField="serie" caption="SERIE" [width]="100"></dxi-column>
+            <dxi-column dataField="documento" caption="DOCUMENTO" [width]="120"></dxi-column>            
+            <dxi-column dataField="fechA_GUIA" caption="GUÍA" dataType="date" format="dd/MM/yyyy" [width]="150"></dxi-column>
+            <dxi-column dataField="diaS_SIN_CARTA_C" caption="DÍAS SIN CARTA" [width]="160"></dxi-column>
+            <dxi-column dataField="nocarta" caption="NO. CARTA" [width]="130"></dxi-column> 
+            <dxi-column dataField="referencia" caption="REFERENCIA" [width]="150"></dxi-column>
+            <dxi-column dataField="observaciones" caption="OBSERVACIONES" [width]="220"></dxi-column> 
+            <dxi-column dataField="recogeR_EN" caption="RECOGER EN" [width]="130"></dxi-column> 
+            <dxi-column dataField="saldO_SIN_CCOBRO" caption="SALDO SIN COBRO" [width]="160" [format]="separator"></dxi-column>
+            <dxi-column dataField="totaL_INTEGRADO" caption="TOTAL INTEGRADO" [width]="160" [format]="separator"></dxi-column>
+            <dxi-column dataField="diaS_DE_CREDITO" caption="DÍAS DE CRÉDITO" [width]="150"></dxi-column>
+            <dxi-column dataField="f_CARTACROBRO" caption="CARTA COBRO" dataType="date" format="dd/MM/yyyy" [width]="160"></dxi-column>
+            <dxi-column dataField="fechaCierre" caption="CIERRE" dataType="date" format="dd/MM/yyyy" [width]="140" ></dxi-column>
+            <dxi-column dataField="fechA_VENCIMIENTO" caption="VENCIMIENTO" dataType="date" format="dd/MM/yyyy" [width]="140"></dxi-column>
+            <dxi-column dataField="diasVencimiento" caption="VENCIDOS" alignment="right" [width]="130"></dxi-column>
+            <dxi-column dataField="diasVencimientoCP" caption="VENCIDOS CP" alignment="right" [width]="130"></dxi-column>            
+            <dxi-column dataField="uuid" caption="UUID" [width]="300"></dxi-column>
+            <dxi-column dataField="" caption="" [width]="10"></dxi-column>
+
+            <!-- <dxi-column dataField="remision" caption="REMISIÓN" [width]="250"></dxi-column>
+            <dxi-column dataField="referencia" caption="REFERENCIA" [width]="100"></dxi-column> 
+            <dxi-column dataField="totaL_SALDO" caption="TOTAL SALDO" [width]="120" [format]="separator"></dxi-column> 
+            <dxi-column dataField="totaL_VENCIDOS" caption="TOTAL VENCIDOS" [width]="130" [format]="separator"></dxi-column> 
+            <dxi-column dataField="v1A15" caption="1-15" [width]="100" [format]="separator"></dxi-column> 
+            <dxi-column dataField="v16A30" caption="16-30" [width]="100" [format]="separator"></dxi-column> 
+            <dxi-column dataField="v31A45" caption="31-45" [width]="100" [format]="separator"></dxi-column> 
+            <dxi-column dataField="v46A60" caption="46-60" [width]="100" [format]="separator"></dxi-column> 
+            <dxi-column dataField="v61A90" caption="61-90" [width]="100" [format]="separator"></dxi-column> 
+            <dxi-column dataField="v91A120" caption="91-120" [width]="100" [format]="separator"></dxi-column> 
+            <dxi-column dataField="v120" caption="> 120" [width]="100" [format]="separator"></dxi-column> 
+            <dxi-column dataField="poR_VENCER" caption="POR VENCER" [width]="120" [format]="separator"></dxi-column> 
+            <dxi-column dataField="poR_VENCER2" caption="POR VENCER 2" [width]="120" [format]="separator"></dxi-column>
+            <dxi-column dataField="p1A7" caption="1-7" [width]="100" [format]="separator"></dxi-column> 
+            <dxi-column dataField="p8A15" caption="8-15" [width]="100" [format]="separator"></dxi-column> 
+            <dxi-column dataField="p16A30" caption="16-30" [width]="100" [format]="separator"></dxi-column> 
+            <dxi-column dataField="p31" caption="> 31" [width]="100" [format]="separator"></dxi-column> 
+            <dxi-column dataField="diaS_SIN_CARTA_C" caption="DÍAS SIN CARTA" [width]="150"></dxi-column> -->
+            
+            <dxo-summary>
+                <dxi-group-item column="saldO_SIN_CCOBRO" [customizeText]="customizeDateDetalle" [showInGroupFooter]="true"></dxi-group-item>
+                <dxi-group-item column="totaL_INTEGRADO" summaryType="sum" displayFormat="{0}" [valueFormat]="separator" [showInGroupFooter]="true"></dxi-group-item>
+
+                <dxi-total-item column="saldO_SIN_CCOBRO" [customizeText]="customizeDateDetalle"></dxi-total-item>
+                <dxi-total-item column="totaL_INTEGRADO" summaryType="sum"  displayFormat="{0}" [valueFormat]="separator"></dxi-total-item>
+            </dxo-summary>
+
+            <dxo-group-panel [visible]="false"></dxo-group-panel>
+            <dxo-grouping #expand [autoExpandAll]="false"></dxo-grouping>
+            <!-- <dxo-export [enabled]="true" fileName="Detalle"></dxo-export> -->
+            <dxo-paging [pageSize]="60"></dxo-paging>
+            <dxo-sorting mode="none"></dxo-sorting>
+
+            </dx-data-grid>
+        </dxi-item>
+    </dx-tab-panel>
+
+<!--================================================ACTUALIZACION PASSWORD==========================================================-->
+    <dx-popup #password style="margin-top: 0px" [showTitle]="true" title="ACTUALIZACIÓN" [dragEnabled]="false" [closeOnOutsideClick]="true"
+     [showCloseButton]="true" container=".dx-viewport" [(visible)]="modPassword" [width]="500" [height]="400">
+      <dxo-position at="botom" my="center" [of]="positionOf"> </dxo-position>
+    
+      <div *dxTemplate="let data of 'content'">
+          <dx-scroll-view width="100%" height="100%">
+
+              <div class="title-required-password">
+                  <h4 >Para actualizar se necesita la contraseña.</h4>
+                </div>
+
+                <br>
+              <form action="" (submit)="ActualizarCartera($event)">
+                  <dx-form id="form" [(formData)]="formActualizacion" validationGroup="customerData" [readOnly]="bolFormSoloLectura">
+                    
+                      <dxi-item itemType="group">
+                      <dxi-item dataField="Contraseña" [editorOptions]="passwordOptions">
+                        <dxi-validation-rule type="required" message="Contraseña es requerida">
+                        </dxi-validation-rule>
+                      </dxi-item>
+                    </dxi-item>
+
+                    <dxi-item itemType="button" horizontalAlignment="right" [buttonOptions]="buttonActualizacion"></dxi-item>
+                  </dx-form>
+                </form>
+                
+          </dx-scroll-view>
+      </div>
+  </dx-popup>
+
+  
+
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+
+    <dx-toast [(visible)]="isVisible" type="warning" message="Seleccione Año y Mes">  
+        <dxo-position
+            my="top"
+            at="right"
+            of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>

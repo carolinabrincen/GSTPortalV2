@@ -1,0 +1,127 @@
+.botones-form {
+  display: flex;
+  justify-content: space-around;
+}
+
+.tag-naranja {
+  border-radius: 25px;
+  background-color: #FF6D2A;
+  color: white;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  font-weight: 500;
+  font-size: 10px;
+}
+.tag-verde {
+  background-color: #8BC34A;
+  border-radius: 25px;
+  color: white;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  font-weight: 500;
+  font-size: 10px;
+}
+
+.cls > td {  
+  background-color: red!important;  
+}
+
+.border { border: 2px blue dashed; } 
+.mr-0 { margin-right: 0; } 
+.ml-auto { margin-left:auto; } 
+.d-block { display:block; }
+
+::ng-deep #exportContainer {
+  text-align: right;
+}
+
+
+::ng-deep .dx-scrollbar-horizontal.dx-scrollbar-hoverable {
+  height: 15px;
+}
+
+::ng-deep .dx-scrollbar-vertical.dx-scrollbar-hoverable {
+  width: 15px;
+}
+
+::ng-deep .dx-scrollbar-horizontal .dx-scrollable-scroll { 
+  height: 15px; 
+}
+
+::ng-deep .dx-scrollbar-vertical .dx-scrollable-scroll { 
+  width: 15px; 
+}
+
+::ng-deep .dx-scrollable-scroll-content { 
+  background-color:gray !important; /* optional if you want to change the color */
+}
+
+.styleButton{
+  padding-top: 1.5em;
+}
+
+::ng-deep .dx-datagrid-headers{  
+  background: #DCDCDC;  
+} 
+
+.dx-field-label{
+  width: 35%;
+  color: #2e2b2b;
+}
+
+.dx-field-label-NoO{
+  width: 60%;
+  color: #2e2b2b;
+}
+
+.dx-field-label-NoU{
+  width: 40%;
+  color: #2e2b2b;
+}
+
+.dx-field-label-mtto{
+  width: 25%;
+  color: #2e2b2b;
+}
+.dx-field-value-mtto{
+  width: 80%;
+}
+
+.dx-field-label-sal{
+  width: 25%;
+  color: #2e2b2b;
+}
+.dx-field-value-sal{
+  width: 80%;
+}
+
+.dx-field-label-com{
+  width: 11%;
+  color: #2e2b2b;
+}
+.dx-field-value-com{
+  width: 81%;
+}
+
+.dx-field-label-obs{
+  width: 10%;
+  color: #2e2b2b;
+}
+.dx-field-value-obs{
+  width: 83%;
+}
+
+.dx-field-value-alm{
+  width: 80%;
+}
+.dx-field-value-sol{
+  width: 80%;
+}
+
+.dx-field-value-txt{
+  width: 80%;
+}

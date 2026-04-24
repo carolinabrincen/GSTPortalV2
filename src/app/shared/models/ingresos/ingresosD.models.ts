@@ -1,0 +1,25 @@
+export interface IngresosDModel{
+    
+    unidadNegocio: string,
+    tipoOperacion: string,
+    enero: number,
+    febMASolicitudCancelacion: number,
+    febMACancelacion: number,
+    febMAAumento: number,
+    febMADisminucion: number,
+    febMANuevo: number,
+    febIgresosOtrosMeses: number,
+    febIngreso: number,
+    febProvision: number,
+    febDespachado: number,
+    febrero: number,
+    marMASolicitudCancelacion: number,
+    marMACancelacion: number,
+    marMAAumento: number,
+    marMADisminucion: number,
+    marMANuevo: number,
+    marIgresosOtrosMeses: number,
+    marIngreso: number,
+    marProvision: number,
+    notasCredito: number;
+}

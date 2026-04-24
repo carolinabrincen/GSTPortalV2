@@ -1,0 +1,314 @@
+<!-- Card principal  -->
+<div class="content-block dx-card responsive-paddings padding-10">
+
+    <dx-tab-panel>
+        <dxi-item title="PERMISOS">
+            <br><br>
+            <dx-responsive-box>
+                <!-- COLS -->
+                <!-- <dxi-col [ratio]="1"></dxi-col> -->
+                <!--Usuario-->
+                <dxi-col [ratio]=".30"></dxi-col>
+                <dxi-col [ratio]="1"></dxi-col>
+                <!--vacia-->
+                <dxi-col [ratio]=".15"></dxi-col>
+                <!--Tipo-->
+                <dxi-col [ratio]=".20"></dxi-col>
+                <dxi-col [ratio]="1.50"></dxi-col>
+                <!--vacia-->
+                <dxi-col [ratio]=".15"></dxi-col>
+                <!--Buscar-->
+                <dxi-col [ratio]="1"></dxi-col>
+                <dxi-col [ratio]=".25"></dxi-col>
+        
+        
+                <!-- ROWS -->
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+        
+                <!-- CONTROLES DEL FORM -->
+                <!--#region :::: ROW 1 DEL FORM ::::  -->
+                <!-- USUARIO -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Ususario:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="1"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="tipoUsuario" displayExpr="tipousuario" valueExpr="id" (onValueChanged)="selectUsuarios($event)">
+                    </dx-select-box>
+                </dxi-item>
+                <!-- TIPO -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="3"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="2" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Tipo:</div>
+                </dxi-item>
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="4"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="3" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="tipo" displayExpr="tipo" valueExpr="id" (onValueChanged)="selectTipo($event)">
+                    </dx-select-box>
+                </dxi-item>
+                <!-- BUSCAR -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="6"></dxi-location>
+                    <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                    <div>
+                        <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120">
+                        </dx-button>
+                    </div>
+                </dxi-item>
+                <!--#endregion :::: FIN ROW 1 ::::  -->
+            </dx-responsive-box>
+
+            <br><br><br>
+
+            <dx-tab-panel>
+                <dxi-item title="Potal GST">
+                    <dx-data-grid #rentGer id="gridContainer" [dataSource]="gridPortalGST" [columnAutoWidth]="true" [showColumnLines]="true" [showBorders]="true" [rowAlternationEnabled]="true" (onRowPrepared)="onRowPrepared($event)">
+                        <dxo-scrolling mode="virtual"></dxo-scrolling>
+                        <dxo-grouping #expand [autoExpandAll]="true" [allowCollapsing]="false"></dxo-grouping> 
+                        
+                        <dxi-column dataField="" caption="Permiso" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+                        <dxi-column dataField="" caption="Opción" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+                        <dxi-column dataField="" caption="Tipo" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+                            
+                        <div *dxTemplate="let data of 'headerTemplate'">
+                            <div style="font-weight: bolder; color: black">
+                                {{ data.column.caption }}
+                            </div>
+                        </div>
+                        <div *dxTemplate="let info of 'titleHeaderTemplate'">
+                            <div style="font-weight: bolder; color: #ff5722">
+                                {{ info.column.caption }}
+                            </div>
+                        </div>
+                        <div *dxTemplate="let d of 'diffCellTemplate'" [class]="d.text >= 0 ? 'inc' : 'dec'">
+                            <div class="diff"></div>
+                        </div>
+                        <dxo-export [enabled]="true" fileName="TPS-Global"></dxo-export>
+                        <dxo-paging [pageSize]="100"></dxo-paging>
+                        <dxo-sorting mode="none"></dxo-sorting>
+                    </dx-data-grid>
+                </dxi-item>
+
+                <dxi-item title="Gerencial GST">
+                    <dx-data-grid #rentGer id="gridContainer" [dataSource]="gridGerencialGST" [columnAutoWidth]="true" [showColumnLines]="true" [showBorders]="true" [rowAlternationEnabled]="true" (onRowPrepared)="onRowPrepared($event)">
+                        <dxo-scrolling mode="virtual"></dxo-scrolling>
+                        <dxo-grouping #expand [autoExpandAll]="true" [allowCollapsing]="false"></dxo-grouping> 
+                        
+                        <dxi-column dataField="" caption="Permiso" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+                        <dxi-column dataField="" caption="Opción" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+                        <dxi-column dataField="" caption="Tipo" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+                            
+                        <div *dxTemplate="let data of 'headerTemplate'">
+                            <div style="font-weight: bolder; color: black">
+                                {{ data.column.caption }}
+                            </div>
+                        </div>
+                        <div *dxTemplate="let info of 'titleHeaderTemplate'">
+                            <div style="font-weight: bolder; color: #ff5722">
+                                {{ info.column.caption }}
+                            </div>
+                        </div>
+                        <div *dxTemplate="let d of 'diffCellTemplate'" [class]="d.text >= 0 ? 'inc' : 'dec'">
+                            <div class="diff"></div>
+                        </div>
+                        <dxo-export [enabled]="true" fileName="TPS-Global"></dxo-export>
+                        <dxo-paging [pageSize]="100"></dxo-paging>
+                        <dxo-sorting mode="none"></dxo-sorting>
+                    </dx-data-grid>
+                </dxi-item>
+            </dx-tab-panel>        
+
+        </dxi-item>
+        <dxi-item title="BITACORA">
+            <br><br>
+            <dx-responsive-box>
+                <!-- COLS -->
+                <!-- <dxi-col [ratio]="1"></dxi-col> -->
+                <!--Portal-->
+                <dxi-col [ratio]=".20"></dxi-col>
+                <dxi-col [ratio]="1"></dxi-col>
+                <!--vacia-->
+                <dxi-col [ratio]=".15"></dxi-col>
+                <!--Usuario-->
+                <dxi-col [ratio]=".30"></dxi-col>
+                <dxi-col [ratio]="1.50"></dxi-col>
+                <!--vacia-->
+                <dxi-col [ratio]=".15"></dxi-col>
+                <!--Buscar-->
+                <dxi-col [ratio]="1"></dxi-col>
+                <dxi-col [ratio]=".25"></dxi-col>
+        
+        
+                <!-- ROWS -->
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+        
+                <!-- CONTROLES DEL FORM -->
+                <!--#region :::: ROW 1 DEL FORM ::::  -->
+                <!-- PORTAL -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Portal:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="1"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="portal" displayExpr="portal" valueExpr="id" (onValueChanged)="selectPortal($event)">
+                    </dx-select-box>
+                </dxi-item>
+                <!-- USUARIO -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="3"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="2" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Usuario:</div>
+                </dxi-item>
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="4"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="3" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="tipoUsuario" displayExpr="tipousuario" valueExpr="id" (onValueChanged)="selectUsuarios($event)">
+                    </dx-select-box>
+                </dxi-item>
+                <!-- BUSCAR -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="6"></dxi-location>
+                    <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                    <div>
+                        <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120">
+                        </dx-button>
+                    </div>
+                </dxi-item>
+                <!--#endregion :::: FIN ROW 1 ::::  -->
+            </dx-responsive-box>
+            <br><br>
+        
+            <dx-data-grid #rentGer id="gridContainer" [dataSource]="gridBitacora" [columnAutoWidth]="true" [showColumnLines]="true" [showBorders]="true" [rowAlternationEnabled]="true" (onRowPrepared)="onRowPrepared($event)">
+                <dxo-scrolling mode="virtual"></dxo-scrolling>
+                <dxo-grouping #expand [autoExpandAll]="true" [allowCollapsing]="false"></dxo-grouping> 
+                
+                <dxi-column dataField="" caption="Opción" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+                <dxi-column dataField="" caption="Acción" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+                <dxi-column dataField="" caption="Fecha" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+                    
+                <div *dxTemplate="let data of 'headerTemplate'">
+                    <div style="font-weight: bolder; color: black">
+                        {{ data.column.caption }}
+                    </div>
+                </div>
+                <div *dxTemplate="let info of 'titleHeaderTemplate'">
+                    <div style="font-weight: bolder; color: #ff5722">
+                        {{ info.column.caption }}
+                    </div>
+                </div>
+                <div *dxTemplate="let d of 'diffCellTemplate'" [class]="d.text >= 0 ? 'inc' : 'dec'">
+                    <div class="diff"></div>
+                </div>
+                <dxo-export [enabled]="true" fileName="TPS-Global"></dxo-export>
+                <dxo-paging [pageSize]="100"></dxo-paging>
+                <dxo-sorting mode="none"></dxo-sorting>
+            </dx-data-grid>
+
+        </dxi-item>
+        <dxi-item title="TIPOS DE USUARIO">
+            <br><br>
+            <dx-responsive-box>
+                <!-- COLS -->
+                <!-- <dxi-col [ratio]="1"></dxi-col> -->
+                <!--Portal-->
+                <dxi-col [ratio]=".10"></dxi-col>
+                <dxi-col [ratio]="1"></dxi-col>
+                <!--vacia-->
+                <dxi-col [ratio]=".15"></dxi-col>
+                <!--Buscar-->
+                <dxi-col [ratio]="1"></dxi-col>
+                <dxi-col [ratio]=".25"></dxi-col>
+        
+        
+                <!-- ROWS -->
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+        
+                <!-- CONTROLES DEL FORM -->
+                <!--#region :::: ROW 1 DEL FORM ::::  -->
+                <!-- PORTAL -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Tipo:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="1"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="tipoUsuario" displayExpr="tipousuario" valueExpr="id" (onValueChanged)="selectPortal($event)">
+                    </dx-select-box>
+                </dxi-item>
+                <!-- BUSCAR -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="6"></dxi-location>
+                    <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                    <div>
+                        <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120">
+                        </dx-button>
+                    </div>
+                </dxi-item>
+                <!--#endregion :::: FIN ROW 1 ::::  -->
+            </dx-responsive-box>
+            <br><br>
+        
+            <dx-data-grid #rentGer id="gridContainer" [dataSource]="gridUsuario" [columnAutoWidth]="true" [showColumnLines]="true" [showBorders]="true" [rowAlternationEnabled]="true" (onRowPrepared)="onRowPrepared($event)">
+                <dxo-scrolling mode="virtual"></dxo-scrolling>
+                <dxo-grouping #expand [autoExpandAll]="true" [allowCollapsing]="false"></dxo-grouping> 
+                
+                <dxi-column dataField="" caption="Aplicativo" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+                <dxi-column dataField="" caption="pantalla" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+                <dxi-column dataField="" caption="Opción" [fixed]="true" headerCellTemplate="headerTemplate"></dxi-column>
+                    
+                <div *dxTemplate="let data of 'headerTemplate'">
+                    <div style="font-weight: bolder; color: black">
+                        {{ data.column.caption }}
+                    </div>
+                </div>
+                <div *dxTemplate="let info of 'titleHeaderTemplate'">
+                    <div style="font-weight: bolder; color: #ff5722">
+                        {{ info.column.caption }}
+                    </div>
+                </div>
+                <div *dxTemplate="let d of 'diffCellTemplate'" [class]="d.text >= 0 ? 'inc' : 'dec'">
+                    <div class="diff"></div>
+                </div>
+                <dxo-export [enabled]="true" fileName="TPS-Global"></dxo-export>
+                <dxo-paging [pageSize]="100"></dxo-paging>
+                <dxo-sorting mode="none"></dxo-sorting>
+            </dx-data-grid>
+
+        </dxi-item>
+    </dx-tab-panel>
+   
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false">
+    </dx-load-panel>
+</div>

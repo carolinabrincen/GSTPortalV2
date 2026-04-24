@@ -1,0 +1,682 @@
+<h2 class="content-block">Cotizaciones de Rutas</h2>
+
+<div [id]="'myDiv'" class="content-block dx-card responsive-paddings">
+    <!--#region :::: TABS PARA GRIDS::::  -->
+    <dx-tab-panel>
+        <dxi-item title="Precotizaciones">
+            <!--#region :::: GRID PRECOTIZACIONES PRECOTIZACIONES::::  -->
+            <dx-data-grid #PreCotizaciones id="gridContainer" [dataSource]="arrPreCotizaciones" [columnAutoWidth]="true" [showColumnLines]="true" [showBorders]="true" [rowAlternationEnabled]="true"
+            (onRowPrepared)="onRowPrepared($event)" (onContentReady)="onContentReady($event)" (onCellPrepared)="onCellPrepared($event)"
+            >
+                <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                <dxo-export [enabled]="true" fileName="Precotizaciones"></dxo-export>
+                <!-- FOLIO -->
+                <dxi-column dataField="folio" caption="Folio" alignment="center" headerCellTemplate="headerTemplate" cellTemplate="cellTemplateBold" fixed="true"></dxi-column>
+                <!-- STATUS -->
+                <dxi-column dataField="status" caption="Status" alignment="center" headerCellTemplate="headerTemplate" cellTemplate="cellTemplateTag" fixed="true" [width]="120"></dxi-column>
+                <dxi-column dataField="ingreso" caption="Ingreso" dataType="date" format="dd/MM/yyyy" headerCellTemplate="headerTemplate"></dxi-column>
+                <dxi-column dataField="id_ingreso" caption="ID Ingreso" headerCellTemplate="headerTemplate"></dxi-column>
+                <!-- UNIDAD DE NEGOCIO -->
+                <dxi-column dataField="unidadNegocio" caption="Unidad de Negocio" headerCellTemplate="headerTemplate"></dxi-column>
+                <!-- TIPO OPERACION -->
+                <dxi-column dataField="tipoOperacion" caption="Tipo de Operación" headerCellTemplate="headerTemplate"></dxi-column>
+                <!-- CLIENTE -->
+                <dxi-column dataField="cliente" caption="Cliente" headerCellTemplate="headerTemplate"></dxi-column>
+                <!-- ORIGEN -->
+                <dxi-column dataField="origen" caption="Origen" headerCellTemplate="headerTemplate"></dxi-column>
+                <!-- DESTINO -->
+                <dxi-column dataField="destino" caption="Destino" alignment="left" format="percent" headerCellTemplate="headerTemplate"></dxi-column>
+                <!-- KMS "DISTANCIA TOTAL" -->
+                <dxi-column dataField="kms_totales" caption="Kms." alignment="right" format="fixedPoint" headerCellTemplate="headerTemplate"></dxi-column>
+                <!-- CASETAS -->
+                <dxi-column dataField="casetas_total_sin_impuestos" caption="Casetas" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <!-- DIESEL -->
+                <dxi-column dataField="diesel_total_sin_impuestos" caption="Diesel" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <!-- COSTO POR KM -->
+                <dxi-column dataField="costoPorKm" caption="Costo KM" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <!-- INGRESO POR KM -->
+                <dxi-column dataField="ingresoPorKm" caption="Ingreso KM" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <!-- COSTO VIAJE "TARIFA" -->
+                <dxi-column dataField="costoViaje" caption="Costo Viaje" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <!-- TARIFA 25% -->
+                <dxi-column dataField="tarifa25" caption="25%" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="" caption="Aprobar" [fixed]="false" headerCellTemplate="headerTemplate" cellTemplate="tarifa25"></dxi-column>
+                <!-- TARIFA 30% -->
+                <dxi-column dataField="tarifa30" caption="30%" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="" caption="Aprobar" [fixed]="false" headerCellTemplate="headerTemplate" cellTemplate="tarifa30"></dxi-column>
+                <!-- TARIFA 35% -->
+                <dxi-column dataField="tarifa35" caption="35%" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="" caption="Aprobar" [fixed]="false" headerCellTemplate="headerTemplate" cellTemplate="tarifa35"></dxi-column>
+                <!-- TARIFA 40% -->
+                <dxi-column dataField="tarifa40" caption="40%" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <dxi-column dataField="" caption="Aprobar" [fixed]="false" headerCellTemplate="headerTemplate" cellTemplate="tarifa40"></dxi-column>
+                <!-- % FINAL -->
+                <dxi-column dataField="porcentajeFinal" caption="% Final" alignment="right" format="percent" [fixed]="true" fixedPosition="right" headerCellTemplate="headerTemplate" cellTemplate="cellTemplateBold">
+                </dxi-column>
+                <!-- TARIFA FINAL -->
+                <dxi-column dataField="tarifaFinal" caption="Tarifa Final" alignment="right" [fixed]="true" fixedPosition="right" headerCellTemplate="headerTemplate" cellTemplate="cellTemplateBold">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+
+                <!-- BOTON EDITAR -->
+                <dxi-column caption="Editar" headerCellTemplate="headerTemplate" type="buttons" [width]="60">
+                    <dxi-button hint="Editar" icon="edit" [onClick]="editarCotizacionClick"></dxi-button>
+                </dxi-column>
+                <!-- BOTON ELIMINAR -->
+                <dxi-column caption="Elimnar" headerCellTemplate="headerTemplate" type="buttons" [width]="60">
+                    <dxi-button hint="Eliminar" icon="trash" [onClick]="eliminarCotizcionClick"></dxi-button>
+                </dxi-column>
+
+                <div *dxTemplate="let data of 'tarifa25'">
+                    <dx-button icon="check" stylingMode="outlined" style="background-color: #ffc340;" (onClick)="tarifa25(data)"></dx-button>
+                </div>
+
+                <div *dxTemplate="let data of 'tarifa30'">
+                    <dx-button icon="check" stylingMode="outlined" style="background-color: #ffc340;" (onClick)="tarifa30(data)"></dx-button>
+                </div>
+
+                <div *dxTemplate="let data of 'tarifa35'">
+                    <dx-button icon="check" stylingMode="outlined" style="background-color: #ffc340;" (onClick)="tarifa35(data)"></dx-button>
+                </div>
+
+                <div *dxTemplate="let data of 'tarifa40'">
+                    <dx-button icon="check" stylingMode="outlined" style="background-color: #ffc340;" (onClick)="tarifa40(data)"></dx-button>
+                </div>
+
+                <div *dxTemplate="let data of 'headerTemplate'">
+                    <div style="font-weight: bolder; color: black">
+                        {{ data.column.caption }}
+                    </div>
+                </div>
+
+                <div *dxTemplate="let info of 'titleHeaderTemplate'">
+                    <div style="font-weight: bolder; color: #ff5722">
+                        {{ info.column.caption }}
+                    </div>
+                </div>
+
+                <!-- TEMPLATE: CELDA EN NEGRITA -->
+                <div *dxTemplate="let cell of 'cellTemplateBold'">
+                    <div style="font-weight: bold">{{ cell.text }}</div>
+                </div>
+                <!-- TEMPLATE: TAG -->
+                <div *dxTemplate="let cell of 'cellTemplateTag'" (mouseleave)="bolBotonAprobarCotizacion = false">
+                    <!-- TAG PRECOTIZACION -->
+                    <div *ngIf="
+              cell.text === 'PRECOTIZACION' &&
+              bolBotonAprobarCotizacion == false
+            " class="tag-naranja" (mouseover)="mouseoverAprobarCotizacion(cell)">
+                        {{ cell.text }}
+                    </div>
+                    <!-- TAG APROBADA -->
+                    <div *ngIf="cell.text === 'APROBADA'" class="tag-verde">
+                        {{ cell.text }}
+                    </div>
+                    <!-- BOTON APROBAR COTIZACION -->
+                    <div *ngIf="cell.text === 'PRECOTIZACION' && bolBotonAprobarCotizacion">
+                        <dx-button icon="check" type="danger" text="Aprobar" style="
+                font-size: 9px !important;
+                background-color: #ffc340 !important;
+                color: black;
+                font-weight: bold !important;
+              " (onClick)="aprobarCotizacionClick(cell)">
+                        </dx-button>
+                    </div>
+                </div>
+
+                <dxo-paging [pageSize]="10"></dxo-paging>
+                <dxo-pager [visible]="true" [allowedPageSizes]="allowedPageSizes" displayMode="full" [showPageSizeSelector]="true" [showInfo]="true" [showNavigationButtons]="true">
+                </dxo-pager>
+                <dxo-sorting mode="none"></dxo-sorting>
+            </dx-data-grid>
+            <!--#endregion :::: FIN GRID PRECOTIZACIONES PRECOTIZACIONES ::::  -->
+        </dxi-item>
+        <dxi-item title="Aprobadas">
+            <!--#region :::: GRID COTIZACIONES APROBADAS::::  -->
+            <div style="margin-bottom: 8px;">
+                <dx-button icon="print" text="Imprimir" type="default" stylingMode="contained" (onClick)="obtenerReporte()"></dx-button>
+            </div>
+            <dx-data-grid #rentGer id="gridContainer" [dataSource]="arrCotizaciones" [columnAutoWidth]="true" [showColumnLines]="true" [showBorders]="true" [rowAlternationEnabled]="true" (onSelectionChanged)="onSelectionChanged($event)">
+                <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                <dxo-export [enabled]="true" fileName="Aprobadas"></dxo-export>
+               <dxo-selection [showCheckBoxesMode]="checkBoxesMode" mode="multiple"></dxo-selection>
+                <!-- FOLIO -->
+                <dxi-column dataField="folio" caption="Folio" alignment="center" headerCellTemplate="headerTemplate" cellTemplate="cellTemplateBold" fixed="true"></dxi-column>
+                <!-- STATUS -->
+                <dxi-column dataField="status" caption="Status" alignment="center" headerCellTemplate="headerTemplate" cellTemplate="cellTemplateTag" fixed="true" [width]="120"></dxi-column>
+                <dxi-column dataField="ingreso" caption="Ingreso" dataType="date" format="dd/MM/yyyy" headerCellTemplate="headerTemplate"></dxi-column>
+                <dxi-column dataField="id_ingreso" caption="ID Ingreso" headerCellTemplate="headerTemplate"></dxi-column>
+                
+                <!-- UNIDAD DE NEGOCIO -->
+                <dxi-column dataField="unidadNegocio" caption="Unidad de Negocio" headerCellTemplate="headerTemplate"></dxi-column>
+                <!-- TIPO OPERACION -->
+                <dxi-column dataField="tipoOperacion" caption="Tipo de Operación" headerCellTemplate="headerTemplate"></dxi-column>
+                <!-- CLIENTE -->
+                <dxi-column dataField="cliente" caption="Cliente" headerCellTemplate="headerTemplate"></dxi-column>
+                <!-- ORIGEN -->
+                <dxi-column dataField="origen" caption="Origen" headerCellTemplate="headerTemplate"></dxi-column>
+                <!-- DESTINO -->
+                <dxi-column dataField="destino" caption="Destino" alignment="left" format="percent" headerCellTemplate="headerTemplate"></dxi-column>
+                <!-- KMS "DISTANCIA TOTAL" -->
+                <dxi-column dataField="kms_totales" caption="Kms." alignment="right" format="fixedPoint" headerCellTemplate="headerTemplate"></dxi-column>
+                <!-- CASETAS -->
+                <dxi-column dataField="casetas_total_sin_impuestos" caption="Casetas" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <!-- DIESEL -->
+                <dxi-column dataField="diesel_total_sin_impuestos" caption="Diesel" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <!-- COSTO POR KM -->
+                <dxi-column dataField="costoPorKm" caption="Costo KM" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <!-- INGRESO POR KM -->
+                <dxi-column dataField="ingresoPorKm" caption="Ingreso KM" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <!-- COSTO VIAJE "TARIFA" -->
+                <dxi-column dataField="costoViaje" caption="Costo Viaje" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <!-- TARIFA 25% -->
+                <dxi-column dataField="tarifa25" caption="25%" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <!-- TARIFA 30% -->
+                <dxi-column dataField="tarifa30" caption="30%" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <!-- TARIFA 35% -->
+                <dxi-column dataField="tarifa35" caption="35%" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <!-- TARIFA 40% -->
+                <dxi-column dataField="tarifa40" caption="40%" alignment="right" headerCellTemplate="headerTemplate">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+                <!-- % FINAL -->
+                <dxi-column dataField="porcentajeFinal" caption="% Final" alignment="right" format="percent" [fixed]="true" fixedPosition="right" headerCellTemplate="headerTemplate" cellTemplate="cellTemplateBold">
+                </dxi-column>
+                <!-- TARIFA FINAL -->
+                <dxi-column dataField="tarifaFinal" caption="Tarifa Final" alignment="right" [fixed]="true" fixedPosition="right" headerCellTemplate="headerTemplate" cellTemplate="cellTemplateBold">
+                    <dxo-format type="currency" [precision]="2"> </dxo-format>
+                </dxi-column>
+
+                <!-- BOTON VER -->
+                <dxi-column caption="Ver" headerCellTemplate="headerTemplate" type="buttons" [width]="60">
+                    <dxi-button hint="Ver Cotizacion" icon="find" [onClick]="verCortizacionClick"></dxi-button>
+                </dxi-column>
+
+                <!-- BOTON IMPRIMIR -->
+                <dxi-column caption="Imprimir" headerCellTemplate="headerTemplate" type="buttons" [width]="60">
+                    <dxi-button hint="Imprimir Cotización" icon="print" [onClick]="imprimirCortizacionClick"></dxi-button>
+                </dxi-column>
+
+                <div *dxTemplate="let data of 'headerTemplate'">
+                    <div style="font-weight: bolder; color: black">
+                        {{ data.column.caption }}
+                    </div>
+                </div>
+
+                <div *dxTemplate="let info of 'titleHeaderTemplate'">
+                    <div style="font-weight: bolder; color: #ff5722">
+                        {{ info.column.caption }}
+                    </div>
+                </div>
+
+                <!-- TEMPLATE: CELDA EN NEGRITA -->
+                <div *dxTemplate="let cell of 'cellTemplateBold'">
+                    <div style="font-weight: bold">{{ cell.text }}</div>
+                </div>
+                <!-- TEMPLATE: TAG -->
+                <div *dxTemplate="let cell of 'cellTemplateTag'" (mouseleave)="bolBotonAprobarCotizacion = false">
+                    <!-- TAG PRECOTIZACION -->
+                    <div *ngIf="
+              cell.text === 'PRECOTIZACION' &&
+              bolBotonAprobarCotizacion == false
+            " class="tag-naranja" (mouseover)="mouseoverAprobarCotizacion(cell)">
+                        {{ cell.text }}
+                    </div>
+                    <!-- TAG APROBADA -->
+                    <div *ngIf="cell.text === 'APROBADA'" class="tag-verde">
+                        {{ cell.text }}
+                    </div>
+                    <!-- BOTON APROBAR COTIZACION -->
+                    <div *ngIf="cell.text === 'PRECOTIZACION' && bolBotonAprobarCotizacion">
+                        <dx-button icon="check" type="danger" text="Aprobar" style="
+                font-size: 9px !important;
+                background-color: #ffc340 !important;
+                color: black;
+              " (onClick)="aprobarCotizacionClick(cell)">
+                        </dx-button>
+                    </div>
+                </div>
+
+                <dxo-paging [pageSize]="10"></dxo-paging>
+                <dxo-pager [visible]="true" [allowedPageSizes]="allowedPageSizes" displayMode="full" [showPageSizeSelector]="true" [showInfo]="true" [showNavigationButtons]="true">
+                </dxo-pager>
+                <dxo-sorting mode="none"></dxo-sorting>
+            </dx-data-grid>
+            <!--#endregion :::: FIN GRID COTIZACIONES APROBADAS ::::  -->
+        </dxi-item>
+    </dx-tab-panel>
+    <!--#endregion :::: FIN TABS PARA GRIDS ::::  -->
+
+    <!--#region :::: VENTANA MODAL NUEVO/EDITAR ::::  -->
+    <dx-popup #modalNuevoEditar   [fullScreen]="true" [showTitle]="true" [title]="tituloModal" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="bolModal">
+        <dxo-position at="botom" my="center" [of]="positionOf"> </dxo-position>
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+
+                <!--#region :::: FORM DE CAPUTURA :::: -->
+                <form action="" (submit)="guardarCotizacionClick($event)">
+                    <dx-form style="margin-left: 25px" id="form" [(formData)]="itemCotizacion" [colCount]="12" width="100%" validationGroup="customerData" [readOnly]="bolFormSoloLectura">
+                        <!-- TIPO VIAJE -->
+                        <dxi-item dataField="tipoViaje" editorType="dxRadioGroup" [editorOptions]="RadioButtonTipoViaje" [colSpan]="3">
+                            <dxo-label text="Tipo De Viaje"> </dxo-label>
+                            <dxi-validation-rule style="margin-top: 5rem" type="required" message="campo requerido"></dxi-validation-rule>
+                        </dxi-item>
+                        <!-- REGRESO -->
+                        <dxi-item dataField="regreso" editorType="dxRadioGroup" [editorOptions]="RadioButtonRegreso" [colSpan]="3">
+                            <dxo-label text="Regreso"> </dxo-label>
+                            <dxi-validation-rule style="margin-top: 5rem" type="required" message="campo requerido"></dxi-validation-rule>
+                        </dxi-item>
+                        <!-- PAGA CASETAS -->
+                        <dxi-item dataField="clientePagaCasetas" editorType="dxRadioGroup" [editorOptions]="RadioButtonClientePagaCasetas" [colSpan]="3">
+                            <dxo-label text="Cliente paga casetas"> </dxo-label>
+                            <dxi-validation-rule style="margin-top: 5rem" type="required" message="campo requerido"></dxi-validation-rule>
+                        </dxi-item>
+                        <!-- FOLIO -->
+                        <dxi-item dataField="folio" [editorOptions]="{ readOnly: true }" [colSpan]="3"></dxi-item>
+                        <!-- UNIDAD NEGOCIO -->
+                        <dxi-item dataField="id_area" editorType="dxSelectBox" [editorOptions]="{
+              items: arrUnidadesNegocio,
+              searchEnabled: true,
+              displayExpr: 'ciudad',
+              valueExpr: 'idUnidad',
+              onValueChanged: unidadNegocio_ValueChanged
+            }" [colSpan]="3">
+                            <dxo-label text="Unidad de Negocio"> </dxo-label>
+                            <dxi-validation-rule type="required" message="Unidad de Negocio es campo requerido"></dxi-validation-rule>
+                        </dxi-item>
+                        <!-- TIPOS OPERACIONES -->
+                        <dxi-item dataField="tipoOperacion" editorType="dxSelectBox" [editorOptions]="{
+              items: arrTipoOperacion,
+              searchEnabled: true,
+              displayExpr: 'operacion',
+              valueExpr: 'operacion',
+              onValueChanged: tipoOperacion_ValueChanged
+              
+            }" [colSpan]="3">
+                            <dxo-label text="Tipo de Operación"> </dxo-label>
+                            <dxi-validation-rule type="required" message="Tipo de Operación es campo requerido"></dxi-validation-rule>
+                        </dxi-item>
+
+                        <!-- RENDIMIENTO CARGADO -->
+                        <dxi-item itemtype="dxNumberBox" dataField="rend_cargado" [colSpan]="1">
+                            <dxo-label text="RendCargado "> </dxo-label>
+                        </dxi-item>
+                        <!-- RENDIMIENTO VACIO -->
+                        <dxi-item itemtype="dxNumberBox" dataField="rend_vacio" [colSpan]="1">
+                            <dxo-label text="RendVacío "> </dxo-label>
+                        </dxi-item>
+                        <!-- DIESEL -->
+                        <dxi-item itemtype="dxNumberBox" dataField="diesel" [colSpan]="2" [editorOptions]="{ onValueChanged: dieselValueChanged, format: '$ #,##0.##' }">
+                            <dxo-label text="Diésel con Impuestos "> </dxo-label>
+                            <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
+                        </dxi-item>
+                        <!-- DIESEL SIN IMPUESTOS-->
+                        <dxi-item itemtype="dxNumberBox" dataField="diesel_sin_impuestos" [colSpan]="2" [editorOptions]="{ format: '$ #,##0.##', readOnly: true }">
+                            <dxo-label text="Diésel sin Impuestos "> </dxo-label>
+                            <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
+                        </dxi-item>
+
+                        <!-- CLIENTE -->
+                        <dxi-item dataField="cliente" [colSpan]="6">
+                            <dxi-validation-rule type="required" message="Cliente es campo requerido"></dxi-validation-rule>
+                        </dxi-item>
+
+                        <!-- ORIGEN -->
+                        <dxi-item dataField="origen" [colSpan]="3">
+                            <dxi-validation-rule type="required" message="Origen es campo requerido"></dxi-validation-rule>
+                        </dxi-item>
+                        <!-- DESTINO -->
+                        <dxi-item dataField="destino" [colSpan]="3">
+                            <dxi-validation-rule type="required" message="Destino es campo requerido"></dxi-validation-rule>
+                        </dxi-item>
+
+                        <dxi-item itemType="group" [colSpan]="12" [colCount]="12" caption="VIAJE IDA">
+                            <!-- DISTANCIA IDA -->
+                            <dxi-item dataField="kms_ida" [colSpan]="2">
+                                <dxo-label text="Kilómetros"> </dxo-label>
+                                <dxi-validation-rule type="required" message="Distancia Ida es campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+
+                            <!-- CASETAS -->
+                            <dxi-item itemtype="dxNumberBox" dataField="casetas" [colSpan]="2" [editorOptions]="{onValueChanged: caseta_ida_ValueChanged, format: '$ #,##0.##' }">
+                                <dxo-label text="Casetas con Impuestos"> </dxo-label>
+                                <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+                            <!-- CASETAS -->
+                            <dxi-item itemtype="dxNumberBox" dataField="casetas_si" [colSpan]="2" [editorOptions]="{ format: '$ #,##0.##', readOnly: true }">
+                                <dxo-label text="Casetas sin Impuestos"> </dxo-label>
+                                <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+
+
+
+                            <!-- ESTANCIAS -->
+                            <dxi-item itemtype="dxNumberBox" dataField="num_estancias_ida" [colSpan]="2">
+                                <dxo-label text="Estancias (Número)"> </dxo-label>
+                                <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+
+                            <!-- MANIOBRAS -->
+                            <dxi-item itemtype="dxNumberBox" dataField="num_maniobras_ida" [colSpan]="2">
+                                <dxo-label text="Maniobras (Número)"> </dxo-label>
+                                <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+
+                            <!-- TONELADAS -->
+                            <dxi-item itemtype="dxNumberBox" dataField="ton_carga_ida" [colSpan]="2">
+                                <dxo-label text="Toneladas (Número)"> </dxo-label>
+                                <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+
+
+
+                        </dxi-item>
+                        <dxi-item itemType="group" [colSpan]="12" [colCount]="12" caption="VIAJE REGRESO">
+                            <!-- DISTANCIA IDA -->
+                            <dxi-item dataField="kms_regreso" [colSpan]="2">
+                                <dxo-label text="Kilómetros"> </dxo-label>
+                                <dxi-validation-rule type="required" message="Distancia Ida es campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+
+                            <!-- CASETAS -->
+                            <dxi-item itemtype="dxNumberBox" dataField="casetas_regreso" [colSpan]="2" [editorOptions]="{onValueChanged: caseta_regreso_ValueChanged, format: '$ #,##0.##' }">
+                                <dxo-label text="Casetas con Impuestos"> </dxo-label>
+                                <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+                            <!-- CASETAS -->
+                            <dxi-item itemtype="dxNumberBox" dataField="casetas_regreso_si" [colSpan]="2" [editorOptions]="{ format: '$ #,##0.##', readOnly: true }">
+                                <dxo-label text="Casetas sin Impuestos"> </dxo-label>
+                                <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+
+                            <!-- ESTANCIAS -->
+                            <dxi-item itemtype="dxNumberBox" dataField="num_estancias_regreso" [colSpan]="2">
+                                <dxo-label text="Estancias (Número)"> </dxo-label>
+                                <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+
+                            <!-- MANIOBRAS -->
+                            <dxi-item itemtype="dxNumberBox" dataField="num_maniobras_regreso" [colSpan]="2">
+                                <dxo-label text="Maniobras (Número)"> </dxo-label>
+                                <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+
+                            <!-- TONELADAS -->
+                            <dxi-item itemtype="dxNumberBox" dataField="ton_carga_regreso" [colSpan]="2">
+                                <dxo-label text="Toneladas (Número)"> </dxo-label>
+                                <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+
+                        </dxi-item>
+                        <!-- ESPACIO EN BLANCO -->
+                        <dxi-item itemType="empty" [colSpan]="12"></dxi-item>
+
+                        <dxi-item itemType="group" [colSpan]="12" [colCount]="10">
+
+                            <!-- PRECIO VENTA TONELADA -->
+                            <dxi-item itemtype="dxNumberBox" dataField="toneladas" [colSpan]="2" [editorOptions]="{onValueChanged: toneladasTotalValueChanged}">
+                                <dxo-label text="Toneladas" style="font-weight: bold !important">
+                                </dxo-label>
+                            </dxi-item>
+                            <!-- PRECIO VENTA TONELADA -->
+                            <dxi-item itemtype="dxNumberBox" dataField="costo_tonelada" [colSpan]="2" [editorOptions]="{onValueChanged: precioToneladasTotalValueChanged, format: '$ #,##0.##' }">
+                                <dxo-label text="PRECIO X TONELADA" style="font-weight: bold !important">
+                                </dxo-label>
+                            </dxi-item>
+                            <dxi-item itemType="empty" [colSpan]="6"></dxi-item>
+
+
+
+                            <!-- COSTO TOTAL -->
+                            <dxi-item itemtype="dxNumberBox" dataField="costoViaje" [colSpan]="2" [editorOptions]="{ format: '$ #,##0.##', readOnly: true }">
+                                <dxo-label text="COSTO DE OPERACION" style="font-weight: bold !important">
+                                </dxo-label>
+                            </dxi-item>
+                            <!-- PRECIO VENTA FINAL -->
+                            <dxi-item itemtype="dxNumberBox" dataField="tarifaFinal" [colSpan]="2" [editorOptions]="{onValueChanged: precioTotalValueChanged, format: '$ #,##0.##' }">
+                                <dxo-label text="PRECIO DE VENTA FINAL" style="font-weight: bold !important">
+                                </dxo-label>
+                            </dxi-item>
+
+                            <!-- BOTON GUARDAR  -->
+                            <dxi-item style="margin-top: 2rem" itemType="button" horizontalAlignment="center" [buttonOptions]="buttonOptions" [colSpan]="2">
+                            </dxi-item>
+
+                            <!-- BOTON VER VARIABLES  -->
+                            <dxi-item itemType="button" horizontalAlignment="center" [buttonOptions]="buttonOptionsVariables" [colSpan]="2">
+                            </dxi-item>
+
+
+                            <!-- BOTON PREVISUALIZAR  -->
+                            <dxi-item style="color: green" itemType="button" horizontalAlignment="center" [buttonOptions]="buttonOptionsPre" [colSpan]="2">
+                            </dxi-item>
+                        </dxi-item>
+
+
+                        <!-- ESPACIO EN BLANCO -->
+                        <dxi-item itemType="empty" [colSpan]="12"></dxi-item>
+
+
+
+
+                    </dx-form>
+                </form>
+            </dx-scroll-view>
+            <!--#endregion :::: FIN FORM CAPUTRA ::::  -->
+        </div>
+    </dx-popup>
+    <!--#endregion :::: FIN VENTANA MODAL NUEVO/EDITAR ::::  -->
+
+
+    <!--#region :::: MODAL VARIABLES ::::  -->
+    <dx-popup [fullScreen]="true" [showTitle]="true" title="Parametrización de Variables" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="bolModalVariables">
+        <dxo-position at="botom" my="center" [of]="positionOf"> </dxo-position>
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+
+                <!--#region :::: GRID VARIABLES :::: -->
+                <dx-data-grid #variables id="gridVariables" [dataSource]="itemCotizacion.variables" [columnAutoWidth]="true" [showColumnLines]="true" [showBorders]="true" [rowAlternationEnabled]="true">
+                    <dxi-column dataField="descripcion" caption="Variable" [fixed]="true" alignment="left" headerCellTemplate="headerTemplate"></dxi-column>
+                    <dxi-column dataField="unidad_medida" caption="Unidad" [fixed]="true" alignment="left" headerCellTemplate="headerTemplate"></dxi-column>
+
+                    <dxi-column dataField="valor" caption="Subtotal" [fixed]="true" headerCellTemplate="headerTemplate">
+                        <dxo-format type="fixedPoint" [precision]="2"> </dxo-format>
+                    </dxi-column>
+
+                    <div *dxTemplate="let data of 'headerTemplate'">
+                        <div style="font-weight: bolder; color: black">
+                            {{ data.column.caption }}
+                        </div>
+                    </div>
+
+                    <div *dxTemplate="let info of 'titleHeaderTemplate'">
+                        <div style="font-weight: bolder; color: #ff5722">
+                            {{ info.column.caption }}
+                        </div>
+                    </div>
+                    <dxo-paging [pageSize]="18"></dxo-paging>
+                </dx-data-grid>
+
+                <!--#endregion :::: FIN GRID VARIABLES ::::  -->
+            </dx-scroll-view>
+        </div>
+    </dx-popup>
+
+    <!--#endregion :::: FIN MODAL VARIABLES :::: -->
+
+    <!--#region :::: MODAL DETALLE COTIZACION :::: -->
+    <dx-popup [fullScreen]="true" [showTitle]="true" title="Detalle de Cotización" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="bolModalDetalleCotizacion">
+        <dxo-position at="botom" my="center" [of]="positionOf"> </dxo-position>
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+
+                <dx-tab-panel>
+                    <dxi-item title="Viaje ida">
+
+                        <!--#region :::: GRID DETALLE COTIZACION :::: -->
+                        <dx-data-grid #variables id="gridDetalleCotizacion" [dataSource]="itemCotizacion.costos_ida" [columnAutoWidth]="true" [showColumnLines]="true" [showBorders]="true" [rowAlternationEnabled]="true" height="680px">
+                            <dxo-export [enabled]="true" fileName="Viaje Ida"></dxo-export>
+                            
+                            <dxi-column dataField="descripcion" caption="Concepto" alignment="left" headerCellTemplate="headerTemplate"></dxi-column>
+                            <dxi-column dataField="unidad_medida" caption="Unidad" alignment="left" headerCellTemplate="headerTemplate"></dxi-column>
+                            <dxi-column dataField="subtotal" caption="Subtotal" alignment="right" headerCellTemplate="headerTemplate">
+                                <dxo-format type="currency" [precision]="2"> </dxo-format>
+                            </dxi-column>
+                            <dxi-column dataField="costo" caption="Total" alignment="right" headerCellTemplate="headerTemplate">
+                                <dxo-format type="currency" [precision]="2"> </dxo-format>
+                            </dxi-column>
+                            <dxi-column dataField="porcentaje" caption="%" format="percent" alignment="center" headerCellTemplate="headerTemplate"></dxi-column>
+                            <dxi-column dataField="" caption="" [width]="30"></dxi-column>
+
+                            <div *dxTemplate="let data of 'headerTemplate'">
+                                <div style="font-weight: bolder; color: black">
+                                    {{ data.column.caption }}
+                                </div>
+                            </div>
+
+                            <div *dxTemplate="let info of 'titleHeaderTemplate'">
+                                <div style="font-weight: bolder; color: #ff5722">
+                                    {{ info.column.caption }}
+                                </div>
+                            </div>
+                            <dxo-paging [pageSize]="50"></dxo-paging>
+                        </dx-data-grid>
+
+                        <!--#endregion :::: FIN GRID DETALLE COTIZACION ::::  -->
+                    </dxi-item>
+                    <dxi-item title="Viaje regreso">
+
+                        <!--#region :::: GRID DETALLE COTIZACION :::: -->
+                        <dx-data-grid #variables id="gridDetalleCotizacion" [dataSource]="itemCotizacion.costos_regreso" [columnAutoWidth]="true" [showColumnLines]="true" [showBorders]="true" [rowAlternationEnabled]="true" height="680px">
+                            <dxo-export [enabled]="true" fileName="Viaje Regreso"></dxo-export>
+                           
+                            <dxi-column dataField="descripcion" caption="Concepto" alignment="left" headerCellTemplate="headerTemplate"></dxi-column>
+                            <dxi-column dataField="unidad_medida" caption="Unidad" alignment="left" headerCellTemplate="headerTemplate"></dxi-column>
+                            <dxi-column dataField="subtotal" caption="Subtotal" alignment="right" headerCellTemplate="headerTemplate">
+                                <dxo-format type="currency" [precision]="2"> </dxo-format>
+                            </dxi-column>
+                            <dxi-column dataField="costo" caption="Total" alignment="right" headerCellTemplate="headerTemplate">
+                                <dxo-format type="currency" [precision]="2"> </dxo-format>
+                            </dxi-column>
+                            <dxi-column dataField="porcentaje" caption="%" format="percent" alignment="center" headerCellTemplate="headerTemplate"></dxi-column>
+                            <dxi-column dataField="" caption="" [width]="30"></dxi-column>
+                            
+                            <div *dxTemplate="let data of 'headerTemplate'">
+                                <div style="font-weight: bolder; color: black">
+                                    {{ data.column.caption }}
+                                </div>
+                            </div>
+
+                            <div *dxTemplate="let info of 'titleHeaderTemplate'">
+                                <div style="font-weight: bolder; color: #ff5722">
+                                    {{ info.column.caption }}
+                                </div>
+                            </div>
+                            <dxo-paging [pageSize]="50"></dxo-paging>
+                        </dx-data-grid>
+
+                        <!--#endregion :::: FIN GRID DETALLE COTIZACION ::::  -->
+                    </dxi-item>
+                </dx-tab-panel>
+            </dx-scroll-view>
+        </div>
+    </dx-popup>
+    <!--#endregion :::: FIN MODAL DETALLE COTIZACION :::: -->
+</div>
+
+
+<dx-popup
+    [width]="300"
+    [height]="280"
+    [showTitle]="true"
+    title="Confirmar Operación"
+    [dragEnabled]="false"
+    [showCloseButton]="false"
+    container=".dx-viewport"
+    [(visible)]="modConfimation"
+    position="center"
+  >
+
+    <div>
+        <dx-button caption="Actualizar" stylingMode="outlined" style="background-color: #ffc340;" (onClick)="guardarCotizacionT25()"></dx-button>
+    </div>
+      <dxi-toolbar-item
+      widget="dxButton"
+      toolbar="bottom"
+      location="before"
+      [options]="{
+        text: 'Actualizar',
+        onClick: guardarCotizacionT25
+    }"
+    >
+
+    </dxi-toolbar-item> 
+
+    <dxi-toolbar-item
+    *ngIf="mode == true"
+      widget="dxButton"
+      toolbar="bottom"
+      location="before"
+      [options]="buttonOptionsAprobar"
+    >
+    </dxi-toolbar-item>
+    <dxi-toolbar-item
+      widget="dxButton"
+      toolbar="top"
+      location="after"
+      [options]="buttonOptionsCerar"
+    >
+    </dxi-toolbar-item>
+    <dxo-position at="bottom" my="center" [of]="positionOf" collision="fit">
+    </dxo-position>
+    <div *dxTemplate="let data of 'content'">
+        <p>
+          <span>
+            <i>La tarifa final sera <b>{{ itemCotizacionT25.tarifa25}}</b></i><br>
+        </span>
+        </p>
+
+        <p>
+            <span>
+            <i>Esta seguro de aprobar la cotización: <b>{{ itemCotizacionT25.folio}}</b></i>
+          </span>
+          </p>
+      </div>
+  </dx-popup>
+
+<dx-speed-dial-action icon="add" label="Nueva Cotización" [index]="1" (onClick)="nuevaCotizacionClick()" style="left: -1132px; top: -699px">
+</dx-speed-dial-action>

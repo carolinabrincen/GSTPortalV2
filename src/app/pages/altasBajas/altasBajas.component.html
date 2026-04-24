@@ -1,0 +1,686 @@
+<h2 class="content-block"> Rotación mensual de operadores</h2>
+<div [id]="'myDiv'" class="content-block dx-card responsive-paddings">
+    <br><br>
+
+    <!-- <dx-form id="form" [formData]="formFilter">
+
+            <dxi-item itemType="group" cssClass="form-group" [colCount]="3">
+                 
+                <dxi-item itemType="group">
+                    <dxi-item  dataField="Fecha" editorType="dxDateBox" [editorOptions]="{ width: '100%', displayFormat:'dd/MM/yyyy' }" (onClick)="onClick($event)"></dxi-item>
+                </dxi-item>
+
+                <dxi-item itemType="group" class="styleButton">
+                    <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120" (onClick)="buscarClick($event)">
+                    </dx-button>
+                </dxi-item>
+                
+            </dxi-item>
+        </dx-form> -->
+
+         <br><br>   
+            <dx-responsive-box>
+                <!-- COLS -->
+                <!--Año-->
+                <dxi-col [ratio]=".1"></dxi-col>
+                <dxi-col [ratio]=".5"></dxi-col>
+                <!--vacia-->
+                <dxi-col [ratio]=".15"></dxi-col>
+                <!--Compañia-->
+                <dxi-col [ratio]=".30"></dxi-col>
+                <!-- <dxi-col [ratio]="1.20"></dxi-col> -->
+        
+        
+                <!-- ROWS -->
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                 <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+        
+                <!-- CONTROLES DEL FORM -->
+                <!--#region :::: ROW 1 DEL FORM ::::  -->
+                <!-- AÑO -->
+             
+                <!-- MES -->
+        
+                <!--Compañia -->
+              
+                <!--ROW 1 Unidad de Negocio -->
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="0"></dxi-location>
+                    <dxi-location style="margin-top: 1rem" screen="xs sm" [row]="10" [col]="0" [colspan]="12"></dxi-location>
+                    <div>Periodo:</div>
+                </dxi-item>
+        
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="1"></dxi-location>
+                    <dxi-location style="margin-top: 0.5rem" screen="xs sm" [row]="11" [col]="0" [colspan]="12"></dxi-location>
+                    <dx-select-box [items]="periodo" displayExpr="idPeriodo" valueExpr="periodo" (onValueChanged)="selectPeriodo($event)">
+                    </dx-select-box>
+                </dxi-item>
+             
+                <dxi-item>
+                    <dxi-location screen="md lg" [row]="0" [col]="3"></dxi-location>
+                    <dxi-location style="margin-top: .20rem" screen="xs sm" [row]="12" [col]="0" [colspan]="12"></dxi-location>
+                    <div>
+                        <dx-button stylingMode="contained" text="Buscar" icon="search" type="normal" [width]="120" (onClick)="buscarClick($event)">
+                        </dx-button>
+                    </div>
+                </dxi-item>
+            </dx-responsive-box>
+            <br>
+            <br>
+    <div>
+        <dx-scroll-view class="view-wrapper-scroll">
+            <div class="view-wrapper">
+    
+                <!-- <div class="cards grey" >
+                    <ticker-card *ngFor="let resI of resumenInicio" class="inicio" [titleText]="resI.tipo" [total]="resI.cantidad" [percentage]="resI.porcentaje" icon="alignright"></ticker-card>
+                    <ticker-card *ngFor="let resA of resumenAltas" class="altas" [titleText]="resA.tipo" [total]="resA.cantidad" [percentage]="resA.porcentaje" icon="arrowup"></ticker-card>
+                    <ticker-card *ngFor="let resB of resumenBajas" class="bajas" [titleText]="resB.tipo" [total]="resB.cantidad" [percentage]="resB.porcentaje" icon="arrowdown"></ticker-card>
+                    <ticker-card *ngFor="let resF of resumenFin" class="fin" [titleText]="resF.tipo" [total]="resF.cantidad" [percentage]="resF.porcentaje" icon="alignleft"></ticker-card>
+                </div> -->
+
+                <div class="cards grey" >
+                    <div class="ticker" *ngFor="let resumenM of resumenMes">
+                        
+                        <div *ngIf="resumenM.tipo == 'Inicio'" class="icon-wrapper" style="background-color: rgb(189, 215, 238);">
+                            <i [class]="'dx-icon dx-icon-alignright'"></i>
+                        </div>
+                        <div *ngIf="resumenM.tipo == 'Altas'" class="icon-wrapper" style="background-color: rgb(198, 224, 180);">
+                            <i [class]="'dx-icon dx-icon-arrowup'"></i>
+                        </div>
+                        <div *ngIf="resumenM.tipo == 'Bajas'" class="icon-wrapper" style="background-color: rgb(248, 203, 173);">
+                            <i [class]="'dx-icon dx-icon-arrowdown'"></i>
+                        </div>
+                        <div *ngIf="resumenM.tipo == 'Fin'" class="icon-wrapper" style="background-color: rgb(217, 217, 217);">
+                            <i [class]="'dx-icon dx-icon-alignleft'"></i>
+                        </div>
+
+                        <div class="middle">
+                            <div class="title"> {{ resumenM.tipo }} </div>
+                            <div class="total"> {{resumenM.cantidad }} </div>
+                        </div>
+
+                        <div>
+                        <div *ngIf="resumenM.porcentaje == 0 " class="percentage" style="background-color: rgb(99, 171, 212);" >
+                            <div [class]="'dx-icon-'+ (resumenM.porcentaje > 0 ? 'spinup' : 'spindown')"></div>
+                            <i class="value"></i>
+                            <span >{{ abs(resumenM.porcentaje) }}%</span>
+                        </div>
+                            <div *ngIf="resumenM.porcentaje < 0 " class="percentage" style="background-color: rgb(194, 122, 122);" >
+                            <div [class]="'dx-icon-'+ (resumenM.porcentaje > 0 ? 'spinup' : 'spindown')"></div>
+                            <i class="value"></i>
+                            <span >{{ abs(resumenM.porcentaje) }}%</span>
+                        </div>
+                            <div *ngIf="resumenM.porcentaje > 0 " class="percentage" style="background-color: rgb(142, 212, 142);" >
+                            <div [class]="'dx-icon-'+ (resumenM.porcentaje > 0 ? 'spinup' : 'spindown')"></div>
+                            <i class="value"></i>
+                            <span >{{ abs(resumenM.porcentaje) }}%</span>
+                        </div>
+                        <br>
+                        <div>
+                            <dx-button *ngIf="resumenM.tipo == 'Altas'" class="buttonDetail" stylingMode="contained" text="Ver detalle" icon="detailslayout" type="normal" (onClick)="openModalA($event)"></dx-button>
+                            <dx-button *ngIf="resumenM.tipo == 'Bajas'" class="buttonDetail" stylingMode="contained" text="Ver detalle" icon="detailslayout" type="normal" (onClick)="openModalB($event)"></dx-button>
+                        </div>
+                        </div>  
+                       
+                    </div>
+                </div>
+            </div>
+        </dx-scroll-view>
+        <br><br>
+
+        
+        <dx-box *ngIf="screen > 500" direction="col" width="100%" [height]="620">
+            <dxi-item [ratio]="3" [baseSize]="0">
+              <dx-box direction="row" width="100%" [height]="125">
+                
+                <dxi-item class="rect demo-dark" [ratio]="5">
+                   <!--==========================Bar and Line Chart==================-->
+                   <dx-chart id="chart" [dataSource]="anualGrafica" [rotated]="false" [barGroupWidth]="18" title="Altas vs Bajas">
+                       <dxo-size [height]="600"></dxo-size>
+                       <dxo-common-series-settings argumentField="mes" type="stackedbar"></dxo-common-series-settings>
+                       <dxi-series valueField="altas" name="Altas" color="#00B4D8"> </dxi-series>
+                       <dxi-series valueField="bajas" name="Bajas" color="#FA593F"> </dxi-series>
+                       <dxo-tooltip [enabled]="true" [customizeTooltip]="customizeTooltip"></dxo-tooltip>
+                       <dxi-value-axis>
+                         <!-- <dxo-label [customizeText]="customizeLabel"></dxo-label> -->
+                       </dxi-value-axis>
+                       <dxo-legend verticalAlignment="bottom" horizontalAlignment="center">
+                         <dxo-margin [left]="50"></dxo-margin>
+                       </dxo-legend>
+                       <dxo-export [enabled]="true"></dxo-export>
+                   </dx-chart>
+                </dxi-item>
+
+                <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+
+                <dxi-item class="rect demo-dark" [ratio]="4">
+                   <dx-data-grid #resmen id="gridContainer1" [dataSource]="anual" [height]="610" [showBorders]="true" [columnAutoWidth]="true"
+                        (onRowPrepared)="onRowPreparedAnual($event)" (onCellPrepared)="onCellPreparedAnual($event)">
+                                    
+                        <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                        <dxo-paging [pageSize]="100"></dxo-paging>
+                        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                        <dxo-export [enabled]="true" fileName="Anual" [customizeExcelCell]="customizeOp"></dxo-export>
+
+                        <dxi-column dataField="" caption="Plantilla e índice rotación" alignment="center">
+                            <dxi-column dataField="mes" caption="Mes"></dxi-column>
+                            <dxi-column dataField="inicio" caption="Inicio"></dxi-column>
+                            <dxi-column dataField="altas" caption="Altas"></dxi-column>
+                            <dxi-column dataField="bajas" caption="Bajas"></dxi-column>
+                            <dxi-column dataField="fin" caption="Final"></dxi-column>
+                            <dxi-column dataField="rotacion" caption="% Rotación" [format]="calculatePercent"></dxi-column>
+                            <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+                        </dxi-column>
+                        <dxo-summary [calculateCustomSummary]="calcularPorcentajes"> 
+                            <dxi-total-item column="inicio" summaryType="avg" displayFormat="{0}" [valueFormat]="formatRedondear"></dxi-total-item>
+                            <dxi-total-item column="altas" summaryType="avg" displayFormat="{0}" [valueFormat]="formatRedondear"></dxi-total-item>
+                            <dxi-total-item column="bajas" summaryType="avg" displayFormat="{0}" [valueFormat]="formatRedondear"></dxi-total-item>
+                            <dxi-total-item column="fin" summaryType="avg" displayFormat="{0}" [valueFormat]="formatRedondear"></dxi-total-item>
+                            <dxi-total-item column="rotacion" summaryType="avg" displayFormat="{0}" [valueFormat]="calculatePercent"></dxi-total-item>
+                            
+                        </dxo-summary>
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+                    </dx-data-grid> 
+                </dxi-item>
+            </dx-box>
+            </dxi-item>
+        </dx-box>
+        <div>
+        <dx-responsive-box *ngIf="screen <= 412" direction="col" width="100%">
+            <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                 <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+
+            <dxi-item [ratio]="3" [baseSize]="0">
+              <dx-responsive-box direction="row" width="100%">
+                
+                <dxi-item class="rect demo-dark" [ratio]="5">
+                   <!--==========================Bar and Line Chart==================-->
+                   <dx-chart id="chart" [dataSource]="anualGrafica" [rotated]="false" [barGroupWidth]="18" title="Altas vs Bajas">
+                       <dxo-size [height]="600"></dxo-size>
+                       <dxo-common-series-settings argumentField="mes" type="stackedbar"></dxo-common-series-settings>
+                       <dxi-series valueField="altas" name="Altas" color="#00B4D8"> </dxi-series>
+                       <dxi-series valueField="bajas" name="Bajas" color="#FA593F"> </dxi-series>
+                       <dxo-tooltip [enabled]="true" [customizeTooltip]="customizeTooltip"></dxo-tooltip>
+                       <dxi-value-axis>
+                         <!-- <dxo-label [customizeText]="customizeLabel"></dxo-label> -->
+                       </dxi-value-axis>
+                       <dxo-legend verticalAlignment="bottom" horizontalAlignment="center">
+                         <dxo-margin [left]="50"></dxo-margin>
+                       </dxo-legend>
+                       <dxo-export [enabled]="true"></dxo-export>
+                   </dx-chart>
+                </dxi-item>
+
+                <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+
+                <dxi-item class="rect demo-dark" [ratio]="4">
+                   <dx-data-grid #resmen id="gridContainer1" [dataSource]="anual" [height]="610" [showBorders]="true" [columnAutoWidth]="true"
+                        (onRowPrepared)="onRowPreparedAnual($event)" (onCellPrepared)="onCellPreparedAnual($event)">
+                                    
+                        <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                        <dxo-paging [pageSize]="100"></dxo-paging>
+                        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                        <dxo-export [enabled]="true" fileName="Anual" [customizeExcelCell]="customizeOp"></dxo-export>
+
+                        <dxi-column dataField="" caption="Plantilla e índice rotación" alignment="center">
+                            <dxi-column dataField="mes" caption="Mes"></dxi-column>
+                            <dxi-column dataField="inicio" caption="Inicio"></dxi-column>
+                            <dxi-column dataField="altas" caption="Altas"></dxi-column>
+                            <dxi-column dataField="bajas" caption="Bajas"></dxi-column>
+                            <dxi-column dataField="fin" caption="Final"></dxi-column>
+                            <dxi-column dataField="rotacion" caption="% Rotación" [format]="calculatePercent"></dxi-column>
+                            <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+                        </dxi-column>
+                        <dxo-summary [calculateCustomSummary]="calcularPorcentajes"> 
+                            <dxi-total-item column="inicio" summaryType="avg" displayFormat="{0}" [valueFormat]="formatRedondear"></dxi-total-item>
+                            <dxi-total-item column="altas" summaryType="avg" displayFormat="{0}" [valueFormat]="formatRedondear"></dxi-total-item>
+                            <dxi-total-item column="bajas" summaryType="avg" displayFormat="{0}" [valueFormat]="formatRedondear"></dxi-total-item>
+                            <dxi-total-item column="fin" summaryType="avg" displayFormat="{0}" [valueFormat]="formatRedondear"></dxi-total-item>
+                            <dxi-total-item column="rotacion" summaryType="avg" displayFormat="{0}" [valueFormat]="calculatePercent"></dxi-total-item>
+                            
+                        </dxo-summary>
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+                    </dx-data-grid> 
+                </dxi-item>
+              </dx-responsive-box>
+            </dxi-item>
+        </dx-responsive-box>
+        </div>
+        <br><br><br><br>
+        
+        <dx-box *ngIf="screen > 500" direction="col" width="100%" [height]="620">
+            <dxi-item [ratio]="3" [baseSize]="0">
+                <dx-box direction="row" width="100%" [height]="125">
+
+                    <dxi-item class="rect demo-dark" [ratio]="4">
+                        
+                        <!--==========================Bar and Line Chart==================-->
+                        <dx-chart id="chart" title="Plantilla operadoresGST" [dataSource]="platillaPA">
+                            <dxo-size [height]="570"></dxo-size>
+                            <dxi-series valueField="operando" name="Operando" color="#00B4D8"></dxi-series>
+                            <dxi-series valueField="noOperativo" name="No Operativo" color="#FA593F"></dxi-series>
+
+                            <dxi-series valueField="plantillaActiva" name="Plantilla Activa" type="line" color="rgb(119, 119, 119)" [width]=".5">
+                            <dxo-label [visible]="true" position="outside"
+                            backgroundColor="transparent" [verticalOffset]="15">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+
+                            </dxi-series>
+
+                            <dxi-value-axis position="right">
+                            <dxo-title text=""></dxo-title>
+                            </dxi-value-axis>
+                            
+                            <dxo-argument-axis [visualRange]="chart_visualRange" [tickInterval]="1">
+                                
+                            </dxo-argument-axis>
+
+                            <dxi-value-axis startValue="0" endValue="200"></dxi-value-axis>
+                            
+
+                            <dxi-value-axis 
+                                [visualRange]="{ startValue: 0, endValue: 200 }">
+                            </dxi-value-axis>
+
+                            <dxo-common-series-settings argumentField="mes" type="stackedBar">
+                            </dxo-common-series-settings>
+                            <dxo-legend
+                            verticalAlignment="bottom"
+                            horizontalAlignment="center"
+                            itemTextPosition="top"
+                            >
+                            </dxo-legend>
+                            <dxo-export [enabled]="true"></dxo-export>
+                            <dxo-tooltip
+                            [enabled]="true"
+                            location="edge"
+                            [customizeTooltip]="customizeTooltip"
+                            >
+                            </dxo-tooltip>
+                        </dx-chart>
+                        <!--====================================Finish chart==========--> 
+                    </dxi-item>
+
+                    <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+                    <dxi-item class="rect demo-dark" [ratio]="4">
+
+                        <dx-data-grid #resmen id="gridContainer1" [dataSource]="platillaPA" [height]="590" [showBorders]="true" [columnAutoWidth]="true"
+                        (onRowPrepared)="onRowPreparedAnual($event)" (onCellPrepared)="onCellPreparedAnual($event)">
+                            
+                            <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                            <dxo-paging [pageSize]="100"></dxo-paging>
+                            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                            <dxo-export [enabled]="true" fileName="Plantilla Promedio Anual" [customizeExcelCell]="customizeOp"></dxo-export>
+
+                            <dxi-column dataField="" caption="Status plantilla mensual promedio activa" alignment="center">
+                                <dxi-column dataField="mes" caption="Mes"></dxi-column>
+                                <dxi-column dataField="plantillaActiva" caption="Plantilla Activa"></dxi-column>
+                                <dxi-column dataField="operando" caption="Operando"></dxi-column>
+                                <dxi-column dataField="noOperativo" caption="No Operativos"></dxi-column>
+                                <dxi-column dataField="porOperando" caption="Operando %" [format]="calculatePercent"></dxi-column>
+                                <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+                            </dxi-column>
+                            <!-- <dxo-summary [calculateCustomSummary]="calcularPorcentajes"> 
+                                <dxi-total-item column="" summaryType="avg" displayFormat="{0}" [valueFormat]="formatRedondear"></dxi-total-item>
+                                <dxi-total-item column="" summaryType="avg" displayFormat="{0}" [valueFormat]="calculatePercent"></dxi-total-item>
+                            </dxo-summary> -->
+
+                            <dxo-group-panel [visible]="false"></dxo-group-panel>
+                            <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+                        </dx-data-grid>
+                    </dxi-item>
+
+                </dx-box>
+            </dxi-item>
+        </dx-box>
+        <div>
+        <dx-responsive-box *ngIf="screen <= 412" direction="col" width="100%">
+            <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                 <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+                <dxi-row [ratio]="1"></dxi-row>
+            <dxi-item [ratio]="3" [baseSize]="0">
+                <dx-responsive-box direction="row" width="100%">
+
+                    <dxi-item class="rect demo-dark" [ratio]="4">
+                        
+                        <!--==========================Bar and Line Chart==================-->
+                        <dx-chart id="chart" title="Plantilla operadoresGST" [dataSource]="platillaPA">
+                            <dxo-size [height]="570"></dxo-size>
+                            <dxi-series valueField="operando" name="Operando" color="#00B4D8"></dxi-series>
+                            <dxi-series valueField="noOperativo" name="No Operativo" color="#FA593F"></dxi-series>
+
+                            <dxi-series valueField="plantillaActiva" name="Plantilla Activa" type="line" color="rgb(119, 119, 119)" [width]=".5">
+                            <dxo-label [visible]="true" position="outside"
+                            backgroundColor="transparent" [verticalOffset]="15">
+                                <dxo-font size="12" color="black" weight="bold"></dxo-font>
+                            </dxo-label>
+
+                            </dxi-series>
+
+                            <dxi-value-axis position="right">
+                            <dxo-title text=""></dxo-title>
+                            </dxi-value-axis>
+                            
+                            <dxo-argument-axis [visualRange]="chart_visualRange" [tickInterval]="1">
+                                
+                            </dxo-argument-axis>
+
+                            <dxi-value-axis startValue="0" endValue="200"></dxi-value-axis>
+                            
+
+                            <dxi-value-axis 
+                                [visualRange]="{ startValue: 0, endValue: 200 }">
+                            </dxi-value-axis>
+
+                            <dxo-common-series-settings argumentField="mes" type="stackedBar">
+                            </dxo-common-series-settings>
+                            <dxo-legend
+                            verticalAlignment="bottom"
+                            horizontalAlignment="center"
+                            itemTextPosition="top"
+                            >
+                            </dxo-legend>
+                            <dxo-export [enabled]="true"></dxo-export>
+                            <dxo-tooltip
+                            [enabled]="true"
+                            location="edge"
+                            [customizeTooltip]="customizeTooltip"
+                            >
+                            </dxo-tooltip>
+                        </dx-chart>
+                        <!--====================================Finish chart==========--> 
+                    </dxi-item>
+
+                    <dxi-item class="rect demo-dark" [ratio]=".2"></dxi-item>
+                    <dxi-item class="rect demo-dark" [ratio]="4">
+
+                        <dx-data-grid #resmen id="gridContainer1" [dataSource]="platillaPA" [height]="590" [showBorders]="true" [columnAutoWidth]="true"
+                        (onRowPrepared)="onRowPreparedAnual($event)" (onCellPrepared)="onCellPreparedAnual($event)">
+                            
+                            <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                            <dxo-paging [pageSize]="100"></dxo-paging>
+                            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                            <dxo-export [enabled]="true" fileName="Plantilla Promedio Anual" [customizeExcelCell]="customizeOp"></dxo-export>
+
+                            <dxi-column dataField="" caption="Status plantilla mensual promedio activa" alignment="center">
+                                <dxi-column dataField="mes" caption="Mes"></dxi-column>
+                                <dxi-column dataField="plantillaActiva" caption="Plantilla Activa"></dxi-column>
+                                <dxi-column dataField="operando" caption="Operando"></dxi-column>
+                                <dxi-column dataField="noOperativo" caption="No Operativos"></dxi-column>
+                                <dxi-column dataField="porOperando" caption="Operando %" [format]="calculatePercent"></dxi-column>
+                                <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+                            </dxi-column>
+                            <!-- <dxo-summary [calculateCustomSummary]="calcularPorcentajes"> 
+                                <dxi-total-item column="" summaryType="avg" displayFormat="{0}" [valueFormat]="formatRedondear"></dxi-total-item>
+                                <dxi-total-item column="" summaryType="avg" displayFormat="{0}" [valueFormat]="calculatePercent"></dxi-total-item>
+                            </dxo-summary> -->
+
+                            <dxo-group-panel [visible]="false"></dxo-group-panel>
+                            <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+                        </dx-data-grid>
+                    </dxi-item>
+
+                </dx-responsive-box>
+            </dxi-item>
+        </dx-responsive-box>
+        </div>
+        <br><br>
+
+        <h3>Altas / Bajas</h3>
+                <dx-data-grid #resmen id="gridContainer1" [dataSource]="mensualAltas" [height]="350" [showBorders]="true" [columnAutoWidth]="true"
+                    (onRowPrepared)="onRowPreparedResumenO($event)" (onCellPrepared)="onCellPreparedResumenO($event)">
+                        
+                        <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                        <dxo-paging [pageSize]="100"></dxo-paging>
+                        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                        <dxo-export [enabled]="true" fileName="Altas" [customizeExcelCell]="customizeOp"></dxo-export>
+                        
+                        <dxi-column caption="Altas" alignment="center">
+                            <dxi-column dataField="udn" caption="UdN"></dxi-column>
+                            <dxi-column dataField="mes1" [caption]="mes1"></dxi-column>
+                            <dxi-column dataField="mes2" [caption]="mes2"></dxi-column>
+                            <dxi-column dataField="mes3" [caption]="mes3"></dxi-column>
+                            <dxi-column dataField="mes4" [caption]="mes4"></dxi-column>
+                            <dxi-column dataField="mes5" [caption]="mes5"></dxi-column>
+                            <dxi-column dataField="mes6" [caption]="mes6"></dxi-column>
+                            <dxi-column dataField="mes7" [caption]="mes7"></dxi-column>
+                            <dxi-column dataField="mes8" [caption]="mes8"></dxi-column>
+                            <dxi-column dataField="mes9" [caption]="mes9"></dxi-column>
+                            <dxi-column dataField="mes10" [caption]="mes10"></dxi-column>
+                            <dxi-column dataField="mes11" [caption]="mes11"></dxi-column>
+                            <dxi-column dataField="mes12" [caption]="mes12"></dxi-column>
+                            <dxi-column dataField="total" caption="Total"></dxi-column>
+                            <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+                        </dxi-column>
+                       
+                        <dxo-summary [calculateCustomSummary]="calcularPorcentajes"> 
+                            <dxi-total-item column="mes1" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes2" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes3" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes4" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes5" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes6" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes7" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes8" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes9" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes10" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes11" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes12" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="total" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                        </dxo-summary>
+
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+
+                </dx-data-grid>
+                    <br>
+
+                <dx-data-grid #resmen id="gridContainer1" [dataSource]="mensualBajas" [height]="350" [showBorders]="true" [columnAutoWidth]="true"
+                (onRowPrepared)="onRowPreparedResumenO($event)" (onCellPrepared)="onCellPreparedResumenO($event)">
+
+                        <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                        <dxo-paging [pageSize]="100"></dxo-paging>
+                        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                        <dxo-export [enabled]="true" fileName="Bajas" [customizeExcelCell]="customizeOp"></dxo-export>
+
+                        <dxi-column caption="Bajas" alignment="center">
+                            <dxi-column dataField="udn" caption="UdN"></dxi-column>
+                            <dxi-column dataField="mes1" [caption]="mes1"></dxi-column>
+                            <dxi-column dataField="mes2" [caption]="mes2"></dxi-column>
+                            <dxi-column dataField="mes3" [caption]="mes3"></dxi-column>
+                            <dxi-column dataField="mes4" [caption]="mes4"></dxi-column>
+                            <dxi-column dataField="mes5" [caption]="mes5"></dxi-column>
+                            <dxi-column dataField="mes6" [caption]="mes6"></dxi-column>
+                            <dxi-column dataField="mes7" [caption]="mes7"></dxi-column>
+                            <dxi-column dataField="mes8" [caption]="mes8"></dxi-column>
+                            <dxi-column dataField="mes9" [caption]="mes9"></dxi-column>
+                            <dxi-column dataField="mes10" [caption]="mes10"></dxi-column>
+                            <dxi-column dataField="mes11" [caption]="mes11"></dxi-column>
+                            <dxi-column dataField="mes12" [caption]="mes12"></dxi-column>
+                            <dxi-column dataField="total" caption="Total"></dxi-column>
+                            <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+                        </dxi-column>
+
+                        <dxo-summary [calculateCustomSummary]="calcularPorcentajes"> 
+                            <dxi-total-item column="mes1" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes2" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes3" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes4" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes5" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes6" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes7" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes8" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes9" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes10" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes11" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes12" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="total" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                        </dxo-summary>
+
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+
+                </dx-data-grid>
+                    <br>
+
+                <dx-data-grid #resmen id="gridContainer1" [dataSource]="mensualSaldos" [height]="350" [showBorders]="true" [columnAutoWidth]="true"
+                (onRowPrepared)="onRowPreparedResumenO($event)" (onCellPrepared)="onCellPreparedResumenO($event)">
+
+                        <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                        <dxo-paging [pageSize]="100"></dxo-paging>
+                        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                        <dxo-export [enabled]="true" fileName="Saldos" [customizeExcelCell]="customizeOp"></dxo-export>
+                        
+                        <dxi-column caption="Saldos" alignment="center">
+                            <dxi-column dataField="udn" caption="UdN"></dxi-column>
+                            <dxi-column dataField="mes1" [caption]="mes1"></dxi-column>
+                            <dxi-column dataField="mes2" [caption]="mes2"></dxi-column>
+                            <dxi-column dataField="mes3" [caption]="mes3"></dxi-column>
+                            <dxi-column dataField="mes4" [caption]="mes4"></dxi-column>
+                            <dxi-column dataField="mes5" [caption]="mes5"></dxi-column>
+                            <dxi-column dataField="mes6" [caption]="mes6"></dxi-column>
+                            <dxi-column dataField="mes7" [caption]="mes7"></dxi-column>
+                            <dxi-column dataField="mes8" [caption]="mes8"></dxi-column>
+                            <dxi-column dataField="mes9" [caption]="mes9"></dxi-column>
+                            <dxi-column dataField="mes10" [caption]="mes10"></dxi-column>
+                            <dxi-column dataField="mes11" [caption]="mes11"></dxi-column>
+                            <dxi-column dataField="mes12" [caption]="mes12"></dxi-column>
+                            <dxi-column dataField="total" caption="Total"></dxi-column>
+                            <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+                        </dxi-column>
+
+                        <dxo-summary [calculateCustomSummary]="calcularPorcentajes"> 
+                            <dxi-total-item column="mes1" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes2" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes3" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes4" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes5" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes6" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes7" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes8" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes9" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes10" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes11" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="mes12" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="total" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                            <dxi-total-item column="" summaryType="sum" displayFormat="{0}"></dxi-total-item>
+                        </dxo-summary>
+
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+
+                </dx-data-grid>
+                     
+        <br><br>
+
+         <dx-popup width="100%" height="100%" [showTitle]="true" title="Detalle de Altas" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modalDA">
+            <div *dxTemplate="let data of 'content'">
+                <dx-scroll-view width="100%" height="100%">
+
+                <dx-data-grid #resmen id="gridContainer1" [dataSource]="detalleAltas" [height]="400" [showBorders]="true" [columnAutoWidth]="true"
+            (onRowPrepared)="onRowPreparedAnual($event)" (onCellPrepared)="onCellPreparedAnual($event)">    
+                
+                <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                <dxo-paging [pageSize]="100"></dxo-paging>
+                <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                <dxo-export [enabled]="true" fileName="Detalle de Altas" [customizeExcelCell]="customizeOp"></dxo-export>
+                
+                <dxi-column dataField="udN" caption="UdN"></dxi-column>
+                <dxi-column dataField="operacion" caption="Operación"></dxi-column>
+                <dxi-column dataField="cvetra" caption="Número"></dxi-column>
+                <dxi-column dataField="nomnbre" caption="Nombre"></dxi-column>
+                <dxi-column dataField="alta" caption="Alta" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                <!-- <dxi-column dataField="fecha" caption="Fecha" dataType="date" format="dd/MM/yyyy"></dxi-column> -->
+                <dxi-column dataField="fechaPortal" caption="Fecha Captura" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+            
+                <dxo-group-panel [visible]="false"></dxo-group-panel>
+                <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+                </dx-data-grid>
+
+            </dx-scroll-view>
+            </div>
+        </dx-popup>
+            
+        <dx-popup width="100%" height="100%" [showTitle]="true" title="Detalle de Bajas" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="modalDB">
+            <div *dxTemplate="let data of 'content'">
+                <dx-scroll-view width="100%" height="100%">
+
+                    <dx-data-grid #resmen id="gridContainer1" [dataSource]="detalleBajas" [height]="400" [showBorders]="true" [columnAutoWidth]="true"
+                    (onRowPrepared)="onRowPreparedAnual($event)" (onCellPrepared)="onCellPreparedAnual($event)">    
+                        
+                        <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+                        <dxo-paging [pageSize]="100"></dxo-paging>
+                        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                        <dxo-export [enabled]="true" fileName="Detalle de Altas" [customizeExcelCell]="customizeOp"></dxo-export>
+                        
+                        <dxi-column dataField="udN" caption="UdN"></dxi-column>
+                        <dxi-column dataField="operacion" caption="Operación"></dxi-column>
+                        <dxi-column dataField="cvetra" caption="Número"></dxi-column>
+                        <dxi-column dataField="nomnbre" caption="Nombre"></dxi-column>
+                        <dxi-column dataField="alta" caption="Alta" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                        <dxi-column dataField="baja" caption="Baja" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                        <!-- <dxi-column dataField="fecha" caption="Fecha" dataType="date" format="dd/MM/yyyy"></dxi-column> -->
+                        <dxi-column dataField="fechaPortal" caption="Fecha Captura" dataType="date" format="dd/MM/yyyy"></dxi-column>
+                        <dxi-column dataField="" caption="" [width]="15"></dxi-column>
+                        
+                    
+                        <dxo-group-panel [visible]="false"></dxo-group-panel>
+                        <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+                    </dx-data-grid>
+                </dx-scroll-view>
+            </div>
+        </dx-popup>
+
+
+    </div>
+    
+    <!-- LOAD PANEL -->
+    <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [position]="{ of: '#rentCont2' }" [(visible)]="loadingVisible" [showIndicator]="true" [showPane]="true" [shading]="true" [closeOnOutsideClick]="false" (onShown)="onShown()" (onHidden)="onHidden()">
+    </dx-load-panel>
+
+
+    <dx-toast [(visible)]="isVisible" type="info" message="Seleccione Año y Mes">
+        <dxo-position my="top" at="right" of="#container">
+        </dxo-position>
+    </dx-toast>
+</div>
