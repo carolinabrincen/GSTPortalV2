@@ -132,7 +132,7 @@ export class IngresosDetalladosComponent implements OnInit {
     this.getIDMDFebrero2026();
     this.getIDMDMarzo2026();
      this.getIDMDAbril2026();
-    // this.getIDMDMayo2026();
+     this.getIDMDMayo2026();
     // this.getIDMDJunio2026();
     // this.getIDMDJulio2026();
     // this.getIDMDAgosto2026();
@@ -546,15 +546,15 @@ export class IngresosDetalladosComponent implements OnInit {
        //this.loadingVisible = false;
      });
    }
-  // getIDMDMayo2026(){
-  //   this.loadingVisible = true;
-  //   this.ingresosService.getIngresosDetalladosMensualMay2026().subscribe(res => {
-  //     this.arrIngresosMay2026 = res.data.resumen;
-  //     this.arrDetalleMay2026 = res.data.detalle;
+   getIDMDMayo2026(){
+     this.loadingVisible = true;
+     this.ingresosService.getIngresosDetalladosMensualMay2026().subscribe(res => {
+       this.arrIngresosMay2026 = res.data.resumen;
+       this.arrDetalleMay2026 = res.data.detalle;
   //  //   console.log(this.arrDetalleMay2025)
-  //     this.loadingVisible = false;
-  //   });
-  // }
+       this.loadingVisible = false;
+     });
+   }
   // getIDMDJunio2026(){
   //   this.loadingVisible = true;
   //   this.ingresosService.getIngresosDetalladosMensualJun2026().subscribe(res => {

@@ -990,6 +990,238 @@
                     <!--#endregion :::: FIN GRID PRINCIPAL ::::  -->
                 </dxi-item>
 
+                <dxi-item title="MAYO">
+                    <!--#region :::: GRID PRINCIPAL::::  -->
+                    <dx-data-grid  #ING id="gridContainer10" [dataSource]="arrIngresosMay2026" [height]="500"[showBorders]="true" [columnAutoWidth]="true"
+                    (onRowPrepared)="onRowPreparedSep($event)" (onCellPrepared)="onCellPreparedSep($event)">
+                    
+                        <dxo-export [enabled]="true" [customizeExcelCell]="customizeSep" fileName="Ingresos Detallados"></dxo-export>
+                        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                        
+                        <dxi-column dataField="unidadNegocio" [groupIndex]="0"></dxi-column>
+                        <dxi-column dataField="tipoOperacion" caption="Operación" [fixed]="true" cssClass="border-right"></dxi-column>
+
+                        <dxi-column caption="MOVIMIENTOS DEL MES ANTERIOR"  alignment="center" [allowSorting]="false">
+                            <dxi-column caption="Provisión"  alignment="center" [allowSorting]="false">
+                                <dxi-column dataField="facturadoProvision" caption="Prov. Facturada" [width]="150" [format]="formating"></dxi-column>
+                                <dxi-column dataField="facturadoProvisionOtrosIngresos" caption="Facturado Otros Ingr." [width]="150" [format]="formating" alignment="right"></dxi-column>
+                            </dxi-column>
+                            <dxi-column caption="Refacturaciones"  alignment="center" [allowSorting]="false">
+                                <dxi-column dataField="refacturado" caption="Refacturado" [width]="150" [format]="formating"></dxi-column>
+                                <dxi-column dataField="refacturadoOtrosIngresos" caption="Otros Ingr." [width]="150" [format]="formating" alignment="right"></dxi-column>                                
+                                <dxi-column dataField="maSolicitudCancelacion" caption="Cancelado" [width]="150" [format]="formating"></dxi-column>
+                                <dxi-column dataField="maCancelacionOtros" caption="Canc. Otros Ingr." [width]="150" [format]="formating"></dxi-column>
+                            </dxi-column>
+                            <dxi-column dataField="maTotal" caption="Total Mes Anterior" [width]="150"  cssClass="border-right" [format]="formating"></dxi-column>
+                        </dxi-column>
+
+                        <dxi-column caption="INGRESO DEL MES"  alignment="center" [allowSorting]="false">
+                            <dxi-column dataField="facturado" caption="Facturado" alignment="right" [width]="150" [format]="formating"></dxi-column>
+                            <dxi-column dataField="provision" caption="Provisión" alignment="right" [width]="150" [format]="formating"></dxi-column>
+                            <dxi-column dataField="provisionOtrosIngresos" caption="Prov. Otros Ingr." alignment="right" [width]="150" [format]="formating"></dxi-column>
+                            <dxi-column dataField="otrosIngresos" caption="Otros ingresos" alignment="right" [width]="150" [format]="formating"></dxi-column>
+                            <dxi-column dataField="totalFlete" caption="Total Ingreso Mes" alignment="right" [width]="150" cssClass="border-right" [format]="formating"></dxi-column>
+                        </dxi-column>
+
+                        <dxi-column caption="RESUMEN DEL MES"  alignment="center" [allowSorting]="false">
+                            <dxi-column dataField="maTotal2" caption="Total Mes Anterior" [width]="150" [format]="formating"></dxi-column>
+                            <dxi-column dataField="totalFlete2" caption="Total Ingreso Mes" [width]="150" alignment="right" [format]="formating"></dxi-column>
+                            <dxi-column dataField="notasCredito" caption="Notas Crédito " alignment="right" [width]="120" [format]="formating"></dxi-column>
+                            <dxi-column dataField="notasCargo" caption="Notas Cargo" alignment="right" [width]="120" [format]="formating"></dxi-column>
+                            <dxi-column dataField="total" caption="TOTAL" alignment="right" [width]="150" [format]="formating"></dxi-column>
+                        </dxi-column>    
+
+                        <dxi-column dataField="facturasDirectas" caption="Facturas directas" alignment="right" [width]="150" [format]="formating"></dxi-column>
+
+
+
+                        <dxo-summary>
+                            <dxi-group-item column="facturadoProvision" summaryType="sum" displayFormat="{0}" [valueFormat]="formating"  [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="facturadoProvision" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+                            <dxi-group-item column="facturadoProvisionOtrosIngresos" summaryType="sum" displayFormat="{0}" [valueFormat]="formating"  [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="facturadoProvisionOtrosIngresos" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+
+                            <dxi-group-item column="refacturado" summaryType="sum" displayFormat="{0}" [valueFormat]="formating"  [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="refacturado" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+                            <dxi-group-item column="refacturadoOtrosIngresos" summaryType="sum" displayFormat="{0}" [valueFormat]="formating"  [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="refacturadoOtrosIngresos" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+                            <dxi-group-item column="maSolicitudCancelacion" summaryType="sum" displayFormat="{0}" [valueFormat]="formating" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="maSolicitudCancelacion" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+                            <dxi-group-item column="maCancelacionOtros" summaryType="sum" displayFormat="{0}" [valueFormat]="formating" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="maCancelacionOtros" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+
+                            <dxi-group-item column="provisionOtrosIngresos" summaryType="sum" displayFormat="{0}" [valueFormat]="formating"  [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="provisionOtrosIngresos" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+                            <dxi-group-item column="maTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formating" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="maTotal" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+                            <dxi-group-item column="maTotal2" summaryType="sum" displayFormat="{0}" [valueFormat]="formating" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="maTotal2" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+                            <dxi-group-item column="facturado" summaryType="sum" displayFormat="{0}" [valueFormat]="formating" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="facturado" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+                            <dxi-group-item column="provision" summaryType="sum" displayFormat="{0}" [valueFormat]="formating" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="provision" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+                            <dxi-group-item column="totalFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formating" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="totalFlete" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+                            <dxi-group-item column="totalFlete2" summaryType="sum" displayFormat="{0}" [valueFormat]="formating" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="totalFlete2" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+
+                            <dxi-group-item column="notasCredito" summaryType="sum" displayFormat="{0}" [valueFormat]="formating" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="notasCredito" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+
+                            <dxi-group-item column="notasCargo" summaryType="sum" displayFormat="{0}" [valueFormat]="formating" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="notasCargo" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+
+                            <dxi-group-item column="otrosIngresos" summaryType="sum" displayFormat="{0}" [valueFormat]="formating" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="otrosIngresos" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+                            <!-- <dxi-group-item column="totalMes" summaryType="sum" displayFormat="{0}"  [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="totalMes" summaryType="sum"  displayFormat="{0}">
+                            </dxi-total-item> -->
+                            <!-- <dxi-group-item column="diferencias2022" summaryType="sum" displayFormat="{0}"  [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="diferencias2022" summaryType="sum"  displayFormat="{0}">
+                            </dxi-total-item> -->
+
+
+
+                            <dxi-group-item column="total" summaryType="sum" displayFormat="{0}" [valueFormat]="formating" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="total" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+
+                            <dxi-group-item column="facturasDirectas" summaryType="sum" displayFormat="{0}" [valueFormat]="formating" [showInGroupFooter]="true">
+                            </dxi-group-item>
+                            <dxi-total-item column="facturasDirectas" summaryType="sum"  displayFormat="{0}" [valueFormat]="formating">
+                            </dxi-total-item>
+
+
+                        </dxo-summary>
+
+                        <div *dxTemplate="let data of 'headerTemplate'">
+                            <div style="font-weight:bolder; color: black;">
+                                {{ data.column.caption }}
+                            </div>
+                        </div>
+
+                        <div *dxTemplate="let info of 'titleHeaderTemplate'">
+                            <div style="font-weight: bolder; color: #ff5722">
+                                {{ info.column.caption }}
+                            </div>
+                        </div>
+
+                        <!-- TEMPLATE: CELDA EN NEGRITA -->
+                        <div *dxTemplate="let cell of 'cellTemplateBold'">
+                            <div style="font-weight: bolder; font-size:medium;">{{ cell.text }}</div>
+                        </div>
+
+                        <dxo-paging [pageSize]="60"></dxo-paging>
+                        <dxo-sorting mode="none"></dxo-sorting>
+
+                    </dx-data-grid>
+                    <!--#endregion :::: FIN GRID PRINCIPAL ::::  -->
+
+                    <br>
+                    <h3>Detalle</h3>
+                    <!--#region :::: GRID PRINCIPAL::::  -->
+                    <dx-data-grid #AbrDetalle id="gridContainer4" [dataSource]="arrDetalleMay2026" [height]="500" [showBorders]="true" [columnAutoWidth]="true">
+                        <dxo-export [enabled]="true"></dxo-export>
+                        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                        <!-- unidadNegocio -->
+                        <dxi-column dataField="area" [groupIndex]="0"></dxi-column>
+                        <!-- clasificacion -->
+                        <dxi-column dataField="clasificacion" [groupIndex]="0"></dxi-column>
+                        <!-- tipoOperacion -->
+                        <dxi-column dataField="noViaje" caption="No. Viaje"></dxi-column>
+                        <dxi-column dataField="fechaDespacho" caption="Despachado"></dxi-column>
+                        <!-- enero -->
+                        <dxi-column dataField="numGuia" caption="Num. Guía"></dxi-column>
+                        <!-- febMASolicitudCancelacion -->
+                        <dxi-column dataField="tipoOperacion" caption="Tipo Operación"></dxi-column>
+                        <!-- febMASolicitudCancelacion -->
+                        <dxi-column dataField="status" caption="St."></dxi-column>
+                        <!-- febMASolicitudCancelacion -->
+                        <dxi-column dataField="prestamo" caption="Préstamo"></dxi-column>
+
+                        <dxi-column dataField="flete" caption="Flete" headerCellTemplate="headerTemplate">
+                            <dxo-format type="currency" [precision]="2"> </dxo-format>
+                        </dxi-column>
+                        <!-- febMACancelacion -->
+                        <dxi-column dataField="fleteAnt" caption="Flete Ant." headerCellTemplate="headerTemplate">
+                            <dxo-format type="currency" [precision]="2"> </dxo-format>
+                        </dxi-column>
+                        <!-- febMAAumento -->
+                        <dxi-column dataField="diferencia" caption="Diferencia" headerCellTemplate="headerTemplate">
+                            <dxo-format type="currency" [precision]="2"> </dxo-format>
+                        </dxi-column>
+
+                        <dxi-column dataField="factura" caption="Factura"></dxi-column>
+                        <dxi-column dataField="facturaAnt" caption="Factura Ant."></dxi-column>
+                        <dxi-column dataField="fechaIngreso" caption="Ingreso CP"></dxi-column>
+                        <dxi-column dataField="fechaModifico" caption="Modificó CP"></dxi-column>
+
+
+
+
+
+                        <div *dxTemplate="let data of 'headerTemplate'">
+                            <div style="font-weight: bolder; color: black">
+                                {{ data.column.caption }}
+                            </div>
+                        </div>
+
+                        <div *dxTemplate="let info of 'titleHeaderTemplate'">
+                            <div style="font-weight: bolder; color: #ff5722">
+                                {{ info.column.caption }}
+                            </div>
+                        </div>
+
+                        <!-- TEMPLATE: CELDA EN NEGRITA -->
+                        <div *dxTemplate="let cell of 'cellTemplateBold'">
+                            <div style="font-weight: bold">{{ cell.text }}</div>
+                        </div>
+
+
+                        <dxo-paging [pageSize]="20"></dxo-paging>
+
+                        <dxo-sorting mode="none"></dxo-sorting>
+
+                    </dx-data-grid>
+
+                    <!--#endregion :::: FIN GRID PRINCIPAL ::::  -->
+                </dxi-item>
+
             </dx-tab-panel>
         </dxi-item>
         <dxi-item title="2025">
