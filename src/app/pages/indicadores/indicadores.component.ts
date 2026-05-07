@@ -699,6 +699,7 @@ export class IndicadoresComponent implements OnInit {
   kmsMensykaes: KMSMensuales[] = [];
   kmsMensuales: any[] = [];
   periodo: any[] = [
+     { id: 202605, periodo: 202605 },
     { id: 202604, periodo: 202604 },
     { id: 202603, periodo: 202603 },
     { id: 202602, periodo: 202602 },
@@ -787,6 +788,7 @@ export class IndicadoresComponent implements OnInit {
   ];
 
   periodoIpC: any[] = [
+    { id: 202605, periodo: 202605 },
     { id: 202604, periodo: 202604 },
     { id: 202603, periodo: 202603 },
     { id: 202602, periodo: 202602 },
@@ -17592,6 +17594,40 @@ onCellPreparedIO2026(e){
     return "$ "+total;
   }
 
+  calculateTotalAvgINGXKMS = (options: any) => {
+    const cityNames = ['avgNZ_cuatitlan_IK', 'avgNZ_tultitlan_IK', 'avgNZ_guadalajara_IK', 'avgNZ_hermosillo_IK', 'avgNZ_mexicali_IK', 'avgNZ_orizaba_IK'];
+
+    if (cityNames.includes(options.name)) {
+      if (options.summaryProcess === 'start') {
+        options.totalValue = { sum: 0, count: 0 };
+      } else if (options.summaryProcess === 'calculate') {
+        const val = Number(options.value) || 0;
+        if (val > 0) {
+          options.totalValue.sum += val;
+          options.totalValue.count++;
+        }
+      } else if (options.summaryProcess === 'finalize') {
+        options.totalValue = options.totalValue.count > 0 ? options.totalValue.sum / options.totalValue.count : 0;
+      }
+    }
+
+    if (options.name === 'totalAvgINGXKMS') {
+      if (options.summaryProcess === 'start') {
+        options.totalValue = 0;
+      } else if (options.summaryProcess === 'calculate') {
+        const val = options.value;
+        if (val != null && typeof val === 'object') {
+          options.totalValue += (val.cuatitlan || 0) + (val.tultitlan || 0) + (val.guadalajara || 0)
+            + (val.hermosillo || 0) + (val.mexicali || 0) + (val.orizaba || 0);
+        } else {
+          options.totalValue += Number(val) || 0;
+        }
+      } else if (options.summaryProcess === 'finalize') {
+        options.totalValue = options.totalValue / 6;
+      }
+    }
+  }
+
   separatorKV(value) {
 
     // var str = value.toString().split(".");
@@ -17751,12 +17787,41 @@ onCellPreparedIO2026(e){
   }
 
   calcularPorcentajes(options: any) {
-    // //
-    // if (options.summaryProcess === 'calculate') {
-    //   if (options.name === 'grupMargenUtilidaPor') {
-    //     options.totalValue = .17;
-    //   }
-    // }
+    const porNames = [
+      'cuatitlanPresPorGrp', 'cuatitlanPresPorTot',
+      'cuatitlanPresAcPorGrp', 'cuatitlanPresAcPorTot',
+      'tultitlanPresPorGrp', 'tultitlanPresPorTot',
+      'tultitlanPresAcPorGrp', 'tultitlanPresAcPorTot',
+      'guadalajaraPresPorGrp', 'guadalajaraPresPorTot',
+      'guadalajaraPresAcPorGrp', 'guadalajaraPresAcPorTot',
+      'hermosilloPresPorGrp', 'hermosilloPresPorTot',
+      'hermosilloPresAcPorGrp', 'hermosilloPresAcPorTot',
+      'mexicaliPresPorGrp', 'mexicaliPresPorTot',
+      'mexicaliPresAcPorGrp', 'mexicaliPresAcPorTot',
+      'orizabaPresPorGrp', 'orizabaPresPorTot',
+      'orizabaPresAcPorGrp', 'orizabaPresAcPorTot',
+      'cuatitlanIngrAntPorGrp', 'cuatitlanIngrAntPorTot',
+      'tultitlanIngrAntPorGrp', 'tultitlanIngrAntPorTot',
+      'guadalajaraIngrAntPorGrp', 'guadalajaraIngrAntPorTot',
+      'mexicaliIngrAntPorGrp', 'mexicaliIngrAntPorTot',
+      'orizabaIngrAntPorGrp', 'orizabaIngrAntPorTot',
+      'hermosilloIngrAntPorGrp', 'hermosilloIngrAntPorTot',
+    ];
+    if (porNames.includes(options.name)) {
+      if (options.summaryProcess === 'start') {
+        options.totalValue = { sum: 0, count: 0 };
+      } else if (options.summaryProcess === 'calculate') {
+        const val = Number(options.value);
+        if (val > 0) {
+          options.totalValue.sum += val;
+          options.totalValue.count++;
+        }
+      } else if (options.summaryProcess === 'finalize') {
+        options.totalValue = options.totalValue.count > 0
+          ? options.totalValue.sum / options.totalValue.count
+          : 0;
+      }
+    }
   }
 
   // customizeLabel = (point) =>{
