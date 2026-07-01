@@ -1,0 +1,102 @@
+<div class="page-container">
+  <h2 class="page-title">Viajes recapturados del mes</h2>
+
+  <!-- Filtro -->
+  <div class="filtro-bar">
+    <div class="filtro-field">
+      <label>Mes y Año</label>
+      <dx-date-box
+        type="date"
+        displayFormat="MM/yyyy"
+        pickerType="calendar"
+        placeholder="Selecciona mes y año"
+        [calendarOptions]="calendarOptions"
+        [value]="fechaSeleccionada"
+        (valueChange)="fechaSeleccionada = $event"
+        [width]="200">
+      </dx-date-box>
+    </div>
+    <dx-button
+      text="Buscar"
+      type="default"
+      icon="search"
+      [disabled]="!puedesBuscar"
+      (onClick)="buscar()">
+    </dx-button>
+  </div>
+
+  <!-- Indicador de carga -->
+  <dx-load-panel
+    [visible]="loading"
+    message="Consultando viajes..."
+    [showPane]="true"
+    [showIndicator]="true">
+  </dx-load-panel>
+
+  <!-- Mensaje vacío -->
+  <div class="empty-msg" *ngIf="!loading && resultados.length === 0 && fechaSeleccionada">
+    No se encontraron viajes asociados para el periodo seleccionado.
+  </div>
+
+  <!-- Tabla de resultados -->
+  <dx-data-grid
+    *ngIf="resultados.length > 0"
+    [dataSource]="resultados"
+    [showBorders]="true"
+    [columnAutoWidth]="true"
+    [rowAlternationEnabled]="true"
+    [allowColumnResizing]="true"
+    [height]="'calc(100vh - 220px)'"
+    (onCellPrepared)="onCellPrepared($event)">
+    <dxo-scrolling showScrollbar="always" [useNative]="false"></dxo-scrolling>
+    <dxo-export [enabled]="true"></dxo-export>
+    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+    <dxo-header-filter [visible]="true"></dxo-header-filter>
+    <dxo-paging [pageSize]="10"></dxo-paging>
+    <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="allowedPageSizes" [showInfo]="true"></dxo-pager>
+
+    <!-- Columnas generales -->
+    <dxi-column caption="Fecha Asociación" [calculateCellValue]="formatAplicacion" [fixed]="true" ></dxi-column>
+    <dxi-column dataField="usuario" caption="Usuario" [fixed]="true" ></dxi-column>
+   
+    <!-- ─── VIAJE ANTERIOR ─── -->
+    <dxi-column caption="VIAJE ANTERIOR">
+      <dxi-column caption="UdN Ant" [calculateCellValue]="getCiudadAnt" ></dxi-column>
+      <dxi-column dataField="viajeAnterior.noViaje" caption="No. Viaje Ant" ></dxi-column>
+      <dxi-column dataField="viajeAnterior.nombre" caption="Operador Ant" ></dxi-column>
+      <dxi-column dataField="viajeAnterior.descRuta" caption="Ruta Ant" ></dxi-column>
+      <dxi-column dataField="viajeAnterior.kmsViaje" caption="Kms Ant" ></dxi-column>
+      <dxi-column name="liqAnt" caption="Liquidación Ant"
+                  [calculateCellValue]="getLiqAnt" >
+      </dxi-column>
+      <dxi-column dataField="viajeAnterior.fleteTotal" caption="Flete Ant"
+                  format="$ #,###,###.##" >
+      </dxi-column>
+    </dxi-column>
+
+    <!-- ─── VIAJE NUEVO ─── -->
+    <dxi-column caption="VIAJE NUEVO">
+      <dxi-column caption="UdN Nuevo" [calculateCellValue]="getCiudadNuevo" ></dxi-column>
+      <dxi-column dataField="viajeNuevo.noViaje" caption="No. Viaje Nuevo" ></dxi-column>
+      <dxi-column dataField="viajeNuevo.nombre" caption="Operador Nuevo" ></dxi-column>
+      <dxi-column dataField="viajeNuevo.descRuta" caption="Ruta Nuevo" ></dxi-column>
+      <dxi-column dataField="viajeNuevo.kmsViaje" caption="Kms Nuevo" ></dxi-column>
+      <dxi-column name="liqNuevo" caption="Liquidación Nuevo"
+                  [calculateCellValue]="getLiqNuevo" >
+      </dxi-column>
+      <dxi-column dataField="viajeNuevo.fleteTotal" caption="Flete Nuevo"
+                  format="$ #,###,###.##" >
+      </dxi-column>
+    </dxi-column>
+
+     <dxi-column caption="Clasificación" [calculateCellValue]="getClasificacion" 
+                cellTemplate="chipClasificacion" >
+    </dxi-column>
+    <div *dxTemplate="let cell of 'chipClasificacion'">
+      <span class="chip-clasificacion">{{ cell.value }}</span>
+    </div>
+
+
+  </dx-data-grid>
+
+</div>

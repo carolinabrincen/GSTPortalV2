@@ -1,0 +1,248 @@
+<div class="informacion-base-container">
+  <h2 class="page-title">Sueldo Operador</h2>
+
+  <!-- Filtros -->
+  <div class="filtros-panel">
+    <div class="filtros-grupo">
+      <div class="filtro-field">
+        <label>Mes y Año</label>
+        <dx-date-box
+          type="date"
+          displayFormat="MM/yyyy"
+          pickerType="calendar"
+          placeholder="Selecciona mes y año"
+          [calendarOptions]="calendarOptions"
+          [value]="fechaSeleccionada"
+          (valueChange)="fechaSeleccionada = $event"
+          [width]="200">
+        </dx-date-box>
+      </div>
+
+      <div class="filtro-field">
+        <label>Unidad de Negocio</label>
+        <dx-tag-box
+          [dataSource]="udns"
+          valueExpr="idArea"
+          displayExpr="nombre"
+          placeholder="Todas las UDN"
+          [value]="selectedUdn"
+          (valueChange)="selectedUdn = $event"
+          [showSelectionControls]="true"
+          applyValueMode="useButtons"
+          [width]="300">
+        </dx-tag-box>
+      </div>
+
+      <dx-button
+        text="Buscar"
+        type="default"
+        icon="search"
+        [disabled]="!puedesBuscar"
+        (onClick)="buscar()">
+      </dx-button>
+    </div>
+  </div>
+
+  <!-- Indicador de carga -->
+  <dx-load-panel
+    [visible]="loading"
+    message="Consultando información..."
+    [showPane]="true"
+    [showIndicator]="true">
+  </dx-load-panel>
+
+  <!-- Mensaje vacío -->
+  <div class="empty-msg" *ngIf="!loading && cargado && resumen.length === 0">
+    No se encontraron resultados para el periodo y unidades de negocio seleccionados.
+  </div>
+
+  <!-- Grid resumen por operador -->
+  <div class="grid-wrapper" *ngIf="!loading && resumen.length > 0">
+    <dx-data-grid
+      [dataSource]="resumen"
+      [columns]="columnDefs"
+      [showBorders]="true"
+      [columnAutoWidth]="true"
+      [rowAlternationEnabled]="true"
+      [allowColumnResizing]="true"
+      [height]="'calc(100vh - 260px)'"
+      [summary]="summaryConfig"
+      (onCellPrepared)="onCellPrepared($event)"
+      (onCellClick)="onCellClick($event)">
+      <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+      <dxo-export [enabled]="true" fileName="Resumen Sueldo Operador"></dxo-export>
+      <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+      <dxo-paging [pageSize]="20"></dxo-paging>
+      <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="allowedPageSizes" [showInfo]="true"></dxo-pager>
+      <dxo-filter-row [visible]="true"></dxo-filter-row>
+      <dxo-group-panel [visible]="false"></dxo-group-panel>
+      <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
+    </dx-data-grid>
+  </div>
+
+  <!-- Detalle de liquidaciones NOM por operador y semana -->
+  <dx-popup
+    [width]="'80%'"
+    [height]="'70%'"
+    [showTitle]="true"
+    [title]="detalleTitulo"
+    [dragEnabled]="false"
+    [closeOnOutsideClick]="true"
+    [showCloseButton]="true"
+    container=".dx-viewport"
+    [(visible)]="detalleVisible">
+    <div *dxTemplate="let data of 'content'">
+      <dx-data-grid
+        [dataSource]="detalleRegistros"
+        [showBorders]="true"
+        [columnAutoWidth]="true"
+        [rowAlternationEnabled]="true"
+        [allowColumnResizing]="true"
+        [height]="'100%'">
+        <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+        <dxo-export [enabled]="true" fileName="Detalle Liquidaciones NOM"></dxo-export>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+
+        <dxi-column dataField="udN" caption="UdN"></dxi-column>
+        <dxi-column dataField="claveSemanaNOM" caption="Semana NOM"></dxi-column>
+        <dxi-column dataField="nombre" caption="Operador"></dxi-column>
+        <dxi-column dataField="operacion" caption="Operación"></dxi-column>
+        <dxi-column dataField="status" caption="Status"></dxi-column>
+        <dxi-column dataField="sueldoXViaje" caption="Sueldo Viajes" format="$ #,##0"></dxi-column>
+        <dxi-column dataField="salarioOperador" caption="Salario Operador" format="$ #,##0"></dxi-column>
+        <dxi-column dataField="sueldoGarantia" caption="Sueldo Garantía" format="$ #,##0"></dxi-column>
+        <dxi-column dataField="totalSemana" caption="Total" format="$ #,##0"></dxi-column>
+
+        <dxo-summary>
+          <dxi-total-item column="sueldoXViaje" summaryType="sum" displayFormat="Total: {0}" [valueFormat]="'$ #,##0'"></dxi-total-item>
+          <dxi-total-item column="salarioOperador" summaryType="sum" displayFormat="Total: {0}" [valueFormat]="'$ #,##0'"></dxi-total-item>
+          <dxi-total-item column="sueldoGarantia" summaryType="sum" displayFormat="Total: {0}" [valueFormat]="'$ #,##0'"></dxi-total-item>
+          <dxi-total-item column="totalSemana" summaryType="sum" displayFormat="Total: {0}" [valueFormat]="'$ #,##0'"></dxi-total-item>
+        </dxo-summary>
+      </dx-data-grid>
+    </div>
+  </dx-popup>
+
+  <!-- Detalle Sin Liquidar (noLiquidados + sinProcesar por operador y semana) -->
+  <dx-popup
+    [width]="'90%'"
+    [height]="'85%'"
+    [showTitle]="true"
+    [title]="sinLiquidarTitulo"
+    [dragEnabled]="false"
+    [closeOnOutsideClick]="true"
+    [showCloseButton]="true"
+    container=".dx-viewport"
+    [(visible)]="sinLiquidarVisible">
+    <div *dxTemplate="let data of 'content'" style="height:100%; display:flex; flex-direction:column;">
+      <dx-data-grid
+        [dataSource]="sinLiquidarRegistros"
+        [showBorders]="true"
+        [columnAutoWidth]="false"
+        [rowAlternationEnabled]="true"
+        [allowColumnResizing]="true"
+        [width]="'100%'"
+        [height]="'100%'">
+        <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
+        <dxo-export [enabled]="true" fileName="Detalle Sin Liquidar"></dxo-export>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxo-filter-row [visible]="true"></dxo-filter-row>
+
+        <dxi-column dataField="udN" caption="UdN" [width]="80"></dxi-column>
+        <dxi-column dataField="claveSemanaNOM" caption="Semana NOM" [width]="100"></dxi-column>
+        <dxi-column dataField="clasificacion" caption="Clasificación" [width]="100"></dxi-column>
+        <dxi-column dataField="viaje" caption="Viaje" [width]="70"></dxi-column>
+        <dxi-column dataField="numLiquidacion" caption="No. Liquidación" [width]="110"></dxi-column>
+        <dxi-column dataField="despacho" caption="Despacho" dataType="datetime" format="dd/MM/yyyy" [width]="100"></dxi-column>
+        <dxi-column dataField="finViaje" caption="Fin Viaje" dataType="datetime" format="dd/MM/yyyy" [width]="100"></dxi-column>
+        <dxi-column dataField="kms" caption="Kms" [width]="70"></dxi-column>
+        <dxi-column dataField="operacion" caption="Operación" [width]="130"></dxi-column>
+        <dxi-column dataField="tipo" caption="Tipo" [width]="80"></dxi-column>
+        <dxi-column dataField="sueldoNoLiquidado" caption="Sueldo" format="$ #,##0" [width]="110"></dxi-column>
+
+        <dxo-summary>
+          <dxi-total-item column="kms" summaryType="sum" displayFormat="Total: {0}" [valueFormat]="'#,##0'"></dxi-total-item>
+          <dxi-total-item column="sueldoNoLiquidado" summaryType="sum" displayFormat="Total: {0}" [valueFormat]="'$ #,##0'"></dxi-total-item>
+        </dxo-summary>
+      </dx-data-grid>
+    </div>
+  </dx-popup>
+
+  <!-- Detalle Liquidados (resumen + viajes por liquidación) -->
+  <dx-popup
+    [width]="'85%'"
+    [height]="'auto'"
+    [maxHeight]="'90vh'"
+    [showTitle]="true"
+    [title]="detalleViajesTitulo"
+    [dragEnabled]="false"
+    [closeOnOutsideClick]="true"
+    [showCloseButton]="true"
+    container=".dx-viewport"
+    [(visible)]="detalleViajesVisible">
+    <div *dxTemplate="let data of 'content'">
+
+      <dx-tab-panel [height]="'auto'" [animationEnabled]="false" [swipeEnabled]="false">
+
+        <dxi-item title="Resumen" template="tabResumen"></dxi-item>
+        <dxi-item title="Viajes" template="tabViajes"></dxi-item>
+
+        <div *dxTemplate="let d of 'tabResumen'" style="padding:8px;">
+          <dx-data-grid
+            [dataSource]="detalleViajesResumen"
+            [showBorders]="true"
+            [columnAutoWidth]="true"
+            [allowColumnResizing]="true"
+            [height]="'auto'">
+            <dxo-scrolling mode="standard"></dxo-scrolling>
+            <dxi-column dataField="semana" caption="Semana" [width]="80"></dxi-column>
+            <dxi-column dataField="cveTra" caption="CveTra" [width]="90"></dxi-column>
+            <dxi-column dataField="idUdN" caption="UdN" [width]="70"></dxi-column>
+            <dxi-column dataField="liquidacion" caption="Liquidación" [width]="100"></dxi-column>
+            <dxi-column dataField="fechaLiquidacion" caption="Fecha Liquidación" dataType="datetime" format="dd/MM/yyyy HH:mm" [width]="150"></dxi-column>
+            <dxi-column dataField="viajes" caption="Viajes" [width]="70"></dxi-column>
+            <dxi-column dataField="inicio" caption="Inicio" dataType="datetime" format="dd/MM/yyyy HH:mm" [width]="140"></dxi-column>
+            <dxi-column dataField="fin" caption="Fin" dataType="datetime" format="dd/MM/yyyy HH:mm" [width]="140"></dxi-column>
+            <dxi-column dataField="dias" caption="Días" [width]="70"></dxi-column>
+            <dxi-column dataField="sueldo" caption="Sueldo" format="$ #,##0" [width]="120"></dxi-column>
+            <dxo-summary>
+              <dxi-total-item column="sueldo" summaryType="sum" displayFormat="Total: {0}" [valueFormat]="'$ #,##0'"></dxi-total-item>
+            </dxo-summary>
+          </dx-data-grid>
+        </div>
+
+        <div *dxTemplate="let d of 'tabViajes'" style="padding:8px;">
+          <dx-data-grid
+            [dataSource]="detalleViajesData"
+            [showBorders]="true"
+            [columnAutoWidth]="false"
+            [rowAlternationEnabled]="true"
+            [allowColumnResizing]="true"
+            [height]="'auto'">
+            <dxo-scrolling mode="standard"></dxo-scrolling>
+            <dxo-export [enabled]="true" fileName="Detalle Viajes Liquidados"></dxo-export>
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxo-filter-row [visible]="true"></dxo-filter-row>
+            <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
+
+            <dxi-column dataField="noLiquidacion" caption="No. Liquidación" groupIndex="0"></dxi-column>
+            <dxi-column dataField="noViaje" caption="No. Viaje" [width]="90"></dxi-column>
+            <dxi-column dataField="nombre" caption="Operador" [width]="180"></dxi-column>
+            <dxi-column dataField="descRuta" caption="Ruta" [width]="220"></dxi-column>
+            <dxi-column dataField="tipoOperacion" caption="Tipo Operación" [width]="140"></dxi-column>
+            <dxi-column dataField="operacion" caption="Operación" [width]="100"></dxi-column>
+            <dxi-column dataField="fechaRealViaje" caption="Inicio Viaje" dataType="datetime" format="dd/MM/yyyy HH:mm" [width]="140"></dxi-column>
+            <dxi-column dataField="fechaRealFinViaje" caption="Fin Viaje" dataType="datetime" format="dd/MM/yyyy HH:mm" [width]="140"></dxi-column>
+            <dxi-column dataField="fechaLiq" caption="Fecha Liquidación" dataType="datetime" format="dd/MM/yyyy" [width]="130"></dxi-column>
+            <dxi-column dataField="proceso" caption="Proceso" [width]="80"></dxi-column>
+            <dxi-column dataField="monLiq" caption="Monto Liquidado" format="$ #,##0" [width]="120" [visible]="false"></dxi-column>
+          </dx-data-grid>
+        </div>
+
+      </dx-tab-panel>
+
+    </div>
+  </dx-popup>
+
+
+</div>

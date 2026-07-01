@@ -1,0 +1,336 @@
+.informacion-base-container {
+  padding: 20px;
+  background: #faf9f5;
+  min-height: 100vh;
+
+  &.mobile {
+    padding: 10px;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+    color: #1c1c1a;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+
+  // Panel de filtros
+  .filtros-panel {
+    background: white;
+    padding: 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(28, 28, 26, 0.08);
+    border: 1px solid #e8e5dc;
+
+    .filtros-grupo {
+      display: flex;
+      gap: 16px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+
+      .filtro-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        label {
+          font-size: 0.82rem;
+          font-weight: 600;
+          color: #3d3d3a;
+        }
+      }
+
+      dx-select-box, dx-number-box, dx-date-box, dx-tag-box {
+        min-width: 140px;
+        flex: 1;
+
+        ::ng-deep .dx-textbox {
+          background: #f8f7f2;
+          border: 1px solid #d3d1c7;
+
+          &:hover {
+            border-color: #c8401a;
+          }
+
+          &.dx-state-focused {
+            background: white;
+            border-color: #c8401a;
+            box-shadow: 0 0 0 2px rgba(200, 64, 26, 0.1);
+          }
+        }
+      }
+
+      dx-button {
+        min-width: 100px;
+
+        ::ng-deep .dx-button {
+          background: #27500a;
+          border-color: #27500a;
+          color: white;
+          font-weight: 600;
+
+          &:hover:not(:disabled) {
+            background: #1a3607;
+            border-color: #1a3607;
+          }
+
+          &.dx-state-focused:not(:disabled) {
+            box-shadow: 0 0 0 3px rgba(39, 80, 10, 0.2);
+          }
+        }
+      }
+
+      @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 12px;
+
+        dx-select-box, dx-number-box, dx-date-box, dx-tag-box, dx-button {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .empty-msg {
+    text-align: center;
+    padding: 40px 0;
+    color: #999;
+    font-size: 1rem;
+  }
+
+  // Contenedor del grid
+  .grid-wrapper {
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(28, 28, 26, 0.1);
+    overflow: hidden;
+    border: 1px solid #e8e5dc;
+
+    ::ng-deep {
+      // Grid general
+      .dx-datagrid {
+        border: none;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      }
+
+      .dx-datagrid-container {
+        background: white;
+      }
+
+      // Header principal
+      .dx-datagrid-headers {
+        background: #1c1c1a;
+        border-bottom: 2px solid #8a8a86;
+      }
+
+      .dx-datagrid-header-row td {
+        background: #1c1c1a;
+        color: white;
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        padding: 10px 8px;
+        border-right: 1px solid #3d3d3a;
+
+        &:last-child {
+          border-right: none;
+        }
+      }
+
+      // Headers de banda - fila padre (Semana 1, Semana 2...)
+      .dx-datagrid-header-row td[colspan] {
+        background: #f0ede4 !important;
+        color: #3d3d3a !important;
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        border-bottom: 2px solid #c0bdb4;
+        border-right: 1px solid #c0bdb4;
+        padding: 10px 8px;
+        text-align: center;
+      }
+
+      // Headers de banda - fila hija (Viajes, Salario, Garantía, Total)
+      .dx-datagrid-header-row:nth-child(2) td,
+      .dx-header-row ~ .dx-header-row td {
+        background: #f0ede4 !important;
+        color: #3d3d3a !important;
+        font-weight: 600;
+        font-size: 11px;
+        border-right: 1px solid #d3d1c7;
+        padding: 8px;
+      }
+
+      // Filas de datos
+      .dx-data-row {
+        border-bottom: 1px solid #f0ede4;
+
+        &:hover td {
+          background: #f0eee6 !important;
+        }
+
+        td {
+          padding: 9px 8px;
+          font-size: 13px;
+          color: #3d3d3a;
+          border-right: 1px solid #e8e5dc;
+          vertical-align: middle;
+
+          &:last-child {
+            border-right: none;
+          }
+        }
+      }
+
+      // Filas de grupo
+      .dx-group-row td {
+        background: #e8e5dc !important;
+        color: #1c1c1a;
+        font-weight: 700;
+        font-size: 12px;
+        border-bottom: 1px solid #d3d1c7;
+      }
+
+      // Fila de total de grupo (footer)
+      .dx-datagrid-group-footer td {
+        background: #f0ede4 !important;
+        font-weight: 700;
+        font-size: 12px;
+        color: #27500a;
+        border-top: 1px solid #d3d1c7;
+        border-bottom: 1px solid #d3d1c7;
+      }
+
+      // Fila de totales generales
+      .dx-datagrid-total-footer td {
+        background: #e8e5dc !important;
+        color: #1c1c1a !important;
+        font-weight: 700;
+        font-size: 12px;
+        border-top: 2px solid #c0bdb4;
+      }
+
+      // Columnas fijas izquierda
+      .dx-datagrid-fixed-columns .dx-header-row td {
+        background: #1c1c1a;
+      }
+
+      // Estilos clases CSS de columnas
+      .operador-cell {
+        font-weight: 600;
+        color: #1c1c1a;
+        white-space: nowrap;
+        font-size: 0.9rem;
+      }
+
+      .total-cell {
+        font-size: 1.05rem;
+        font-weight: 700;
+        background-color: #d6d6d6 !important;
+      }
+
+      .pendiente-cell {
+        font-size: 1.1rem;
+        font-weight: 700;
+        background-color: #d6d6d6 !important;
+      }
+
+      // Search panel
+      .dx-searchbox {
+        background: #f8f7f2;
+        border: 1px solid #d3d1c7;
+        border-radius: 4px;
+
+        &.dx-state-focused {
+          background: white;
+          border-color: #c8401a;
+          box-shadow: 0 0 0 2px rgba(200, 64, 26, 0.1);
+        }
+      }
+
+      // Paginación
+      .dx-datagrid-pager {
+        background: #f8f7f2;
+        border-top: 1px solid #e8e5dc;
+        padding: 10px 16px;
+
+        .dx-page.dx-selection {
+          background: #c8401a;
+          color: white;
+        }
+      }
+
+      // Filter row
+      .dx-datagrid-filter-row {
+        background: #f8f7f2;
+        border-bottom: 1px solid #d3d1c7;
+
+        td {
+          padding: 4px 6px;
+        }
+      }
+
+      // Responsive
+      @media (max-width: 1024px) {
+        .dx-datagrid {
+          font-size: 12px;
+
+          .dx-data-row td,
+          .dx-datagrid-header-row td {
+            padding: 7px 5px;
+            font-size: 11px;
+          }
+        }
+      }
+
+      @media (max-width: 768px) {
+        .dx-datagrid {
+          font-size: 11px;
+
+          .dx-data-row td,
+          .dx-datagrid-header-row td {
+            padding: 6px 4px;
+          }
+        }
+      }
+    }
+  }
+
+  // Loading overlay
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(28, 28, 26, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+
+    p {
+      color: white;
+      margin-top: 20px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+  }
+}
+
+:root {
+  --color-primary: #1c1c1a;
+  --color-accent: #c8401a;
+  --color-success: #27500a;
+  --color-warning: #e65100;
+  --color-danger: #c62828;
+  --color-bg-light: #faf9f5;
+  --color-bg-white: #ffffff;
+  --color-border: #e8e5dc;
+  --color-text: #3d3d3a;
+}

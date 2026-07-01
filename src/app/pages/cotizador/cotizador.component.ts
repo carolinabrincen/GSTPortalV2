@@ -328,7 +328,7 @@ export class CotizadorComponent implements OnInit {
 
   //#endregion :::: EVENTOS :::::
   dieselValueChanged(e: any) {
-    this.itemCotizacion.diesel_sin_impuestos = e.value === 0 ? 0 : +(((this.itemCotizacion.diesel-0.40228)/1.16) + 0.40228).toFixed(2);
+    this.itemCotizacion.diesel_sin_impuestos = e.value === 0 ? 0 : +(((this.itemCotizacion.diesel-0.490817)/1.16) + 0.490817).toFixed(2);
   }
  
   

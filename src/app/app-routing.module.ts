@@ -78,6 +78,9 @@ import { DxDataGridModule, DxFormModule, DxSelectBoxModule, DxButtonModule, DxDr
   import { PreviewPDFComponent } from './pages/previewPDF/previewPDF.component';
   import { DocumentacionOperadorComponent } from './pages/documentacionOperador/documentacionOperador.component';
   import { MapaComponent } from './components/utils/mapa/mapa.component';
+  import { AsociarViajeComponent } from './pages/viajesRecapturados/asociarViaje/asociarViaje.component';
+  import { BuscarViajesComponent } from './pages/viajesRecapturados/buscarViajes/buscarViajes.component';
+  import { SueldoOperadorComponent } from './pages/sueldoOperador/sueldoOperador.component';
 
 const routes: Routes = [
   {
@@ -350,6 +353,21 @@ const routes: Routes = [
     canActivate: [ AuthGuardService  ]
   },
   {
+    path: 'viajes-recapturados/asociar',
+    component: AsociarViajeComponent,
+    canActivate: [ AuthGuardService ]
+  },
+  {
+    path: 'viajes-recapturados/buscar',
+    component: BuscarViajesComponent,
+    canActivate: [ AuthGuardService ]
+  },
+  {
+    path: 'sueldo-operador',
+    component: SueldoOperadorComponent,
+    canActivate: [ AuthGuardService ]
+  },
+  {
     path: '**',
     redirectTo: 'home'
   }
@@ -461,7 +479,10 @@ const routes: Routes = [
     DatosOperadorComponent,
     PreviewPDFComponent,
     DocumentacionOperadorComponent,
-    MapaComponent
+    MapaComponent,
+    AsociarViajeComponent,
+    BuscarViajesComponent,
+    SueldoOperadorComponent
   ]
 })
 export class AppRoutingModule { }

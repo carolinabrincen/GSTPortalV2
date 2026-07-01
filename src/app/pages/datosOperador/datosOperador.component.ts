@@ -65,6 +65,10 @@ export class DatosOperadorComponent implements OnInit {
   ine: boolean;
   apto: boolean;
   licencia: boolean;
+  casa: boolean;
+  nss: boolean;
+  csf: boolean;
+  curp: boolean;
 
   udn: any[] = [
     {idArea: 0, nombre: 'TODOS'},
@@ -384,6 +388,42 @@ export class DatosOperadorComponent implements OnInit {
     this.datosOpService.postBitacora(pantalla, cvetra, nombreArch, otros).subscribe(data =>{
       console.log(data)
     })
+  }
+
+  casaPDF(value){
+    this.casa = value.data.casa;
+    if(this.casa == true){
+      let tipo = "casa"
+      let casaPDF = value.data.cvetra;
+      let nombreArchCasa = ""
+
+      this.loadingVisible = true;
+      this.datosOpService.getPDF(casaPDF, tipo).subscribe(data =>{
+        nombreArchCasa = data.nombre
+
+        var byteCharacters = atob(data.data);
+        var byteNumbers = new Array(byteCharacters.length);
+        for (var i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        var byteArray = new Uint8Array(byteNumbers);
+        var file = new Blob([byteArray], { type: 'application/pdf;base64' });
+        var fileURL = URL.createObjectURL(file);
+        window.open(fileURL);
+
+        this.postBitacora(nombreArchCasa)
+
+        this.loadingVisible = false;
+      })
+    }else if(this.casa == false){
+      notify({
+        message: "No existe documento",
+        position: {
+          my: 'center center',
+          at: 'center center',
+        },
+      }, 'warning', 3000);
+    }
   }
 
 }

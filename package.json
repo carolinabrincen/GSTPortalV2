@@ -3,10 +3,10 @@
     "version": "0.0.0",
     "scripts": {
         "ng": "ng",
-        "start": "ng serve",
-        "build": "ng build",
-        "build:dev": "ng build --watch --deploy-url /WebGST/ --base-href /WebGST/",
-        "watch": "ng build --watch --configuration development",
+        "start": "node node_modules/@angular/cli/bin/ng serve",
+        "build": "node node_modules/@angular/cli/bin/ng build",
+        "build:dev": "node node_modules/@angular/cli/bin/ng build --deploy-url /WebGST/ --base-href /WebGST/",
+        "watch": "node node_modules/@angular/cli/bin/ng build --watch --configuration development",
         "test": "ng test",
         "build-themes": "devextreme build",
         "postinstall": "npm run build-themes"

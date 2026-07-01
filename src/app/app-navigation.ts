@@ -95,6 +95,11 @@ export const navigation = [
         icon: 'columnchooser',
         path: '/presupuestoDisponibilidad'
       },
+      {
+        text: 'Sueldo Operador',
+        icon: 'columnchooser',
+        path: '/sueldo-operador'
+      },
     ],
   },
   {
@@ -172,6 +177,22 @@ export const navigation = [
     text: 'Permisos',
     path: '/permisos',
     icon: 'columnproperties'
+  },
+  {
+    text: 'Viajes recapturados',
+    icon: 'refresh',
+    items: [
+      {
+        text: 'Asociar',
+        icon: 'link',
+        path: '/viajes-recapturados/asociar'
+      },
+      {
+        text: 'Buscar',
+        icon: 'search',
+        path: '/viajes-recapturados/buscar'
+      }
+    ]
   },
   // {
   //   text: 'Multipartidas',
@@ -296,6 +317,11 @@ export const navigationID24 = [
         icon: 'columnchooser',
         path: '/presupuestoDisponibilidad'
       },
+      {
+        text: 'Sueldo Operador',
+        icon: 'columnchooser',
+        path: '/sueldo-operador'
+      },
     ],
   },
   {
@@ -378,6 +404,22 @@ export const navigationID24 = [
     text: 'Permisos',
     path: '/permisos',
     icon: 'columnproperties'
+  },
+  {
+    text: 'Viajes recapturados',
+    icon: 'refresh',
+    items: [
+      {
+        text: 'Asociar',
+        icon: 'link',
+        path: '/viajes-recapturados/asociar'
+      },
+      {
+        text: 'Buscar',
+        icon: 'search',
+        path: '/viajes-recapturados/buscar'
+      }
+    ]
   },
 
 ];

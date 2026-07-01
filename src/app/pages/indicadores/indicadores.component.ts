@@ -699,6 +699,7 @@ export class IndicadoresComponent implements OnInit {
   kmsMensykaes: KMSMensuales[] = [];
   kmsMensuales: any[] = [];
   periodo: any[] = [
+     { id: 202606, periodo: 202606 },
      { id: 202605, periodo: 202605 },
     { id: 202604, periodo: 202604 },
     { id: 202603, periodo: 202603 },
@@ -788,6 +789,7 @@ export class IndicadoresComponent implements OnInit {
   ];
 
   periodoIpC: any[] = [
+      { id: 202606, periodo: 202606 },
     { id: 202605, periodo: 202605 },
     { id: 202604, periodo: 202604 },
     { id: 202603, periodo: 202603 },

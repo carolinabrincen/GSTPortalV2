@@ -1,0 +1,198 @@
+<div class="page-container">
+  <h2 class="page-title">Asociar viajes recapturados</h2>
+
+  <dx-load-panel
+    [visible]="loading"
+    message="Buscando viajes..."
+    [position]="{ of: '#paneles-container' }"
+    [showPane]="true"
+    [showIndicator]="true">
+  </dx-load-panel>
+
+  <!-- Botón Buscar centrado -->
+  <div class="buscar-bar">
+    <dx-button
+      text="Buscar"
+      type="default"
+      icon="search"
+      (onClick)="buscar()">
+    </dx-button>
+  </div>
+
+  <div class="paneles-grid" id="paneles-container">
+
+    <!-- ─── Panel izquierdo: VIAJE ANTERIOR ─── -->
+    <div class="panel">
+      <h3 class="panel-title">VIAJE ANTERIOR</h3>
+
+      <div class="field-group">
+        <label>UdN</label>
+        <dx-select-box
+          [dataSource]="udns"
+          displayExpr="ciudad"
+          valueExpr="id_area"
+          placeholder="Selecciona UdN"
+          [(value)]="antArea">
+        </dx-select-box>
+      </div>
+
+      <div class="field-group">
+        <label>No. Viaje</label>
+        <dx-text-box
+          placeholder="Número de viaje"
+          [(value)]="antViaje"
+          (onKeyDown)="soloNumeros($event)">
+        </dx-text-box>
+      </div>
+
+      <!-- Resultado viaje anterior -->
+      <div class="viaje-card" *ngIf="antData">
+        <div class="card-header">
+          <span class="viaje-num">No. {{ antData.noViaje }}</span>
+          <span class="separator">|</span>
+          <span class="ruta">{{ antData.descRuta }}</span>
+        </div>
+        <div class="card-details">
+          <span class="detail-item"><strong>Operador:</strong> {{ antData.nombre }}</span>
+          <span class="detail-item"><strong>Tipo Op.:</strong> {{ antData.tipoOperacion }}</span>
+          <span class="detail-item"><strong>Kms:</strong> {{ antData.kmsViaje }}</span>
+          <span class="detail-item"><strong>F. Despacho:</strong> {{ formatFecha(antData.fDespachado) }}</span>
+        </div>
+        <div class="card-liquidacion">
+          <ng-container *ngIf="!antData.noLiquidacion">
+            <span class="chip-sinliq">SIN LIQUIDAR</span>
+          </ng-container>
+          <ng-container *ngIf="antData.noLiquidacion">
+            <span class="chip-liq">{{ antData.noLiquidacion }}</span>
+            <span style="margin-left:8px;font-size:0.8rem;color:#888">{{ formatFecha(antData.fechaLiquidacion) }}</span>
+          </ng-container>
+          <span class="chip-yaasociado" *ngIf="antData.yaAsociado">YA ASOCIADO</span>
+        </div>
+        <table class="cp-table" *ngIf="antData.cartasPorte?.length">
+          <thead>
+            <tr>
+              <th>No. Guía</th>
+              <th>No. Guía Asignado</th>
+              <th>Cliente</th>
+              <th class="td-flete">Flete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cp of antData.cartasPorte">
+              <td>{{ cp.numGuia }}</td>
+              <td>{{ cp.numGuiaAsignado }}</td>
+              <td>{{ cp.nombre }}</td>
+              <td class="td-flete">{{ formatCurrency(cp.flete) }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" class="td-total">TOTAL</td>
+              <td class="td-flete td-total">{{ formatCurrency(getTotalFlete(antData.cartasPorte)) }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Divisor vertical -->
+    <div class="panel-divider"></div>
+
+    <!-- ─── Panel derecho: VIAJE NUEVO ─── -->
+    <div class="panel">
+      <h3 class="panel-title">VIAJE NUEVO</h3>
+
+      <div class="field-group">
+        <label>UdN</label>
+        <dx-select-box
+          [dataSource]="udns"
+          displayExpr="ciudad"
+          valueExpr="id_area"
+          placeholder="Selecciona UdN"
+          [(value)]="nuevoArea">
+        </dx-select-box>
+      </div>
+
+      <div class="field-group">
+        <label>No. Viaje</label>
+        <dx-text-box
+          placeholder="Número de viaje"
+          [(value)]="nuevoViaje"
+          (onKeyDown)="soloNumeros($event)">
+        </dx-text-box>
+      </div>
+
+      <!-- Resultado viaje nuevo -->
+      <div class="viaje-card" *ngIf="nuevoData">
+        <div class="card-header">
+          <span class="viaje-num">No. {{ nuevoData.noViaje }}</span>
+          <span class="separator">|</span>
+          <span class="ruta">{{ nuevoData.descRuta }}</span>
+        </div>
+        <div class="card-details">
+          <span class="detail-item"><strong>Operador:</strong> {{ nuevoData.nombre }}</span>
+          <span class="detail-item"><strong>Tipo Op.:</strong> {{ nuevoData.tipoOperacion }}</span>
+          <span class="detail-item"><strong>Kms:</strong> {{ nuevoData.kmsViaje }}</span>
+          <span class="detail-item"><strong>F. Despacho:</strong> {{ formatFecha(nuevoData.fDespachado) }}</span>
+        </div>
+        <div class="card-liquidacion">
+          <ng-container *ngIf="!nuevoData.noLiquidacion">
+            <span class="chip-sinliq">SIN LIQUIDAR</span>
+          </ng-container>
+          <ng-container *ngIf="nuevoData.noLiquidacion">
+            <span class="chip-liq">{{ nuevoData.noLiquidacion }}</span>
+            <span style="margin-left:8px;font-size:0.8rem;color:#888">{{ formatFecha(nuevoData.fechaLiquidacion) }}</span>
+          </ng-container>
+          <span class="chip-yaasociado" *ngIf="nuevoData.yaAsociado">YA ASOCIADO</span>
+        </div>
+        <table class="cp-table" *ngIf="nuevoData.cartasPorte?.length">
+          <thead>
+            <tr>
+              <th>No. Guía</th>
+              <th>No. Guía Asignado</th>
+              <th>Cliente</th>
+              <th class="td-flete">Flete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cp of nuevoData.cartasPorte">
+              <td>{{ cp.numGuia }}</td>
+              <td>{{ cp.numGuiaAsignado }}</td>
+              <td>{{ cp.nombre }}</td>
+              <td class="td-flete">{{ formatCurrency(cp.flete) }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" class="td-total">TOTAL</td>
+              <td class="td-flete td-total">{{ formatCurrency(getTotalFlete(nuevoData.cartasPorte)) }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Clasificación y botón Asociar (solo cuando se puede asociar) -->
+  <div class="asociar-bar" *ngIf="puedeAsociar">
+    <div class="clasificacion-group">
+      <label>Clasificación</label>
+      <dx-select-box
+        [dataSource]="clasificaciones"
+        displayExpr="descripcion"
+        valueExpr="id"
+        placeholder="Selecciona una clasificación..."
+        [(value)]="clasificacionSeleccionada"
+        width="100%">
+      </dx-select-box>
+    </div>
+    <dx-button
+      text="Asociar"
+      type="success"
+      icon="link"
+      (onClick)="confirmarAsociacion()">
+    </dx-button>
+  </div>
+
+</div>

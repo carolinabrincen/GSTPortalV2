@@ -67,6 +67,7 @@
             <dxi-column dataField="alta" caption="Alta" dataType="date" format="dd/MM/yyyy"></dxi-column>
             <dxi-column dataField="antiguedad" caption="Antiguedad" alignment="right"></dxi-column>
             <dxi-column dataField="ine" caption="INE"></dxi-column>
+           
             <dxi-column dataField="tieneINE" caption="Doc"></dxi-column>
             <dxi-column dataField="" caption="Ver" [fixed]="false" cellTemplate="openPDF" [width]="100"></dxi-column>
             <dxi-column dataField="curp" caption="CURP"></dxi-column>
@@ -89,6 +90,11 @@
                 <dxi-column dataField="conTel1" caption="Tel1"></dxi-column>
                 <dxi-column dataField="conTel2" caption="Tel2"></dxi-column>
             </dxi-column>
+            <dxi-column caption="Como llega a Casa" alignment="center">
+                <dxi-column dataField="" caption="Ver" [fixed]="false" cellTemplate="openLicPDF" [width]="100"></dxi-column>
+                <dxi-column dataField="tieneCasa" caption="Doc"></dxi-column>
+                
+            </dxi-column>
 
 
             <div *dxTemplate="let data of 'openPDF'">
@@ -101,6 +107,14 @@
 
             <div *dxTemplate="let data of 'openLicPDF'">
                 <dx-button icon="pdffile" stylingMode="outlined" type="danger" (onClick)="licenciaPDF(data)"></dx-button>
+            </div>
+
+            <div *dxTemplate="let data of 'openCasaPDF'">
+                <dx-button icon="pdffile" stylingMode="outlined" type="danger" (onClick)="licenciaPDF(data)"></dx-button>
+            </div>
+
+            <div *dxTemplate="let data of 'openINEPDF'">
+                <dx-button icon="pdffile" stylingMode="outlined" type="danger" (onClick)="casaPDF(data)"></dx-button>
             </div>
 
             
