@@ -350,9 +350,25 @@
                             <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
                         </dxi-item>
 
-                        <!-- CLIENTE -->
-                        <dxi-item dataField="cliente" [colSpan]="6">
-                            <dxi-validation-rule type="required" message="Cliente es campo requerido"></dxi-validation-rule>
+                        <!-- CLIENTE + REFRESH -->
+                        <dxi-item itemType="group" [colSpan]="6" [colCount]="13">
+                            <dxi-item dataField="cliente" editorType="dxSelectBox" [editorOptions]="{
+                                dataSource: clientesDataSource,
+                                searchEnabled: true,
+                                searchExpr: 'cliente',
+                                searchTimeout: 200,
+                                acceptCustomValue: true,
+                                displayExpr: 'cliente',
+                                valueExpr: 'cliente',
+                                placeholder: 'Buscar o escribir cliente...',
+                                noDataText: 'No se encontraron clientes',
+                                onCustomItemCreating: cliente_onCustomItemCreating
+                            }" [colSpan]="12">
+                                <dxo-label text="Cliente"></dxo-label>
+                                <dxi-validation-rule type="required" message="Cliente es campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+                            <dxi-item itemType="button" [colSpan]="1" verticalAlignment="bottom" horizontalAlignment="center" [buttonOptions]="refreshClientesOptions">
+                            </dxi-item>
                         </dxi-item>
 
                         <!-- ORIGEN -->

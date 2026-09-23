@@ -27,6 +27,10 @@ export class CarteraClientesService extends AbstractManagerService {
     return this.get<any>((this.API_URL + API_URLS.GET_CARTERA_DETALLE), this.httpOptions);
   }
 
+  getClientesDisplay(){
+    return this.get<any>((this.API_URL + API_URLS.GET_CARTERA_CLIENTES_DISPLAY), this.httpOptions);
+  }
+
   getPeriodoActual(){
     return this.get<any>((this.API_URL + API_URLS.GET_PERIODO_ACTUAL), this.httpOptions);
   }

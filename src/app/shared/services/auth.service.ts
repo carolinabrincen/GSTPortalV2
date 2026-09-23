@@ -13,7 +13,8 @@ export interface IUser {
   grupo: string,
   idUnidad: number,
   unidadNegocio: string,
-  token: string
+  token: string,
+  idPersonal: number
 }
 
 export interface IToken {
@@ -64,6 +65,7 @@ export class AuthService extends AbstractManagerService{
 
         sessionStorage.setItem('token', data.data.token.tokenUsuario);
         sessionStorage.setItem('idUsuario', data.data.data.idUsuario);
+        sessionStorage.setItem('idPersonal', data.data.data.idPersonal);
 
         this.storageService.setSession('permisos', data.data.data.permisos)
        

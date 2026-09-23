@@ -1,9 +1,13 @@
-import { Component } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { Component, ViewChild } from '@angular/core';
+import { forkJoin, of } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 import notify from 'devextreme/ui/notify';
+import { DxDataGridComponent } from 'devextreme-angular';
 import { UdnSueldoOperador } from './udn';
 import { SueldoOperadorService } from 'src/app/services/sueldoOperador/sueldoOperador.service';
 import {
+  ActualizarAutorizacionesRequest,
+  AutorizacionItem,
   DetalleLiquidacionResponse,
   InformacionBaseResponse,
   LiquidacionNOM,
@@ -30,6 +34,8 @@ const FMT_MONEDA = '$ #,##0';
   styleUrls: ['./sueldoOperador.component.scss']
 })
 export class SueldoOperadorComponent {
+
+  @ViewChild('resumenGrid') resumenGrid!: DxDataGridComponent;
 
   udns = UdnSueldoOperador.LISTA;
   selectedUdn: number[] = [];
@@ -61,6 +67,31 @@ export class SueldoOperadorComponent {
   anioConsulta = 0;
   mesConsulta = '';
 
+  mapaAutorizacion = new Map<number, boolean>();
+  autorizacionesOriginales = new Map<number, boolean>();
+  semanaVigente: string | null = null;
+  guardando = false;
+
+  get mostrarAutorizado(): boolean {
+    return !!this.semanaVigente && this.mapaAutorizacion.size > 0;
+  }
+
+  get tieneCambios(): boolean {
+    if (this.autorizacionesOriginales.size !== this.mapaAutorizacion.size) return true;
+    for (const [cvetra, valor] of this.mapaAutorizacion) {
+      if (this.autorizacionesOriginales.get(cvetra) !== valor) return true;
+    }
+    return false;
+  }
+
+  get contadorCambios(): number {
+    let n = 0;
+    for (const [cvetra, valor] of this.mapaAutorizacion) {
+      if (this.autorizacionesOriginales.get(cvetra) !== valor) n++;
+    }
+    return n;
+  }
+
   detalleCompleto: DetalleLiquidacionResponse = { resumen: [], viajes: [] };
 
   detalleViajesVisible = false;
@@ -79,6 +110,11 @@ export class SueldoOperadorComponent {
       notify('Selecciona mes y año', 'warning', 3000);
       return;
     }
+    if (this.tieneCambios) {
+      if (!confirm(`Hay ${this.contadorCambios} cambio(s) de autorización sin guardar. ¿Deseas continuar y descartar los cambios?`)) {
+        return;
+      }
+    }
 
     this.anioConsulta = this.fechaSeleccionada.getFullYear();
     this.mesConsulta = MESES[this.fechaSeleccionada.getMonth()];
@@ -90,19 +126,22 @@ export class SueldoOperadorComponent {
     this.columnDefs = [];
 
     forkJoin({
-      base: this.service.getInformacionBase(this.anioConsulta, this.mesConsulta),
-      detalle: this.service.getDetalleLiquidacion(this.anioConsulta, this.mesConsulta)
+      base: this.service.getInformacionBase(this.anioConsulta, this.mesConsulta).pipe(
+        catchError(() => of(null))
+      ),
+      detalle: this.service.getDetalleLiquidacion(this.anioConsulta, this.mesConsulta).pipe(
+        catchError(() => of(null))
+      )
     }).subscribe({
       next: ({ base, detalle }) => {
         this.loading = false;
         this.cargado = true;
-        this.detalleCompleto = detalle || { resumen: [], viajes: [] };
+        if (!base) {
+          notify('Error al conectar con el servidor', 'error', 4000);
+          return;
+        }
+        this.detalleCompleto = detalle?.data || { resumen: [], viajes: [] };
         this.construirResumen(base);
-      },
-      error: () => {
-        this.loading = false;
-        this.cargado = true;
-        notify('Error al conectar con el servidor', 'error', 4000);
       }
     });
   }
@@ -129,6 +168,23 @@ export class SueldoOperadorComponent {
       label: `Semana ${i + 1}`,
       valorReal: s
     }));
+
+    // Precalcular mapa de autorización para la semana vigente
+    this.mapaAutorizacion = new Map<number, boolean>();
+    this.autorizacionesOriginales = new Map<number, boolean>();
+    this.semanaVigente = null;
+    const autorizacion = data?.autorizacion;
+    if (autorizacion && autorizacion.length > 0) {
+      autorizacion.forEach((a: AutorizacionItem) => {
+        this.mapaAutorizacion.set(a.cvetra, a.autorizado);
+        this.autorizacionesOriginales.set(a.cvetra, a.autorizado);
+      });
+      const semStr = String(autorizacion[0].semana);
+      const colVigente = this.semanasColumnas.find(c => c.valorReal === semStr);
+      if (colVigente) {
+        this.semanaVigente = colVigente.key;
+      }
+    }
 
     const mapa = new Map<number, ResumenOperador>();
 
@@ -212,25 +268,87 @@ export class SueldoOperadorComponent {
       { dataField: 'status', caption: 'Status', width: 65, fixed: true, allowFiltering: true },
     ];
 
+    const mostrarAutorizado = this.mostrarAutorizado;
+
     for (const col of this.semanasColumnas) {
+      const subCols: any[] = [];
+
+      if (mostrarAutorizado && col.key === this.semanaVigente) {
+        subCols.push({
+          name: `${col.key}.autorizado`,
+          caption: 'Autorizado',
+          dataType: 'boolean',
+          cssClass: 'autorizado-cell',
+          width: 90,
+          allowFiltering: false,
+          allowHeaderFiltering: true,
+          headerFilter: {
+            dataSource: [
+              { value: true, text: 'Sí' },
+              { value: false, text: 'No' }
+            ]
+          },
+          allowSorting: false,
+          allowEditing: true,
+          calculateCellValue: (r: ResumenOperador) => this.mapaAutorizacion.get(r.cvetra) ?? false,
+          setCellValue: (_newData: any, value: boolean, currentRowData: ResumenOperador) => {
+            if (!value && this.semanaVigente) {
+              const garantia = currentRowData.semanas?.[this.semanaVigente]?.sueldoGarantia ?? 0;
+              if (garantia > 0) {
+                notify('No se puede desautorizar: el operador ya tiene garantía pagada esta semana.', 'warning', 4000);
+                setTimeout(() => this.resumenGrid?.instance?.cancelEditData(), 0);
+                return;
+              }
+            }
+            this.mapaAutorizacion.set(currentRowData.cvetra, value);
+          }
+        });
+
+        subCols.push({
+          name: `${col.key}.calculoGarantia`,
+          caption: 'Cálculo Garantía',
+          headerCellTemplate: (container: HTMLElement) => {
+            container.innerHTML = 'Cálculo<br>Garantía';
+            container.style.textAlign = 'center';
+          },
+          format: FMT_MONEDA,
+          width: 100,
+          allowFiltering: false,
+          allowHeaderFiltering: false,
+          allowSorting: false,
+          allowEditing: false,
+          calculateCellValue: (r: ResumenOperador) => {
+            if (!this.mapaAutorizacion.get(r.cvetra)) return 0;
+            const s = r.semanas?.[col.key];
+            const viajes = s?.sueldoXViaje ?? 0;
+            const salario = s?.salarioOperador ?? 0;
+            const garantia = s?.sueldoGarantia ?? 0;
+            const base = viajes + salario + garantia;
+            return base < UMBRAL_MONTO ? UMBRAL_MONTO - viajes - salario - garantia : 0;
+          }
+        });
+      }
+
+      subCols.push(
+        { dataField: `semanas.${col.key}.sueldoXViaje`, caption: 'Viajes', format: FMT_MONEDA, width: 110, allowFiltering: false },
+        { dataField: `semanas.${col.key}.salarioOperador`, caption: 'Salario', format: FMT_MONEDA, width: 90, allowFiltering: false },
+        { dataField: `semanas.${col.key}.sueldoGarantia`, caption: 'Garantía', format: FMT_MONEDA, width: 90, allowFiltering: false },
+        { dataField: `semanas.${col.key}.totalSemana`, caption: 'Total', format: FMT_MONEDA, width: 110, allowFiltering: false },
+        { dataField: `semanas.${col.key}.liquidados`, caption: 'Liquidados', format: FMT_MONEDA, width: 110, allowFiltering: false },
+        {
+          name: `${col.key}.alerta`, caption: '!', width: 36, allowFiltering: false,
+          calculateCellValue: (r: ResumenOperador) => {
+            const s = r.semanas?.[col.key];
+            return s && (s.sueldoXViaje !== 0 || s.liquidados !== 0) && s.sueldoXViaje !== s.liquidados ? '!' : '';
+          }
+        },
+        { dataField: `semanas.${col.key}.sinLiquidar`, caption: 'Sin Liquidar', format: FMT_MONEDA, width: 100, allowFiltering: false }
+      );
+
       cols.push({
         caption: col.label,
         allowFiltering: false,
-        columns: [
-          { dataField: `semanas.${col.key}.sueldoXViaje`, caption: 'Viajes', format: FMT_MONEDA, width: 110, allowFiltering: false },
-          { dataField: `semanas.${col.key}.salarioOperador`, caption: 'Salario', format: FMT_MONEDA, width: 90, allowFiltering: false },
-          { dataField: `semanas.${col.key}.sueldoGarantia`, caption: 'Garantía', format: FMT_MONEDA, width: 90, allowFiltering: false },
-          { dataField: `semanas.${col.key}.totalSemana`, caption: 'Total', format: FMT_MONEDA, width: 110, allowFiltering: false },
-          { dataField: `semanas.${col.key}.liquidados`, caption: 'Liquidados', format: FMT_MONEDA, width: 110, allowFiltering: false },
-          {
-            name: `${col.key}.alerta`, caption: '!', width: 36, allowFiltering: false,
-            calculateCellValue: (r: ResumenOperador) => {
-              const s = r.semanas?.[col.key];
-              return s && (s.sueldoXViaje !== 0 || s.liquidados !== 0) && s.sueldoXViaje !== s.liquidados ? '!' : '';
-            }
-          },
-          { dataField: `semanas.${col.key}.sinLiquidar`, caption: 'Sin Liquidar', format: FMT_MONEDA, width: 100, allowFiltering: false },
-        ]
+        columns: subCols
       });
     }
 
@@ -369,6 +487,67 @@ export class SueldoOperadorComponent {
     );
     this.detalleTitulo = `${fila.nombre} - ${columna.label}`;
     this.detalleVisible = true;
+  }
+
+  onEditorPreparing(e: any) {
+    if (e.parentType !== 'dataRow') return;
+    // Cancelar edición en todas las columnas excepto la de autorizado
+    if (!e.column.name?.endsWith('.autorizado')) {
+      e.cancel = true;
+      return;
+    }
+    // Solo editable cuando la Garantía de la semana vigente es 0
+    const row = e.row?.data as ResumenOperador;
+    if (!row || !this.semanaVigente) { e.cancel = true; return; }
+    const garantia = row.semanas?.[this.semanaVigente]?.sueldoGarantia ?? 1;
+    if (garantia !== 0) e.cancel = true;
+  }
+
+  guardarAutorizaciones() {
+    const idPersonal = Number(sessionStorage.getItem('idPersonal'));
+    if (!idPersonal) {
+      notify('Sesión inválida: no se encontró el usuario autenticado. Inicia sesión nuevamente.', 'error', 5000);
+      return;
+    }
+    const operadores = Array.from(this.mapaAutorizacion.entries())
+      .filter(([, v]) => v)
+      .map(([cvetra]) => Number(cvetra));
+
+    const request: ActualizarAutorizacionesRequest = { idPersonal, operadores };
+    this.guardando = true;
+    this.service.actualizarAutorizaciones(request).pipe(
+      finalize(() => this.guardando = false)
+    ).subscribe({
+      next: (res: any) => {
+        const r = res?.data ?? res;
+        const ignoradosMsg = r.ignorados?.length ? ` Ignorados: ${r.ignorados.join(', ')}.` : '';
+        notify(
+          `Guardado: ${r.autorizados} autorizado(s), ${r.desautorizados} desautorizado(s).${ignoradosMsg}`,
+          'success', 6000
+        );
+        this.refrescarAutorizaciones();
+      },
+      error: (err: any) => {
+        const msg = err?.error?.message || err?.error?.title || err?.message || `Error ${err?.status || ''}`;
+        notify(msg, 'error', 6000);
+      }
+    });
+  }
+
+  private refrescarAutorizaciones() {
+    this.service.getInformacionBase(this.anioConsulta, this.mesConsulta).subscribe({
+      next: (base: any) => {
+        const autorizacion: AutorizacionItem[] = base?.autorizacion ?? [];
+        this.mapaAutorizacion = new Map<number, boolean>();
+        this.autorizacionesOriginales = new Map<number, boolean>();
+        autorizacion.forEach((a: AutorizacionItem) => {
+          this.mapaAutorizacion.set(a.cvetra, a.autorizado);
+          this.autorizacionesOriginales.set(a.cvetra, a.autorizado);
+        });
+        this.resumenGrid?.instance?.refresh();
+      },
+      error: () => {}
+    });
   }
 
   private abrirDetalleLiquidados(fila: ResumenOperador, columna: SemanaColumna) {

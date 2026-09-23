@@ -12,6 +12,7 @@ import {
 import { UnidadesNegocioModel } from 'src/app/shared/models/rentabilidad-contable/renta-contable.model';
 import { RentContService } from 'src/app/services/rentabilidad-contable/rent-cont.service';
 import { RentGerService } from 'src/app/services/rentabilidad-gerencial/rent-ger.service';
+import { CarteraClientesService } from 'src/app/services/carteraClientes/carteraCliente.service';
 import { TiposOperacionModel } from 'src/app/shared/models/rentabilidad-gerencial/renta-geren.model';
 import notify from 'devextreme/ui/notify';
 import { confirm } from 'devextreme/ui/dialog';
@@ -19,6 +20,8 @@ import { IUser } from 'src/app/shared/services';
 import themes from 'devextreme/ui/themes';
 import dxSelectBox from 'devextreme/ui/select_box';
 import { runInThisContext } from 'vm';
+import DataSource from 'devextreme/data/data_source';
+import CustomStore from 'devextreme/data/custom_store';
 
 
 
@@ -42,6 +45,10 @@ export class CotizadorComponent implements OnInit {
   arrVariables: VariablesCotizacionModel[] = [];
   arrDetalleCotizacion: DetalleCotizacionModel[] = [];
   arrClasificaciones: string[] = [];
+  arrClientes: any[] = [];
+  clientesDataSource: any = null;
+  private _clientesIndex: { lower: string; item: any }[] = [];
+  refreshClientesOptions: any;
 
   @ViewChild('rentGer') rentGer!: DxDataGridComponent;
 
@@ -141,10 +148,12 @@ export class CotizadorComponent implements OnInit {
     private cotizadorService: CotizadorService,
     private renContService: RentContService,
     private renGerService: RentGerService,
-    private pdfReport: ReportsPDFService
+    private pdfReport: ReportsPDFService,
+    private carteraClientesService: CarteraClientesService
   ) {
     const that = this;
     this.unidadNegocio_ValueChanged = this.unidadNegocio_ValueChanged.bind(this);
+    this.cliente_onCustomItemCreating = this.cliente_onCustomItemCreating.bind(this);
     this.editarCotizacionClick = this.editarCotizacionClick.bind(this);
     this.eliminarCotizcionClick = this.eliminarCotizcionClick.bind(this);
     this.verCortizacionClick = this.verCortizacionClick.bind(this);
@@ -263,6 +272,14 @@ export class CotizadorComponent implements OnInit {
       },
     };
 
+    //Refresh clientes
+    this.refreshClientesOptions = {
+      icon: 'refresh',
+      type: 'normal',
+      stylingMode: 'outlined',
+      hint: 'Actualizar lista de clientes',
+      onClick() { that.getClientes(true); }
+    };
 
   }
 
@@ -270,7 +287,7 @@ export class CotizadorComponent implements OnInit {
     this.getCotizaciones();
     this.getPreCotizaciones();
     this.getUnidadesNegocio();
-    
+    this.getClientes();
   }
 
   // //#region :::: GETTERS ::::
@@ -308,7 +325,80 @@ export class CotizadorComponent implements OnInit {
     this.cotizadorService.getTiposOperacion(idUdN).subscribe(res => {
       this.arrTipoOperacion = res.data;
     });
+  }
 
+  getClientes(mostrarNotificacion = false) {
+    this.refreshClientesOptions = { ...this.refreshClientesOptions, disabled: true, icon: 'clock' };
+    this.carteraClientesService.getClientesDisplay().subscribe({
+      next: (res) => {
+        const lista = res.data || res || [];
+        this.arrClientes = lista.sort((a: any, b: any) =>
+          (a.cliente || '').localeCompare(b.cliente || '', 'es', { sensitivity: 'base' })
+        );
+        // Construir índice lowercase una sola vez para búsqueda O(n) sin conversiones repetidas
+        this._clientesIndex = this.arrClientes.map(item => ({
+          lower: (item.cliente || '').toLowerCase(),
+          item
+        }));
+        this.buildClientesDataSource();
+        this.refreshClientesOptions = { ...this.refreshClientesOptions, disabled: false, icon: 'refresh' };
+        if (mostrarNotificacion) notify('Lista de clientes actualizada', 'success', 2000);
+      },
+      error: () => {
+        this.refreshClientesOptions = { ...this.refreshClientesOptions, disabled: false, icon: 'refresh' };
+        if (mostrarNotificacion) notify('Error al actualizar la lista de clientes', 'error', 3000);
+      }
+    });
+  }
+
+  buildClientesDataSource() {
+    const self = this;
+    const PAGE_SIZE = 50;
+
+    this.clientesDataSource = new DataSource({
+      store: new CustomStore({
+        key: 'cliente',
+        load: (options: any) => {
+          const term = (options.searchValue || '').toLowerCase().trim();
+          const idx = self._clientesIndex;
+          let filtered: any[];
+
+          if (!term) {
+            // Sin búsqueda: pasar todos los items (paginados por DevExtreme)
+            filtered = idx.map(e => e.item);
+          } else {
+            // Búsqueda con índice pre-construido: una sola conversión a minúsculas por término
+            filtered = [];
+            for (let i = 0; i < idx.length; i++) {
+              if (idx[i].lower.includes(term)) filtered.push(idx[i].item);
+            }
+          }
+
+          const skip = options.skip || 0;
+          const take = Math.min(options.take || PAGE_SIZE, PAGE_SIZE);
+          return Promise.resolve({
+            data: filtered.slice(skip, skip + take),
+            totalCount: filtered.length
+          });
+        },
+        // Requerido para que acceptCustomValue pueda resolver el valor seleccionado
+        byKey: (key: string) => {
+          const found = self.arrClientes.find(c => c.cliente === key);
+          return Promise.resolve(found ?? { cliente: key });
+        }
+      }),
+      paginate: true,
+      pageSize: PAGE_SIZE
+    });
+  }
+
+  cliente_onCustomItemCreating(args: any) {
+    const nuevoCliente = { cliente: args.text };
+    // Mutar el array existente (no reasignar) para que el closure en buildClientesDataSource
+    // vea siempre el índice actualizado sin necesidad de reconstruir el DataSource
+    this.arrClientes.push(nuevoCliente);
+    this._clientesIndex.push({ lower: args.text.toLowerCase(), item: nuevoCliente });
+    args.customItem = nuevoCliente;
   }
 
   getRentabilidad(operacion: string) {

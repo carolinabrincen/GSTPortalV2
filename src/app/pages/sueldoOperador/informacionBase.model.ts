@@ -52,11 +52,32 @@ export interface LiquidacionNOM {
   claveSemanaNOM: string;
 }
 
+export interface AutorizacionItem {
+  cvetra: number;
+  semana: number;
+  autorizado: boolean;
+}
+
+export interface ActualizarAutorizacionesRequest {
+  idPersonal: number;
+  operadores: number[];
+}
+
+export interface ActualizarAutorizacionesResponse {
+  idSemana: number;
+  idArea: number;
+  autorizados: number;
+  desautorizados: number;
+  ignorados: number[];
+  fechaActualizacion: string;
+}
+
 export interface InformacionBaseResponse {
   noLiquidados: RegistroBase[];
   sinProcesar: RegistroBase[];
   liquidados: RegistroLiquidado[];
   liquidacionesNOM: LiquidacionNOM[];
+  autorizacion?: AutorizacionItem[];
 }
 
 export interface SemanaColumna {

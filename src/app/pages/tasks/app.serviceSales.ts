@@ -319,21 +319,21 @@ export class ServiceSales extends AbstractManagerService{
      return this.get<any>((this.API_URL + API_URLS.GET_INGRESOS_ANUALES_DETALLADO_junio2026),this.httpOptions);    
     
    }
-  // getIngresosDetalladosMensualJul2026( ) {
+  getIngresosDetalladosMensualJul2026( ) {
+
+    return this.get<any>((this.API_URL + API_URLS.GET_INGRESOS_ANUALES_DETALLADO_julio2026),this.httpOptions);
+
+  }
+  getIngresosDetalladosMensualAgo2026( ) {
     
-  //   return this.get<any>((this.API_URL + API_URLS.GET_INGRESOS_ANUALES_DETALLADO_julio2026),this.httpOptions);    
+    return this.get<any>((this.API_URL + API_URLS.GET_INGRESOS_ANUALES_DETALLADO_agosto2026),this.httpOptions);    
     
-  // }
-  // getIngresosDetalladosMensualAgo2026( ) {
+  }
+   getIngresosDetalladosMensualSep2026( ) {
     
-  //   return this.get<any>((this.API_URL + API_URLS.GET_INGRESOS_ANUALES_DETALLADO_agosto2026),this.httpOptions);    
+     return this.get<any>((this.API_URL + API_URLS.GET_INGRESOS_ANUALES_DETALLADO_septiembre2026),this.httpOptions);    
     
-  // }
-  // getIngresosDetalladosMensualSep2026( ) {
-    
-  //   return this.get<any>((this.API_URL + API_URLS.GET_INGRESOS_ANUALES_DETALLADO_septiembre2026),this.httpOptions);    
-    
-  // }
+   }
   // getIngresosDetalladosMensualOct2026( ) {
     
   //   return this.get<any>((this.API_URL + API_URLS.GET_INGRESOS_ANUALES_DETALLADO_octubre2026),this.httpOptions);    

@@ -2451,7 +2451,7 @@
                         <dxi-column dataField="junioProyeccionTotal" caption="Proy. Total" [fixed]="false" [format]="formatValue" [width]="140"></dxi-column>
                         <dxi-column dataField="junioPorP" caption="vs Pres" [fixed]="false" format="percent" [width]="70"></dxi-column>
                     </dxi-column>
-                    <!--<dxi-column caption="Julio">
+                    <dxi-column caption="Julio">
                          <dxi-column dataField="julioFlete" caption="Flete" [fixed]="false" [format]="formatValue" [width]="130"></dxi-column>
                         <dxi-column dataField="julioOtros" caption="Otros" [fixed]="false" [format]="formatValue" [width]="130"></dxi-column>
                         <dxi-column dataField="julioTotal" caption="Total" [fixed]="false" [format]="formatValue" [width]="130"></dxi-column>
@@ -2462,7 +2462,7 @@
                         <dxi-column dataField="julProyeccion" caption="Proyección" [fixed]="false" [format]="formatValue" [width]="140"></dxi-column>
                         <dxi-column dataField="julProyeccionDed" caption="Proy. Dedicado" [fixed]="false" [format]="formatValue" [width]="140"></dxi-column>
                         <dxi-column dataField="julProyeccionTotal" caption="Proy. Total" [fixed]="false" [format]="formatValue" [width]="140"></dxi-column>
-                        <dxi-column dataField="julPorProy" caption="vs Pres" [fixed]="false" format="percent" [width]="70"></dxi-column> 
+                        <dxi-column dataField="julPorProy" caption="vs Pres" [fixed]="false" format="percent" [width]="70"></dxi-column>
                     </dxi-column>
                     <dxi-column caption="Agosto">
                          <dxi-column dataField="agostoFlete" caption="Flete" [fixed]="false" [format]="formatValue" [width]="130"></dxi-column>
@@ -2477,6 +2477,7 @@
                         <dxi-column dataField="agoProyeccionTotal" caption="Proy. Total" [fixed]="false" [format]="formatValue" [width]="140"></dxi-column>
                         <dxi-column dataField="agoPorProy" caption="vs Pres" [fixed]="false" format="percent" [width]="70"></dxi-column> 
                     </dxi-column>
+                    
                     <dxi-column caption="Septiembre">
                          <dxi-column dataField="sepFlete" caption="Flete" [fixed]="false" [format]="formatValue" [width]="130"></dxi-column>
                         <dxi-column dataField="sepOtros" caption="Otros" [fixed]="false" [format]="formatValue" [width]="130"></dxi-column>
@@ -2491,6 +2492,7 @@
                         <dxi-column dataField="sepPorProy" caption="vs Pres" [fixed]="false" format="percent" [width]="70"></dxi-column>
                         <dxi-column dataField="" caption="" [width]="30"></dxi-column> 
                     </dxi-column>
+                    <!--
                     <dxi-column caption="Octubre">
                          <dxi-column dataField="octFlete" caption="Flete" [fixed]="false" [format]="formatValue" [width]="130"></dxi-column>
                         <dxi-column dataField="octOtros" caption="Otros" [fixed]="false" [format]="formatValue" [width]="130"></dxi-column>
@@ -2591,32 +2593,32 @@
                         <dxi-group-item column="junioProyeccionDed" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="junioProyeccionTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <!-- JULIO -->
-                        <!-- <dxi-group-item column="julioFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
+                        <dxi-group-item column="julioFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="julioOtros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="julioTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="julioAnt" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="julioPres" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="julProyeccion" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="julProyeccionDed" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
-                        <dxi-group-item column="julProyeccionTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item> -->
+                        <dxi-group-item column="julProyeccionTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <!-- AGOSTO -->
-                        <!-- <dxi-group-item column="agostoFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
+                        <dxi-group-item column="agostoFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="agostoOtros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="agostoTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="agostoAnt" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="agostoPres" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="agoProyeccion" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="agoProyeccionDed" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
-                        <dxi-group-item column="agoProyeccionTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item> -->
+                        <dxi-group-item column="agoProyeccionTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <!-- SEPTIEMBRE -->
-                        <!-- <dxi-group-item column="sepFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
+                        <dxi-group-item column="sepFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="sepOtros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="sepTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="sepAnt" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="sepPres" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="sepProyeccion" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="sepProyeccionDed" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
-                        <dxi-group-item column="sepProyeccionTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item> -->
+                        <dxi-group-item column="sepProyeccionTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item> 
                         <!-- OCTUBRE -->
                         <!-- <dxi-group-item column="octFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item column="octOtros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue" [showInGroupFooter]="true"></dxi-group-item>
@@ -2672,14 +2674,17 @@
                         <dxi-group-item showInColumn="junioPorP" name="grupAJunioPorP" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item showInColumn="junPorProy" name="grupAJunioPorProy" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item> 
                         <!--JULIO-->
+                        <dxi-group-item showInColumn="julioPor" name="grupJuliolPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item>
+                        <dxi-group-item showInColumn="julioPorP" name="grupAJulioPorP" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item>
+                        <dxi-group-item showInColumn="julPorProy" name="grupAJulioPorProy" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item>
                         <!--AGOSTO-->
-                        <!-- <dxi-group-item showInColumn="agostoPor" name="grupAgostolPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item>
+                        <dxi-group-item showInColumn="agostoPor" name="grupAgostolPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item showInColumn="agostoPorP" name="grupAAgostoPorP" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item>
-                        <dxi-group-item showInColumn="agoPorProy" name="grupAAgostoPorProy" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item> -->
+                        <dxi-group-item showInColumn="agoPorProy" name="grupAAgostoPorProy" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item> 
                         <!--SEPTIEMBRE-->
-                        <!-- <dxi-group-item showInColumn="sepPor" name="grupSeptiembrelPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item>
+                        <dxi-group-item showInColumn="sepPor" name="grupSeptiembrelPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item showInColumn="sepPorP" name="grupASeptiembrePorP" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item>
-                        <dxi-group-item showInColumn="sepPorProy" name="grupASeptiembrePorProy" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item> -->
+                        <dxi-group-item showInColumn="sepPorProy" name="grupASeptiembrePorProy" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item> 
                         <!--OCTUBRE-->
                         <!-- <dxi-group-item showInColumn="octPor" name="grupOctubrelPor" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item>
                         <dxi-group-item showInColumn="octPorP" name="grupAOctubrePorP" summaryType="custom" displayFormat="{0}" valueFormat="percent" [showInGroupFooter]="true"></dxi-group-item>
@@ -2749,32 +2754,32 @@
                         <dxi-total-item column="junioProyeccionDed" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="junioProyeccionTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <!-- JULIO -->
-                        <!-- <dxi-total-item column="julioFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
+                        <dxi-total-item column="julioFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="julioOtros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="julioTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="julioAnt" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="julioPres" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="julProyeccion" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="julProyeccionDed" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
-                        <dxi-total-item column="julProyeccionTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item> -->
+                        <dxi-total-item column="julProyeccionTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <!-- AGOSTO -->
-                        <!-- <dxi-total-item column="agostoFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
+                        <dxi-total-item column="agostoFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="agostoOtros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="agostoTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="agostoAnt" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="agostoPres" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="agoProyeccion" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="agoProyeccionDed" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
-                        <dxi-total-item column="agoProyeccionTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item> -->
+                        <dxi-total-item column="agoProyeccionTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <!-- SEPTIEMBRE -->
-                        <!-- <dxi-total-item column="sepFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
+                        <dxi-total-item column="sepFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="sepOtros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="sepTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="sepAnt" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="sepPres" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="sepProyeccion" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="sepProyeccionDed" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
-                        <dxi-total-item column="sepProyeccionTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item> -->
+                        <dxi-total-item column="sepProyeccionTotal" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <!-- OCTUBRE -->
                         <!-- <dxi-total-item column="octFlete" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
                         <dxi-total-item column="octOtros" summaryType="sum" displayFormat="{0}" [valueFormat]="formatValue"></dxi-total-item>
@@ -2830,17 +2835,17 @@
                         <dxi-total-item showInColumn="junioPorP" name="TotJunioPorP" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
                         <dxi-total-item showInColumn="junPorProy" name="TotJunioPorProy" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
                         <!-- JULIO -->
-                        <!-- <dxi-total-item showInColumn="julioPor" name="TotJulioPor" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
+                        <dxi-total-item showInColumn="julioPor" name="TotJulioPor" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
                         <dxi-total-item showInColumn="julioPorP" name="TotJulioPorP" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
-                        <dxi-total-item showInColumn="julPorProy" name="TotJulioPorProy" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item> -->
+                        <dxi-total-item showInColumn="julPorProy" name="TotJulioPorProy" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
                         <!-- AGOSTO -->
-                        <!-- <dxi-total-item showInColumn="agostoPor" name="TotAgostoPor" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
+                        <dxi-total-item showInColumn="agostoPor" name="TotAgostoPor" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
                         <dxi-total-item showInColumn="agostoPorP" name="TotAgostoPorP" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
-                        <dxi-total-item showInColumn="agoPorProy" name="TotAgostPorProy" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item> -->
+                        <dxi-total-item showInColumn="agoPorProy" name="TotAgostPorProy" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item> 
                         <!-- SEPTIEMBRE -->
-                        <!-- <dxi-total-item showInColumn="sepPor" name="TotSeptiembrePor" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
+                        <dxi-total-item showInColumn="sepPor" name="TotSeptiembrePor" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
                         <dxi-total-item showInColumn="sepPorP" name="TotSetiembrePorP" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
-                        <dxi-total-item showInColumn="sepPorProy" name="TotSeptiembrePorProy" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item> -->
+                        <dxi-total-item showInColumn="sepPorProy" name="TotSeptiembrePorProy" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item> 
                         <!-- OCTUBRE -->
                         <!-- <dxi-total-item showInColumn="octPor" name="TotOcubrePor" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>
                         <dxi-total-item showInColumn="octPorP" name="TotOctubrePorP" summaryType="custom" displayFormat="{0}" valueFormat="percent"></dxi-total-item>

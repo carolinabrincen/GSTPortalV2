@@ -92,6 +92,19 @@
     }
   }
 
+  .guardar-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0 12px;
+
+    .cambios-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #e65100;
+    }
+  }
+
   .empty-msg {
     text-align: center;
     padding: 40px 0;
@@ -236,6 +249,14 @@
         font-size: 1.1rem;
         font-weight: 700;
         background-color: #d6d6d6 !important;
+      }
+
+      .autorizado-cell {
+        .dx-checkbox-icon {
+          width: 14px !important;
+          height: 14px !important;
+          font-size: 10px !important;
+        }
       }
 
       // Search panel

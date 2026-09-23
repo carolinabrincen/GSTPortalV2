@@ -56,9 +56,24 @@
     No se encontraron resultados para el periodo y unidades de negocio seleccionados.
   </div>
 
+  <!-- Barra de guardado de autorizaciones -->
+  <div class="guardar-bar" *ngIf="!loading && mostrarAutorizado">
+    <span class="cambios-label" *ngIf="tieneCambios">
+      {{ contadorCambios }} cambio(s) sin guardar
+    </span>
+    <dx-button
+      text="Guardar autorizaciones"
+      icon="save"
+      type="success"
+      [disabled]="!tieneCambios || guardando"
+      (onClick)="guardarAutorizaciones()">
+    </dx-button>
+  </div>
+
   <!-- Grid resumen por operador -->
   <div class="grid-wrapper" *ngIf="!loading && resumen.length > 0">
     <dx-data-grid
+      #resumenGrid
       [dataSource]="resumen"
       [columns]="columnDefs"
       [showBorders]="true"
@@ -68,7 +83,10 @@
       [height]="'calc(100vh - 260px)'"
       [summary]="summaryConfig"
       (onCellPrepared)="onCellPrepared($event)"
-      (onCellClick)="onCellClick($event)">
+      (onCellClick)="onCellClick($event)"
+      (onEditorPreparing)="onEditorPreparing($event)">
+      <dxo-editing mode="cell" [allowUpdating]="true"></dxo-editing>
+      <dxo-header-filter [visible]="true"></dxo-header-filter>
       <dxo-scrolling mode="virtual" rowRenderingMode="virtual"></dxo-scrolling>
       <dxo-export [enabled]="true" fileName="Resumen Sueldo Operador"></dxo-export>
       <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>

@@ -117,6 +117,9 @@ export class AltasBajasComponent implements OnInit {
   chart_visualRange = [1, 12];
 
   periodo: any[] = [
+      { idPeriodo: 202609, periodo: "2026-09-01" },
+     { idPeriodo: 202608, periodo: "2026-08-01" },
+     { idPeriodo: 202607, periodo: "2026-07-01" },
      { idPeriodo: 202606, periodo: "2026-06-01" },
      { idPeriodo: 202605, periodo: "2026-05-01" },
     { idPeriodo: 202604, periodo: "2026-04-01" },

@@ -253,43 +253,42 @@ export class disponiblidadComponent implements OnInit {
   /*========================Guardar Status Manual=========================================*/
 
   saveStatusManual(value) {
-    let myValue = value.data
-    let myIdUser = sessionStorage.getItem('idUsuario')
+    let myValue = value.data;
+    let myIdUser = sessionStorage.getItem('idUsuario');
 
-    // if(myValue.inicio !== null && myValue.fin !== null){
-    // if(myValue.inicio == null){
-    //   myValue.inicio = "";
-    // }
-    // if(myValue.fin == null){
-    //   myValue.fin = "";
-    // }
+    // Leer valores actuales del grid (incluyendo ediciones pendientes en mode="cell")
+    const observaciones = value.component.cellValue(value.rowIndex, 'observaciones') ?? myValue.observaciones ?? '';
+    const inicio = value.component.cellValue(value.rowIndex, 'inicio') ?? myValue.inicio;
+    const fin = value.component.cellValue(value.rowIndex, 'fin') ?? myValue.fin;
 
-    // if(myValue.observaciones == null){
-    //   myValue.observaciones = "";
-    // }
+    console.log('saveStatusManual payload:', {
+      id_personal: myValue.id_personal,
+      selectedStatus: this.selectedStatus,
+      idUsuario: myIdUser,
+      inicio, fin, observaciones
+    });
+
     this.loadingVisible = true;
 
-    this.disponibilidadService.postStatusManual(myValue.id_personal, this.selectedStatus, myIdUser, myValue.inicio, myValue.fin, myValue.observaciones).subscribe(data => {
-      console.log(data)
-      this.getDisponiblidadAnual()
-
-      notify({
-        message: data.data,
-        position: {
-          my: 'center center',
-          at: 'center center',
-        },
-      }, 'success', 4000);
-    })
-    // }else{
-    //   notify({
-    //     message: 'Falta datos por seleccionar o confirmar',
-    //     position: {
-    //       my: 'center center',
-    //       at: 'center center',
-    //     },
-    //   }, 'warning', 3000);
-    // }
+    this.disponibilidadService.postStatusManual(myValue.id_personal, this.selectedStatus, myIdUser, inicio, fin, observaciones).subscribe({
+      next: (data) => {
+        console.log('saveStatusManual response:', data);
+        this.loadingVisible = false;
+        this.getDisponiblidadAnual();
+        notify({
+          message: data.data,
+          position: { my: 'center center', at: 'center center' },
+        }, 'success', 4000);
+      },
+      error: (err) => {
+        console.error('saveStatusManual error:', err);
+        this.loadingVisible = false;
+        notify({
+          message: `Error: ${err?.error?.message || err?.message || err?.status || 'Error al guardar'}`,
+          position: { my: 'center center', at: 'center center' },
+        }, 'error', 5000);
+      }
+    });
 
   }
   /*========================Guardar Tipo Operacion Operador=========================================*/
