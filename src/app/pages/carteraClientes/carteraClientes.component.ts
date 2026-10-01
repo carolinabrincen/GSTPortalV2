@@ -78,6 +78,7 @@ export class CarteraClientesComponent implements OnInit {
   numRowsIntSinCart: number = 0;
 
   periodo: any[] = [
+     { id: 202610, periodo: 202610 },
       { id: 202609, periodo: 202609 },
      { id: 202608, periodo: 202608 },
      { id: 202607, periodo: 202607 },
@@ -428,6 +429,10 @@ export class CarteraClientesComponent implements OnInit {
       this.printPAvance = "30 DE SEPTIEMBRE DEL 2026"
     }
 
+    if(this.selectedPeriodo == 202610){
+      this.printPeriodo = "SALDOS DE CARTERA DEL PERIODO OCTUBRE 2026"
+      this.printPAvance = "31 DE OCTUBRE DEL 2026"
+    }
 
   }
 
