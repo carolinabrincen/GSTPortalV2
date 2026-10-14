@@ -924,6 +924,7 @@ precioTotalValueChanged(e: any) {
     this.activeTab = 0;
     this.selectedRuta = null;
     this.mostrarAvisoRuta = false;
+    this.arrTipoOperacion = [];
     this._actualizarReadOnly(false, false);
     //this.itemCotizacion = {};
     this.itemCotizacion = {
