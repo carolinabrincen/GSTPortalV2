@@ -1,3 +1,5 @@
+import { switchMap, map } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { ReportsPDFService } from './../../shared/reports/reports-pdf.service';
 import { CotizadorService } from './../../services/cotizador/cotizador.service';
 import { CotizacionModel, VariablesCotizacionModel, DetalleCotizacionModel} from './../../shared/models/cotizador/cotizador.model';
@@ -625,15 +627,13 @@ export class CotizadorComponent implements OnInit {
   }
 
   unidadNegocio_ValueChanged(e: any) {
-    if(e.value > 0)
-    {
+    if (e.event == null) return;
+    if (e.value > 0) {
+      this.itemCotizacion.tipoOperacion = '';
       this.getTiposOperacion(e.value);
-      console.log(e.value);
-    }
-    else
-    {
-       console.log(e.value  + "666" );
+    } else {
       this.arrTipoOperacion = null;
+      this.itemCotizacion.tipoOperacion = '';
     }
   }
 
@@ -796,18 +796,24 @@ precioTotalValueChanged(e: any) {
     this.bolFormSoloLectura = false;
     e.event.preventDefault();
     this.tipoRegistro = "editar";
-    // const clonedItem = { ...e.row.data };
-    // this.rowIndex = e.row.rowIndex;
-  
-    // this.itemCotizacion = clonedItem;
-    // this.tituloModal = "Editando Cotizacion Folio: " + this.itemCotizacion.folio;
     this.bolModal = true;
     this.activeTab = 0;
     this.selectedRuta = null;
     this.mostrarAvisoRuta = false;
     this._actualizarReadOnly(false, false);
-    this.cotizadorService.getCotizacion(e.row.data.idCotizacion).subscribe(res => {
-      this.itemCotizacion = res.data;
+    this.cotizadorService.getCotizacion(e.row.data.idCotizacion).pipe(
+      switchMap(res => {
+        const datos = res.data;
+        if (datos.id_area) {
+          return this.cotizadorService.getTiposOperacion(datos.id_area).pipe(
+            map(r => ({ datos, ops: (r.data ?? []) as TiposOperacionModel[] }))
+          );
+        }
+        return of({ datos, ops: [] as TiposOperacionModel[] });
+      })
+    ).subscribe(({ datos, ops }) => {
+      this.arrTipoOperacion = ops;
+      this.itemCotizacion = datos;
       this.tituloModal = "Editando Cotizacion Folio: " + this.itemCotizacion.folio;
       this.sololectura = "no";
       // Recuperar idCliente para cotizaciones anteriores que solo tienen texto
@@ -821,8 +827,7 @@ precioTotalValueChanged(e: any) {
       if (this.itemCotizacion.idRuta) {
         this.catService.getRutaById(this.itemCotizacion.idRuta).subscribe(ruta => {
           if (ruta) {
-            this.selectedRuta = ruta; // objeto completo para el combo
-            // kms_ida NO se modifica: el valor guardado se respeta
+            this.selectedRuta = ruta;
             this._actualizarReadOnly(ruta.idOrigen != null, ruta.idDestino != null);
           }
         });
@@ -845,19 +850,24 @@ precioTotalValueChanged(e: any) {
   verCortizacionClick(e: any) {
     e.event.preventDefault();
     this.bolFormSoloLectura = true;
-   // const clonedItem = { ...e.row.data };
-   // this.itemCotizacion = clonedItem;
-    this.tituloModal = "Cotizacion Folio: " + this.itemCotizacion.folio + " (Solo Lectura)";
     this.bolModal = true;
     this.activeTab = 0;
     this.selectedRuta = null;
     this.sololectura = "si";
-     //this.bolModal = true;
-    this.cotizadorService.getCotizacion(e.row.data.idCotizacion).subscribe(res => {
-      this.itemCotizacion = res.data;
-      //this.tituloModal = "Editando Cotizacion Folio: " + this.itemCotizacion.folio;
-      //this.sololectura = "no";
-      // console.log( this.itemCotizacion)
+    this.cotizadorService.getCotizacion(e.row.data.idCotizacion).pipe(
+      switchMap(res => {
+        const datos = res.data;
+        if (datos.id_area) {
+          return this.cotizadorService.getTiposOperacion(datos.id_area).pipe(
+            map(r => ({ datos, ops: (r.data ?? []) as TiposOperacionModel[] }))
+          );
+        }
+        return of({ datos, ops: [] as TiposOperacionModel[] });
+      })
+    ).subscribe(({ datos, ops }) => {
+      this.arrTipoOperacion = ops;
+      this.itemCotizacion = datos;
+      this.tituloModal = "Cotizacion Folio: " + this.itemCotizacion.folio + " (Solo Lectura)";
     });
   }
 
