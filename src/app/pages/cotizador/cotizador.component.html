@@ -1,4 +1,4 @@
-<h2 class="content-block">Cotizaciones de Rutas</h2>
+﻿<h2 class="content-block">Cotizaciones de Rutas</h2>
 
 <div [id]="'myDiv'" class="content-block dx-card responsive-paddings">
     <!--#region :::: TABS PARA GRIDS::::  -->
@@ -284,235 +284,296 @@
     <!--#region :::: VENTANA MODAL NUEVO/EDITAR ::::  -->
     <dx-popup #modalNuevoEditar   [fullScreen]="true" [showTitle]="true" [title]="tituloModal" [dragEnabled]="false" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="bolModal">
         <dxo-position at="botom" my="center" [of]="positionOf"> </dxo-position>
-        <div *dxTemplate="let data of 'content'">
-            <dx-scroll-view width="100%" height="100%">
+        <div *dxTemplate="let data of 'content'" style="display:flex; flex-direction:column; height:100%;">
+            <!-- Pestañas fijas arriba, fuera del área desplazable -->
+            <dx-tab-panel
+                [(selectedIndex)]="activeTab"
+                [deferRendering]="false"
+                [animationEnabled]="false"
+                [swipeEnabled]="false">
+                <dxi-item title="Cotización"            template="navTabCotiz"></dxi-item>
+                <dxi-item title="Datos para convenio"   template="navTabConv"></dxi-item>
+                <div *dxTemplate="let _ of 'navTabCotiz'" style="height:0;overflow:hidden;padding:0;"></div>
+                <div *dxTemplate="let _ of 'navTabConv'"  style="height:0;overflow:hidden;padding:0;"></div>
+            </dx-tab-panel>
 
-                <!--#region :::: FORM DE CAPUTURA :::: -->
-                <form action="" (submit)="guardarCotizacionClick($event)">
-                    <dx-form style="margin-left: 25px" id="form" [(formData)]="itemCotizacion" [colCount]="12" width="100%" validationGroup="customerData" [readOnly]="bolFormSoloLectura">
-                        <!-- TIPO VIAJE -->
-                        <dxi-item dataField="tipoViaje" editorType="dxRadioGroup" [editorOptions]="RadioButtonTipoViaje" [colSpan]="3">
-                            <dxo-label text="Tipo De Viaje"> </dxo-label>
-                            <dxi-validation-rule style="margin-top: 5rem" type="required" message="campo requerido"></dxi-validation-rule>
-                        </dxi-item>
-                        <!-- REGRESO -->
-                        <dxi-item dataField="regreso" editorType="dxRadioGroup" [editorOptions]="RadioButtonRegreso" [colSpan]="3">
-                            <dxo-label text="Regreso"> </dxo-label>
-                            <dxi-validation-rule style="margin-top: 5rem" type="required" message="campo requerido"></dxi-validation-rule>
-                        </dxi-item>
-                        <!-- PAGA CASETAS -->
-                        <dxi-item dataField="clientePagaCasetas" editorType="dxRadioGroup" [editorOptions]="RadioButtonClientePagaCasetas" [colSpan]="3">
-                            <dxo-label text="Cliente paga casetas"> </dxo-label>
-                            <dxi-validation-rule style="margin-top: 5rem" type="required" message="campo requerido"></dxi-validation-rule>
-                        </dxi-item>
-                        <!-- FOLIO -->
-                        <dxi-item dataField="folio" [editorOptions]="{ readOnly: true }" [colSpan]="3"></dxi-item>
-                        <!-- UNIDAD NEGOCIO -->
-                        <dxi-item dataField="id_area" editorType="dxSelectBox" [editorOptions]="{
-              items: arrUnidadesNegocio,
-              searchEnabled: true,
-              displayExpr: 'ciudad',
-              valueExpr: 'idUnidad',
-              onValueChanged: unidadNegocio_ValueChanged
-            }" [colSpan]="3">
-                            <dxo-label text="Unidad de Negocio"> </dxo-label>
-                            <dxi-validation-rule type="required" message="Unidad de Negocio es campo requerido"></dxi-validation-rule>
-                        </dxi-item>
-                        <!-- TIPOS OPERACIONES -->
-                        <dxi-item dataField="tipoOperacion" editorType="dxSelectBox" [editorOptions]="{
-              items: arrTipoOperacion,
-              searchEnabled: true,
-              displayExpr: 'operacion',
-              valueExpr: 'operacion',
-              onValueChanged: tipoOperacion_ValueChanged
-              
-            }" [colSpan]="3">
-                            <dxo-label text="Tipo de Operación"> </dxo-label>
-                            <dxi-validation-rule type="required" message="Tipo de Operación es campo requerido"></dxi-validation-rule>
-                        </dxi-item>
+            <dx-scroll-view width="100%" [height]="'auto'" style="flex:1;">
 
-                        <!-- RENDIMIENTO CARGADO -->
-                        <dxi-item itemtype="dxNumberBox" dataField="rend_cargado" [colSpan]="1">
-                            <dxo-label text="RendCargado "> </dxo-label>
-                        </dxi-item>
-                        <!-- RENDIMIENTO VACIO -->
-                        <dxi-item itemtype="dxNumberBox" dataField="rend_vacio" [colSpan]="1">
-                            <dxo-label text="RendVacío "> </dxo-label>
-                        </dxi-item>
-                        <!-- DIESEL -->
-                        <dxi-item itemtype="dxNumberBox" dataField="diesel" [colSpan]="2" [editorOptions]="{ onValueChanged: dieselValueChanged, format: '$ #,##0.##' }">
-                            <dxo-label text="Diésel con Impuestos "> </dxo-label>
-                            <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
-                        </dxi-item>
-                        <!-- DIESEL SIN IMPUESTOS-->
-                        <dxi-item itemtype="dxNumberBox" dataField="diesel_sin_impuestos" [colSpan]="2" [editorOptions]="{ format: '$ #,##0.##', readOnly: true }">
-                            <dxo-label text="Diésel sin Impuestos "> </dxo-label>
-                            <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
-                        </dxi-item>
-
-                        <!-- CLIENTE + REFRESH -->
-                        <dxi-item itemType="group" [colSpan]="6" [colCount]="13">
-                            <dxi-item dataField="cliente" editorType="dxSelectBox" [editorOptions]="{
-                                dataSource: clientesDataSource,
-                                searchEnabled: true,
-                                searchExpr: 'cliente',
-                                searchTimeout: 200,
-                                acceptCustomValue: true,
-                                displayExpr: 'cliente',
-                                valueExpr: 'cliente',
-                                placeholder: 'Buscar o escribir cliente...',
-                                noDataText: 'No se encontraron clientes',
-                                onCustomItemCreating: cliente_onCustomItemCreating
-                            }" [colSpan]="12">
-                                <dxo-label text="Cliente"></dxo-label>
-                                <dxi-validation-rule type="required" message="Cliente es campo requerido"></dxi-validation-rule>
+                <!--#region :::: FORM DE CAPTURA :::: -->
+                <!-- PESTAÑA 1 — form en div[hidden], NO en dxTemplate, para ancho completo -->
+                <!-- padding simétrico 25px: evita que width=100% desborde sobre el scrollbar -->
+                <div [hidden]="activeTab !== 0" style="padding: 0 25px; box-sizing: border-box;">
+                    <form action="" (submit)="guardarCotizacionClick($event)">
+                        <dx-form #cotizadorForm id="form" [(formData)]="itemCotizacion" [colCount]="12" width="100%" validationGroup="customerData" [readOnly]="bolFormSoloLectura">
+                            <!-- TIPO VIAJE -->
+                            <dxi-item dataField="tipoViaje" editorType="dxRadioGroup" [editorOptions]="RadioButtonTipoViaje" [colSpan]="3">
+                                <dxo-label text="Tipo De Viaje"> </dxo-label>
+                                <dxi-validation-rule style="margin-top: 5rem" type="required" message="campo requerido"></dxi-validation-rule>
                             </dxi-item>
-                            <dxi-item itemType="button" [colSpan]="1" verticalAlignment="bottom" horizontalAlignment="center" [buttonOptions]="refreshClientesOptions">
+                            <!-- REGRESO -->
+                            <dxi-item dataField="regreso" editorType="dxRadioGroup" [editorOptions]="RadioButtonRegreso" [colSpan]="3">
+                                <dxo-label text="Regreso"> </dxo-label>
+                                <dxi-validation-rule style="margin-top: 5rem" type="required" message="campo requerido"></dxi-validation-rule>
                             </dxi-item>
-                        </dxi-item>
-
-                        <!-- ORIGEN -->
-                        <dxi-item dataField="origen" [colSpan]="3">
-                            <dxi-validation-rule type="required" message="Origen es campo requerido"></dxi-validation-rule>
-                        </dxi-item>
-                        <!-- DESTINO -->
-                        <dxi-item dataField="destino" [colSpan]="3">
-                            <dxi-validation-rule type="required" message="Destino es campo requerido"></dxi-validation-rule>
-                        </dxi-item>
-
-                        <dxi-item itemType="group" [colSpan]="12" [colCount]="12" caption="VIAJE IDA">
-                            <!-- DISTANCIA IDA -->
-                            <dxi-item dataField="kms_ida" [colSpan]="2">
-                                <dxo-label text="Kilómetros"> </dxo-label>
-                                <dxi-validation-rule type="required" message="Distancia Ida es campo requerido"></dxi-validation-rule>
+                            <!-- PAGA CASETAS -->
+                            <dxi-item dataField="clientePagaCasetas" editorType="dxRadioGroup" [editorOptions]="RadioButtonClientePagaCasetas" [colSpan]="3">
+                                <dxo-label text="Cliente paga casetas"> </dxo-label>
+                                <dxi-validation-rule style="margin-top: 5rem" type="required" message="campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+                            <!-- FOLIO -->
+                            <dxi-item dataField="folio" [editorOptions]="{ readOnly: true }" [colSpan]="3"></dxi-item>
+                            <!-- UNIDAD NEGOCIO -->
+                            <dxi-item dataField="id_area" editorType="dxSelectBox" [editorOptions]="{
+                  items: arrUnidadesNegocio,
+                  searchEnabled: true,
+                  displayExpr: 'ciudad',
+                  valueExpr: 'idUnidad',
+                  onValueChanged: unidadNegocio_ValueChanged
+                }" [colSpan]="3">
+                                <dxo-label text="Unidad de Negocio"> </dxo-label>
+                                <dxi-validation-rule type="required" message="Unidad de Negocio es campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+                            <!-- TIPOS OPERACIONES -->
+                            <dxi-item dataField="tipoOperacion" editorType="dxSelectBox" [editorOptions]="{
+                  items: arrTipoOperacion,
+                  searchEnabled: true,
+                  displayExpr: 'operacion',
+                  valueExpr: 'operacion',
+                  onValueChanged: tipoOperacion_ValueChanged
+                  
+                }" [colSpan]="3">
+                                <dxo-label text="Tipo de Operación"> </dxo-label>
+                                <dxi-validation-rule type="required" message="Tipo de Operación es campo requerido"></dxi-validation-rule>
                             </dxi-item>
 
-                            <!-- CASETAS -->
-                            <dxi-item itemtype="dxNumberBox" dataField="casetas" [colSpan]="2" [editorOptions]="{onValueChanged: caseta_ida_ValueChanged, format: '$ #,##0.##' }">
-                                <dxo-label text="Casetas con Impuestos"> </dxo-label>
+                            <!-- RENDIMIENTO CARGADO -->
+                            <dxi-item itemtype="dxNumberBox" dataField="rend_cargado" [colSpan]="1">
+                                <dxo-label text="RendCargado "> </dxo-label>
+                            </dxi-item>
+                            <!-- RENDIMIENTO VACIO -->
+                            <dxi-item itemtype="dxNumberBox" dataField="rend_vacio" [colSpan]="1">
+                                <dxo-label text="RendVacío "> </dxo-label>
+                            </dxi-item>
+                            <!-- DIESEL -->
+                            <dxi-item itemtype="dxNumberBox" dataField="diesel" [colSpan]="2" [editorOptions]="{ onValueChanged: dieselValueChanged, format: '$ #,##0.##' }">
+                                <dxo-label text="Diésel con Impuestos "> </dxo-label>
                                 <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
                             </dxi-item>
-                            <!-- CASETAS -->
-                            <dxi-item itemtype="dxNumberBox" dataField="casetas_si" [colSpan]="2" [editorOptions]="{ format: '$ #,##0.##', readOnly: true }">
-                                <dxo-label text="Casetas sin Impuestos"> </dxo-label>
+                            <!-- DIESEL SIN IMPUESTOS-->
+                            <dxi-item itemtype="dxNumberBox" dataField="diesel_sin_impuestos" [colSpan]="2" [editorOptions]="{ format: '$ #,##0.##', readOnly: true }">
+                                <dxo-label text="Diésel sin Impuestos "> </dxo-label>
                                 <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
                             </dxi-item>
 
-
-
-                            <!-- ESTANCIAS -->
-                            <dxi-item itemtype="dxNumberBox" dataField="num_estancias_ida" [colSpan]="2">
-                                <dxo-label text="Estancias (Número)"> </dxo-label>
-                                <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
+                            <!-- CLIENTE + REFRESH (colSpan original = 6, sin cambios) -->
+                            <dxi-item itemType="group" [colSpan]="6" [colCount]="13">
+                                <dxi-item dataField="cliente" editorType="dxSelectBox" [editorOptions]="{
+                                    dataSource: clientesDataSource,
+                                    searchEnabled: true,
+                                    searchExpr: 'cliente',
+                                    searchTimeout: 200,
+                                    acceptCustomValue: true,
+                                    displayExpr: 'cliente',
+                                    valueExpr: 'cliente',
+                                    placeholder: 'Buscar o escribir cliente...',
+                                    noDataText: 'No se encontraron clientes',
+                                    onCustomItemCreating: cliente_onCustomItemCreating,
+                                    onSelectionChanged: cliente_onSelectionChanged,
+                                    itemTemplate: clienteItemTemplate
+                                }" [colSpan]="12">
+                                    <dxo-label text="Cliente"></dxo-label>
+                                    <dxi-validation-rule type="required" message="Cliente es campo requerido"></dxi-validation-rule>
+                                </dxi-item>
+                                <dxi-item itemType="button" [colSpan]="1" verticalAlignment="bottom" horizontalAlignment="center" [buttonOptions]="refreshClientesOptions">
+                                </dxi-item>
                             </dxi-item>
 
-                            <!-- MANIOBRAS -->
-                            <dxi-item itemtype="dxNumberBox" dataField="num_maniobras_ida" [colSpan]="2">
-                                <dxo-label text="Maniobras (Número)"> </dxo-label>
-                                <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
+                            <!-- RUTA — ocupa las 6 cols restantes de la fila del Cliente -->
+                            <dxi-item [template]="'rutaTpl'" [colSpan]="6"></dxi-item>
+
+                            <!-- ORIGEN — colSpan 6 para ocupar media fila -->
+                            <dxi-item dataField="origen" [colSpan]="6" [editorOptions]="origenOptions">
+                                <dxi-validation-rule type="required" message="Origen es campo requerido"></dxi-validation-rule>
+                            </dxi-item>
+                            <!-- DESTINO — colSpan 6 para ocupar la otra media fila -->
+                            <dxi-item dataField="destino" [colSpan]="6" [editorOptions]="destinoOptions">
+                                <dxi-validation-rule type="required" message="Destino es campo requerido"></dxi-validation-rule>
                             </dxi-item>
 
-                            <!-- TONELADAS -->
-                            <dxi-item itemtype="dxNumberBox" dataField="ton_carga_ida" [colSpan]="2">
-                                <dxo-label text="Toneladas (Número)"> </dxo-label>
-                                <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
+                            <dxi-item itemType="group" [colSpan]="12" [colCount]="12" caption="VIAJE IDA">
+                                <!-- DISTANCIA IDA -->
+                                <dxi-item dataField="kms_ida" [colSpan]="2">
+                                    <dxo-label text="Kilómetros"> </dxo-label>
+                                    <dxi-validation-rule type="required" message="Distancia Ida es campo requerido"></dxi-validation-rule>
+                                </dxi-item>
+
+                                <!-- CASETAS -->
+                                <dxi-item itemtype="dxNumberBox" dataField="casetas" [colSpan]="2" [editorOptions]="{onValueChanged: caseta_ida_ValueChanged, format: '$ #,##0.##' }">
+                                    <dxo-label text="Casetas con Impuestos"> </dxo-label>
+                                    <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
+                                </dxi-item>
+                                <!-- CASETAS -->
+                                <dxi-item itemtype="dxNumberBox" dataField="casetas_si" [colSpan]="2" [editorOptions]="{ format: '$ #,##0.##', readOnly: true }">
+                                    <dxo-label text="Casetas sin Impuestos"> </dxo-label>
+                                    <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
+                                </dxi-item>
+
+
+
+                                <!-- ESTANCIAS -->
+                                <dxi-item itemtype="dxNumberBox" dataField="num_estancias_ida" [colSpan]="2">
+                                    <dxo-label text="Estancias (Número)"> </dxo-label>
+                                    <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
+                                </dxi-item>
+
+                                <!-- MANIOBRAS -->
+                                <dxi-item itemtype="dxNumberBox" dataField="num_maniobras_ida" [colSpan]="2">
+                                    <dxo-label text="Maniobras (Número)"> </dxo-label>
+                                    <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
+                                </dxi-item>
+
+                                <!-- TONELADAS -->
+                                <dxi-item itemtype="dxNumberBox" dataField="ton_carga_ida" [colSpan]="2">
+                                    <dxo-label text="Toneladas (Número)"> </dxo-label>
+                                    <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
+                                </dxi-item>
+
+
+
+                            </dxi-item>
+                            <dxi-item itemType="group" [colSpan]="12" [colCount]="12" caption="VIAJE REGRESO">
+                                <!-- DISTANCIA IDA -->
+                                <dxi-item dataField="kms_regreso" [colSpan]="2">
+                                    <dxo-label text="Kilómetros"> </dxo-label>
+                                    <dxi-validation-rule type="required" message="Distancia Ida es campo requerido"></dxi-validation-rule>
+                                </dxi-item>
+
+                                <!-- CASETAS -->
+                                <dxi-item itemtype="dxNumberBox" dataField="casetas_regreso" [colSpan]="2" [editorOptions]="{onValueChanged: caseta_regreso_ValueChanged, format: '$ #,##0.##' }">
+                                    <dxo-label text="Casetas con Impuestos"> </dxo-label>
+                                    <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
+                                </dxi-item>
+                                <!-- CASETAS -->
+                                <dxi-item itemtype="dxNumberBox" dataField="casetas_regreso_si" [colSpan]="2" [editorOptions]="{ format: '$ #,##0.##', readOnly: true }">
+                                    <dxo-label text="Casetas sin Impuestos"> </dxo-label>
+                                    <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
+                                </dxi-item>
+
+                                <!-- ESTANCIAS -->
+                                <dxi-item itemtype="dxNumberBox" dataField="num_estancias_regreso" [colSpan]="2">
+                                    <dxo-label text="Estancias (Número)"> </dxo-label>
+                                    <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
+                                </dxi-item>
+
+                                <!-- MANIOBRAS -->
+                                <dxi-item itemtype="dxNumberBox" dataField="num_maniobras_regreso" [colSpan]="2">
+                                    <dxo-label text="Maniobras (Número)"> </dxo-label>
+                                    <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
+                                </dxi-item>
+
+                                <!-- TONELADAS -->
+                                <dxi-item itemtype="dxNumberBox" dataField="ton_carga_regreso" [colSpan]="2">
+                                    <dxo-label text="Toneladas (Número)"> </dxo-label>
+                                    <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
+                                </dxi-item>
+
+                            </dxi-item>
+                            <!-- ESPACIO EN BLANCO -->
+                            <dxi-item itemType="empty" [colSpan]="12"></dxi-item>
+
+                            <dxi-item itemType="group" [colSpan]="12" [colCount]="10">
+
+                                <!-- PRECIO VENTA TONELADA -->
+                                <dxi-item itemtype="dxNumberBox" dataField="toneladas" [colSpan]="2" [editorOptions]="{onValueChanged: toneladasTotalValueChanged}">
+                                    <dxo-label text="Toneladas" style="font-weight: bold !important">
+                                    </dxo-label>
+                                </dxi-item>
+                                <!-- PRECIO VENTA TONELADA -->
+                                <dxi-item itemtype="dxNumberBox" dataField="costo_tonelada" [colSpan]="2" [editorOptions]="{onValueChanged: precioToneladasTotalValueChanged, format: '$ #,##0.##' }">
+                                    <dxo-label text="PRECIO X TONELADA" style="font-weight: bold !important">
+                                    </dxo-label>
+                                </dxi-item>
+                                <dxi-item itemType="empty" [colSpan]="6"></dxi-item>
+
+
+
+                                <!-- COSTO TOTAL -->
+                                <dxi-item itemtype="dxNumberBox" dataField="costoViaje" [colSpan]="2" [editorOptions]="{ format: '$ #,##0.##', readOnly: true }">
+                                    <dxo-label text="COSTO DE OPERACION" style="font-weight: bold !important">
+                                    </dxo-label>
+                                </dxi-item>
+                                <!-- PRECIO VENTA FINAL -->
+                                <dxi-item itemtype="dxNumberBox" dataField="tarifaFinal" [colSpan]="2" [editorOptions]="{onValueChanged: precioTotalValueChanged, format: '$ #,##0.##' }">
+                                    <dxo-label text="PRECIO DE VENTA FINAL" style="font-weight: bold !important">
+                                    </dxo-label>
+                                </dxi-item>
+
+                                <!-- BOTON GUARDAR  -->
+                                <dxi-item style="margin-top: 2rem" itemType="button" horizontalAlignment="center" [buttonOptions]="buttonOptions" [colSpan]="2">
+                                </dxi-item>
+
+                                <!-- BOTON VER VARIABLES  -->
+                                <dxi-item itemType="button" horizontalAlignment="center" [buttonOptions]="buttonOptionsVariables" [colSpan]="2">
+                                </dxi-item>
+
+
+                                <!-- BOTON PREVISUALIZAR  -->
+                                <dxi-item style="color: green" itemType="button" horizontalAlignment="center" [buttonOptions]="buttonOptionsPre" [colSpan]="2">
+                                </dxi-item>
                             </dxi-item>
 
 
+                            <!-- ESPACIO EN BLANCO -->
+                            <dxi-item itemType="empty" [colSpan]="12"></dxi-item>
 
-                        </dxi-item>
-                        <dxi-item itemType="group" [colSpan]="12" [colCount]="12" caption="VIAJE REGRESO">
-                            <!-- DISTANCIA IDA -->
-                            <dxi-item dataField="kms_regreso" [colSpan]="2">
-                                <dxo-label text="Kilómetros"> </dxo-label>
-                                <dxi-validation-rule type="required" message="Distancia Ida es campo requerido"></dxi-validation-rule>
-                            </dxi-item>
+                            <!-- Template: combo de Ruta con aviso si es manual -->
+                            <div *dxTemplate="let _ of 'rutaTpl'" style="padding-top: 4px;">
+                                <div style="font-size: 12px; color: #555; margin-bottom: 4px; font-weight: 500;">Ruta</div>
+                                <dx-select-box
+                                    [value]="selectedRuta"
+                                    [dataSource]="rutaDataSource"
+                                    displayExpr="descRuta"
+                                    [acceptCustomValue]="true"
+                                    [searchEnabled]="true"
+                                    [searchTimeout]="400"
+                                    [minSearchLength]="3"
+                                    placeholder="Buscar ruta (mínimo 3 caracteres)..."
+                                    noDataText="Sin resultados — escriba descripción, origen o destino"
+                                    [showClearButton]="true"
+                                    (onSelectionChanged)="ruta_onSelectionChanged($event)"
+                                    (onCustomItemCreating)="ruta_onCustomItemCreating($event)"
+                                    (onValueChanged)="ruta_onValueChanged($event)">
+                                    <div *dxTemplate="let item of 'item'">
+                                        <div style="font-weight: 600; font-size: 13px;">
+                                            {{ item.idRuta }} &middot; {{ item.origen }} &rarr; {{ item.destino }} ({{ item.kmsRuta }} km)
+                                        </div>
+                                        <div style="font-size: 11px; color: #777;">{{ item.descRuta }}</div>
+                                    </div>
+                                </dx-select-box>
+                                <div *ngIf="mostrarAvisoRuta"
+                                     style="margin-top: 5px; color: #e65100; font-size: 12px; line-height: 1.4;">
+                                    &#9888; {{ msgRutaNoCatalogo }}
+                                </div>
+                            </div>
 
-                            <!-- CASETAS -->
-                            <dxi-item itemtype="dxNumberBox" dataField="casetas_regreso" [colSpan]="2" [editorOptions]="{onValueChanged: caseta_regreso_ValueChanged, format: '$ #,##0.##' }">
-                                <dxo-label text="Casetas con Impuestos"> </dxo-label>
-                                <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
-                            </dxi-item>
-                            <!-- CASETAS -->
-                            <dxi-item itemtype="dxNumberBox" dataField="casetas_regreso_si" [colSpan]="2" [editorOptions]="{ format: '$ #,##0.##', readOnly: true }">
-                                <dxo-label text="Casetas sin Impuestos"> </dxo-label>
-                                <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
-                            </dxi-item>
+                        </dx-form>
+                    </form>
+                </div>
+                <!-- FIN PESTAÑA 1 -->
 
-                            <!-- ESTANCIAS -->
-                            <dxi-item itemtype="dxNumberBox" dataField="num_estancias_regreso" [colSpan]="2">
-                                <dxo-label text="Estancias (Número)"> </dxo-label>
-                                <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
-                            </dxi-item>
+                <!-- PESTAÑA 2: Datos para convenio (siempre en DOM con [hidden]) -->
+                <div [hidden]="activeTab !== 1" style="padding: 0 25px; box-sizing: border-box;">
+                    <app-datos-convenio
+                        [modelo]="itemCotizacion"
+                        (modeloChange)="itemCotizacion = $event"
+                        [clientes]="arrClientes"
+                        [idClientePadre]="itemCotizacion.idCliente">
+                    </app-datos-convenio>
+                </div>
+                <!-- FIN PESTAÑA 2 -->
 
-                            <!-- MANIOBRAS -->
-                            <dxi-item itemtype="dxNumberBox" dataField="num_maniobras_regreso" [colSpan]="2">
-                                <dxo-label text="Maniobras (Número)"> </dxo-label>
-                                <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
-                            </dxi-item>
-
-                            <!-- TONELADAS -->
-                            <dxi-item itemtype="dxNumberBox" dataField="ton_carga_regreso" [colSpan]="2">
-                                <dxo-label text="Toneladas (Número)"> </dxo-label>
-                                <dxi-validation-rule type="required" message="Casetas es campo requerido"></dxi-validation-rule>
-                            </dxi-item>
-
-                        </dxi-item>
-                        <!-- ESPACIO EN BLANCO -->
-                        <dxi-item itemType="empty" [colSpan]="12"></dxi-item>
-
-                        <dxi-item itemType="group" [colSpan]="12" [colCount]="10">
-
-                            <!-- PRECIO VENTA TONELADA -->
-                            <dxi-item itemtype="dxNumberBox" dataField="toneladas" [colSpan]="2" [editorOptions]="{onValueChanged: toneladasTotalValueChanged}">
-                                <dxo-label text="Toneladas" style="font-weight: bold !important">
-                                </dxo-label>
-                            </dxi-item>
-                            <!-- PRECIO VENTA TONELADA -->
-                            <dxi-item itemtype="dxNumberBox" dataField="costo_tonelada" [colSpan]="2" [editorOptions]="{onValueChanged: precioToneladasTotalValueChanged, format: '$ #,##0.##' }">
-                                <dxo-label text="PRECIO X TONELADA" style="font-weight: bold !important">
-                                </dxo-label>
-                            </dxi-item>
-                            <dxi-item itemType="empty" [colSpan]="6"></dxi-item>
-
-
-
-                            <!-- COSTO TOTAL -->
-                            <dxi-item itemtype="dxNumberBox" dataField="costoViaje" [colSpan]="2" [editorOptions]="{ format: '$ #,##0.##', readOnly: true }">
-                                <dxo-label text="COSTO DE OPERACION" style="font-weight: bold !important">
-                                </dxo-label>
-                            </dxi-item>
-                            <!-- PRECIO VENTA FINAL -->
-                            <dxi-item itemtype="dxNumberBox" dataField="tarifaFinal" [colSpan]="2" [editorOptions]="{onValueChanged: precioTotalValueChanged, format: '$ #,##0.##' }">
-                                <dxo-label text="PRECIO DE VENTA FINAL" style="font-weight: bold !important">
-                                </dxo-label>
-                            </dxi-item>
-
-                            <!-- BOTON GUARDAR  -->
-                            <dxi-item style="margin-top: 2rem" itemType="button" horizontalAlignment="center" [buttonOptions]="buttonOptions" [colSpan]="2">
-                            </dxi-item>
-
-                            <!-- BOTON VER VARIABLES  -->
-                            <dxi-item itemType="button" horizontalAlignment="center" [buttonOptions]="buttonOptionsVariables" [colSpan]="2">
-                            </dxi-item>
-
-
-                            <!-- BOTON PREVISUALIZAR  -->
-                            <dxi-item style="color: green" itemType="button" horizontalAlignment="center" [buttonOptions]="buttonOptionsPre" [colSpan]="2">
-                            </dxi-item>
-                        </dxi-item>
-
-
-                        <!-- ESPACIO EN BLANCO -->
-                        <dxi-item itemType="empty" [colSpan]="12"></dxi-item>
-
-
-
-
-                    </dx-form>
-                </form>
+                <!--#endregion :::: FIN FORM DE CAPTURA ::::  -->
             </dx-scroll-view>
-            <!--#endregion :::: FIN FORM CAPUTRA ::::  -->
         </div>
     </dx-popup>
     <!--#endregion :::: FIN VENTANA MODAL NUEVO/EDITAR ::::  -->

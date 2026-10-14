@@ -1,0 +1,268 @@
+<!-- RESUMEN RUTA (solo lectura — la ruta se define en pestaña Cotización) -->
+<div style="background: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 4px;
+            padding: 10px 14px; margin-bottom: 12px; display: flex; gap: 24px;
+            align-items: center; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; color: #888; font-weight: 500;">RUTA</span>
+        <span *ngIf="modelo?.idRuta"
+              style="background: #1976d2; color: #fff; border-radius: 3px;
+                     padding: 1px 7px; font-size: 12px; font-weight: 600;">
+            {{ modelo.idRuta }}
+        </span>
+        <span *ngIf="!modelo?.idRuta"
+              style="background: #ff9800; color: #fff; border-radius: 3px;
+                     padding: 1px 7px; font-size: 12px;">
+            sin catálogo
+        </span>
+    </div>
+    <div style="font-size: 13px; color: #333;">
+        <strong>{{ modelo?.origen || '—' }}</strong>
+        <span style="margin: 0 6px; color: #888;">&#8594;</span>
+        <strong>{{ modelo?.destino || '—' }}</strong>
+    </div>
+    <div *ngIf="modelo?.kms_ida" style="font-size: 12px; color: #555;">
+        {{ modelo.kms_ida }} km (ida)
+    </div>
+</div>
+
+<dx-form [(formData)]="modelo" [colCount]="12" [showColonAfterLabel]="true" labelLocation="top">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         SECCIÓN 1 — PARTES (Remitente / Destinatario)
+    ══════════════════════════════════════════════════════════════════ -->
+    <dxi-item itemType="group" caption="Partes" [colSpan]="12" [colCount]="12">
+
+        <!-- REMITENTE -->
+        <dxi-item dataField="idRemitente" editorType="dxSelectBox" [colSpan]="6" [editorOptions]="{
+            dataSource: clienteGSTDataSource,
+            displayExpr: 'descripcion',
+            valueExpr: 'id',
+            searchEnabled: true,
+            searchExpr: 'descripcion',
+            searchTimeout: 200,
+            placeholder: 'Buscar remitente...',
+            noDataText: 'Sin resultados',
+            showClearButton: true
+        }">
+            <dxo-label text="Remitente"></dxo-label>
+        </dxi-item>
+
+        <!-- DESTINATARIO -->
+        <dxi-item dataField="idDestinatario" editorType="dxSelectBox" [colSpan]="6" [editorOptions]="{
+            dataSource: clienteGSTDataSource,
+            displayExpr: 'descripcion',
+            valueExpr: 'id',
+            searchEnabled: true,
+            searchExpr: 'descripcion',
+            searchTimeout: 200,
+            placeholder: 'Buscar destinatario...',
+            noDataText: 'Sin resultados',
+            showClearButton: true
+        }">
+            <dxo-label text="Destinatario"></dxo-label>
+        </dxi-item>
+
+    </dxi-item>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         SECCIÓN 3 — CONDICIONES COMERCIALES
+    ══════════════════════════════════════════════════════════════════ -->
+    <dxi-item itemType="group" caption="Condiciones comerciales" [colSpan]="12" [colCount]="12">
+
+        <!-- MONEDA -->
+        <dxi-item dataField="idTipoMoneda" editorType="dxSelectBox" [colSpan]="3" [editorOptions]="{
+            dataSource: arrMonedas,
+            displayExpr: 'descripcion',
+            valueExpr: 'id',
+            placeholder: 'Seleccionar...',
+            showClearButton: true
+        }">
+            <dxo-label text="Moneda"></dxo-label>
+        </dxi-item>
+
+        <!-- TIPO DE SERVICIO -->
+        <dxi-item dataField="tipoServ" editorType="dxSelectBox" [colSpan]="3" [editorOptions]="{
+            dataSource: arrTiposServicio,
+            displayExpr: 'descripcion',
+            valueExpr: 'clave',
+            placeholder: 'Seleccionar...',
+            showClearButton: true,
+            onValueChanged: onTipoServChanged
+        }">
+            <dxo-label text="Tipo de Servicio"></dxo-label>
+        </dxi-item>
+
+        <!-- TIPO DE COBRO -->
+        <dxi-item dataField="tipoCobro" editorType="dxSelectBox" [colSpan]="3" [editorOptions]="{
+            dataSource: arrTiposCobro,
+            displayExpr: 'descripcion',
+            valueExpr: 'descripcion',
+            placeholder: 'Seleccionar...',
+            showClearButton: true
+        }">
+            <dxo-label text="Tipo de Cobro"></dxo-label>
+        </dxi-item>
+
+        <!-- CONTRATO (dependiente del cliente) -->
+        <dxi-item dataField="idContrato" editorType="dxSelectBox" [colSpan]="3" [editorOptions]="{
+            dataSource: arrContratos,
+            displayExpr: 'descripcion',
+            valueExpr: 'id',
+            placeholder: 'Seleccionar...',
+            showClearButton: true,
+            noDataText: contratoNoDataText
+        }">
+            <dxo-label text="Contrato"></dxo-label>
+        </dxi-item>
+
+    </dxi-item>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         SECCIÓN 4 — COMERCIO EXTERIOR (visible solo con tipoServ I o E)
+    ══════════════════════════════════════════════════════════════════ -->
+    <dxi-item itemType="group" caption="Comercio exterior" [colSpan]="12" [colCount]="12"
+              [visible]="esComercioExterior">
+
+        <!-- TIPO DE EXPORTACIÓN -->
+        <dxi-item dataField="idTipoExportacion" editorType="dxSelectBox" [colSpan]="6" [editorOptions]="{
+            dataSource: arrTiposExportacion,
+            displayExpr: 'descripcion',
+            valueExpr: 'id',
+            placeholder: 'Seleccionar...',
+            showClearButton: true
+        }">
+            <dxo-label text="Tipo de Exportación"></dxo-label>
+        </dxi-item>
+
+        <!-- REGÍMENES (selección múltiple) -->
+        <dxi-item dataField="regimenes" editorType="dxTagBox" [colSpan]="6" [editorOptions]="{
+            dataSource: arrRegimenes,
+            displayExpr: 'descripcion',
+            valueExpr: 'descripcion',
+            placeholder: 'Seleccionar regímenes...',
+            showClearButton: true,
+            applyValueMode: 'useButtons'
+        }">
+            <dxo-label text="Régimen aduanero"></dxo-label>
+        </dxi-item>
+
+    </dxi-item>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         SECCIÓN 5 — OTROS DATOS DEL CONVENIO
+    ══════════════════════════════════════════════════════════════════ -->
+    <dxi-item itemType="group" caption="Otros datos" [colSpan]="12" [colCount]="12">
+
+        <!-- SEGURO CLIENTE -->
+        <dxi-item dataField="seguroCliente" editorType="dxCheckBox" [colSpan]="2" [editorOptions]="{
+            text: 'Sí'
+        }">
+            <dxo-label text="Seguro del cliente"></dxo-label>
+        </dxi-item>
+
+        <!-- MANIOBRAS CLIENTE -->
+        <dxi-item dataField="maniobrasCliente" editorType="dxCheckBox" [colSpan]="2" [editorOptions]="{
+            text: 'Sí'
+        }">
+            <dxo-label text="Maniobras del cliente"></dxo-label>
+        </dxi-item>
+
+        <!-- AUTOPISTAS CLIENTE -->
+        <dxi-item dataField="autopistasCliente" editorType="dxCheckBox" [colSpan]="2" [editorOptions]="{
+            text: 'Sí'
+        }">
+            <dxo-label text="Autopistas del cliente"></dxo-label>
+        </dxi-item>
+
+        <!-- TOLERANCIA DE LLEGADA (minutos) -->
+        <dxi-item dataField="toleranciaLlegada" editorType="dxNumberBox" [colSpan]="2" [editorOptions]="{
+            min: 0, format: '#0 min', showSpinButtons: true
+        }">
+            <dxo-label text="Tolerancia llegada"></dxo-label>
+        </dxi-item>
+
+        <!-- DESCRIPCIÓN DEL CONVENIO -->
+        <dxi-item dataField="descConvenio" [colSpan]="4">
+            <dxo-label text="Descripción del convenio"></dxo-label>
+        </dxi-item>
+
+        <!-- OBSERVACIONES -->
+        <dxi-item dataField="observaciones" editorType="dxTextArea" [colSpan]="12" [editorOptions]="{
+            height: 70, placeholder: 'Notas u observaciones adicionales...'
+        }">
+            <dxo-label text="Observaciones"></dxo-label>
+        </dxi-item>
+
+    </dxi-item>
+
+</dx-form>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     GRID — PRODUCTOS / MERCANCÍA
+════════════════════════════════════════════════════════════════════════════ -->
+<div style="margin-top: 16px;">
+    <div style="font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #555;">
+        Productos / Mercancía
+    </div>
+    <dx-data-grid
+        [dataSource]="modelo.productos"
+        [showBorders]="true"
+        [columnAutoWidth]="true"
+        [rowAlternationEnabled]="true">
+
+        <dxo-editing mode="row" [allowAdding]="true" [allowUpdating]="true" [allowDeleting]="true"
+                     [useIcons]="true">
+        </dxo-editing>
+
+        <!-- Producto (lookup con precarga de campos relacionados) -->
+        <dxi-column dataField="idProducto" caption="Producto" [width]="220"
+                    [setCellValue]="setCellValueProducto">
+            <dxo-lookup [dataSource]="productosStore" displayExpr="descripcion" valueExpr="id">
+            </dxo-lookup>
+        </dxi-column>
+
+        <dxi-column dataField="embalaje"   caption="Embalaje"     [width]="130"></dxi-column>
+        <dxi-column dataField="idFraccion" caption="Fracción Ar." [width]="110"></dxi-column>
+        <dxi-column dataField="cantidad"   caption="Cantidad"     dataType="number" [width]="90"
+                    [editorOptions]="{ min: 0, format: '#,##0.##' }"></dxi-column>
+        <dxi-column dataField="peso"       caption="Peso (kg)"    dataType="number" [width]="100"
+                    [editorOptions]="{ min: 0, format: '#,##0.##' }"></dxi-column>
+        <dxi-column dataField="volumen"    caption="Volumen (m³)" dataType="number" [width]="110"
+                    [editorOptions]="{ min: 0, format: '#,##0.##' }"></dxi-column>
+        <dxi-column dataField="importe"    caption="Importe"      dataType="number" [width]="120"
+                    format="currency" [editorOptions]="{ min: 0, format: '$ #,##0.##' }"></dxi-column>
+
+        <dxo-paging [enabled]="false"></dxo-paging>
+    </dx-data-grid>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     GRID — OTROS CONCEPTOS
+════════════════════════════════════════════════════════════════════════════ -->
+<div style="margin-top: 16px; margin-bottom: 24px;">
+    <div style="font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #555;">
+        Otros Conceptos
+    </div>
+    <dx-data-grid
+        [dataSource]="modelo.conceptos"
+        [showBorders]="true"
+        [columnAutoWidth]="true"
+        [rowAlternationEnabled]="true">
+
+        <dxo-editing mode="row" [allowAdding]="true" [allowUpdating]="true" [allowDeleting]="true"
+                     [useIcons]="true">
+        </dxo-editing>
+
+        <!-- Concepto (lookup del catálogo, con opción libre) -->
+        <dxi-column dataField="concepto" caption="Concepto" [width]="320">
+            <dxo-lookup [dataSource]="arrConceptos" displayExpr="descripcion" valueExpr="descripcion">
+            </dxo-lookup>
+        </dxi-column>
+
+        <dxi-column dataField="monto" caption="Monto" dataType="number"
+                    format="currency" [width]="150"
+                    [editorOptions]="{ min: 0, format: '$ #,##0.##' }"></dxi-column>
+
+        <dxo-paging [enabled]="false"></dxo-paging>
+    </dx-data-grid>
+</div>

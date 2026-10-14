@@ -81,6 +81,7 @@ import { DxDataGridModule, DxFormModule, DxSelectBoxModule, DxButtonModule, DxDr
   import { AsociarViajeComponent } from './pages/viajesRecapturados/asociarViaje/asociarViaje.component';
   import { BuscarViajesComponent } from './pages/viajesRecapturados/buscarViajes/buscarViajes.component';
   import { SueldoOperadorComponent } from './pages/sueldoOperador/sueldoOperador.component';
+  import { DatosConvenioComponent } from './pages/cotizador/datos-convenio/datos-convenio.component';
 
 const routes: Routes = [
   {
@@ -435,7 +436,8 @@ const routes: Routes = [
     RentGerComponent, 
     GridCellDataPipe,
     IngresosComponent, 
-    CotizadorComponent, 
+    CotizadorComponent,
+    DatosConvenioComponent,
     IngresosDetalladosComponent, 
     KilometrosComponent, 
     CostosComponent, 

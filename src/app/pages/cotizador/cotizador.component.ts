@@ -1,6 +1,7 @@
 import { ReportsPDFService } from './../../shared/reports/reports-pdf.service';
 import { CotizadorService } from './../../services/cotizador/cotizador.service';
 import { CotizacionModel, VariablesCotizacionModel, DetalleCotizacionModel} from './../../shared/models/cotizador/cotizador.model';
+import { CatalogosCotizadorService, RutaCatalogoDTO, MSG_RUTA_NO_CATALOGO } from 'src/app/services/cotizador/catalogos-cotizador.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   DxDataGridModule,
@@ -8,6 +9,7 @@ import {
   DxTemplateModule,
   DxSelectBoxModule,
   DxButtonModule,
+  DxFormComponent,
 } from 'devextreme-angular';
 import { UnidadesNegocioModel } from 'src/app/shared/models/rentabilidad-contable/renta-contable.model';
 import { RentContService } from 'src/app/services/rentabilidad-contable/rent-cont.service';
@@ -50,7 +52,17 @@ export class CotizadorComponent implements OnInit {
   private _clientesIndex: { lower: string; item: any }[] = [];
   refreshClientesOptions: any;
 
+  // ── Ruta (pestaña Cotización) ─────────────────────────────────────────────
+  rutaDataSource: DataSource;
+  selectedRuta: RutaCatalogoDTO | null = null;
+  private ultimasRutas: RutaCatalogoDTO[] = [];
+  mostrarAvisoRuta = false;
+  readonly msgRutaNoCatalogo = MSG_RUTA_NO_CATALOGO;
+  origenOptions: any = {};
+  destinoOptions: any = {};
+
   @ViewChild('rentGer') rentGer!: DxDataGridComponent;
+  @ViewChild('cotizadorForm', { static: false }) cotizadorFormRef!: DxFormComponent;
 
   arrCotizacionesSelect: CotizacionModel[] = [];
 
@@ -100,8 +112,31 @@ export class CotizadorComponent implements OnInit {
     costoPorKm:0,
     ingresoPorKm:0,
     rend_cargado:0,
-    rend_vacio:0
-    
+    rend_vacio:0,
+    // Datos para convenio
+    idCliente: undefined,
+    remitente: undefined,
+    idRemitente: undefined,
+    destinatario: undefined,
+    idDestinatario: undefined,
+    idOrigen: undefined,
+    idDestino: undefined,
+    idRuta: undefined,
+    idTipoMoneda: undefined,
+    tipoServ: undefined,
+    tipoCobro: undefined,
+    idContrato: undefined,
+    idTipoExportacion: undefined,
+    regimenes: [],
+    seguroCliente: false,
+    maniobrasCliente: false,
+    autopistasCliente: false,
+    toleranciaLlegada: 0,
+    descConvenio: undefined,
+    observaciones: undefined,
+    productos: [],
+    conceptos: []
+
   };
 
   buttonOptions: any = {
@@ -126,6 +161,7 @@ export class CotizadorComponent implements OnInit {
   buttonOptionsCerar: any;
 
   bolModal: boolean = false;
+  activeTab: number = 0;
   positionOf: string = '#myDiv';
   tituloModal: string = '';
   sololectura:string = '';
@@ -149,11 +185,18 @@ export class CotizadorComponent implements OnInit {
     private renContService: RentContService,
     private renGerService: RentGerService,
     private pdfReport: ReportsPDFService,
-    private carteraClientesService: CarteraClientesService
+    private carteraClientesService: CarteraClientesService,
+    private catService: CatalogosCotizadorService
   ) {
     const that = this;
     this.unidadNegocio_ValueChanged = this.unidadNegocio_ValueChanged.bind(this);
-    this.cliente_onCustomItemCreating = this.cliente_onCustomItemCreating.bind(this);
+    this.cliente_onCustomItemCreating    = this.cliente_onCustomItemCreating.bind(this);
+    this.cliente_onSelectionChanged      = this.cliente_onSelectionChanged.bind(this);
+    this.clienteItemTemplate             = this.clienteItemTemplate.bind(this);
+    this.ruta_onSelectionChanged         = this.ruta_onSelectionChanged.bind(this);
+    this.ruta_onCustomItemCreating       = this.ruta_onCustomItemCreating.bind(this);
+    this.ruta_onValueChanged             = this.ruta_onValueChanged.bind(this);
+    this.buildRutaDataSource();
     this.editarCotizacionClick = this.editarCotizacionClick.bind(this);
     this.eliminarCotizcionClick = this.eliminarCotizcionClick.bind(this);
     this.verCortizacionClick = this.verCortizacionClick.bind(this);
@@ -166,7 +209,7 @@ export class CotizadorComponent implements OnInit {
     this.precioTotalValueChanged = this.precioTotalValueChanged.bind(this);
     this.tipoOperacion_ValueChanged = this.tipoOperacion_ValueChanged.bind(this);
 
-    
+
 
     this.allMode = 'allPages';
           this.checkBoxesMode = themes.current().startsWith('material') ? 'always' : 'onClick';
@@ -360,7 +403,8 @@ export class CotizadorComponent implements OnInit {
         key: 'cliente',
         load: (options: any) => {
           const term = (options.searchValue || '').toLowerCase().trim();
-          const idx = self._clientesIndex;
+          // Solo mostrar clientes con idCliente > 0 (filtro front-end)
+          const idx = self._clientesIndex.filter(e => (e.item.idCliente ?? 0) > 0);
           let filtered: any[];
 
           if (!term) {
@@ -393,12 +437,121 @@ export class CotizadorComponent implements OnInit {
   }
 
   cliente_onCustomItemCreating(args: any) {
-    const nuevoCliente = { cliente: args.text };
-    // Mutar el array existente (no reasignar) para que el closure en buildClientesDataSource
-    // vea siempre el índice actualizado sin necesidad de reconstruir el DataSource
+    // Custom item siempre tiene idCliente: null (texto libre, sin catálogo)
+    const nuevoCliente = { idCliente: null, cliente: args.text };
     this.arrClientes.push(nuevoCliente);
     this._clientesIndex.push({ lower: args.text.toLowerCase(), item: nuevoCliente });
     args.customItem = nuevoCliente;
+  }
+
+  cliente_onSelectionChanged(e: any): void {
+    // Captura idCliente del catálogo, o null si es texto libre o se limpia
+    this.itemCotizacion.idCliente = e.selectedItem?.idCliente ?? null;
+  }
+
+  clienteItemTemplate(item: any): string {
+    if (!item) return '';
+    const id = item.idCliente > 0 ? item.idCliente : '—';
+    return `<span>${id} &middot; ${item.cliente || ''}</span>`;
+  }
+
+  // ── Ruta ─────────────────────────────────────────────────────────────────
+
+  buildRutaDataSource(): void {
+    const svc = this.catService;
+    const self = this;
+    this.rutaDataSource = new DataSource({
+      store: new CustomStore({
+        key: 'idRuta',
+        load: (opts: any) => {
+          const sv = opts.searchValue || '';
+          const idTipo = self.itemCotizacion?.id_tipo_operacion || undefined;
+          return svc.searchRutas(sv, idTipo).toPromise()
+            .then((r: RutaCatalogoDTO[]) => { self.ultimasRutas = r ?? []; return r; });
+        },
+        byKey: (key: any): Promise<RutaCatalogoDTO | null> => {
+          // Valor nulo (campo vacío o ruta manual sin id)
+          if (key === null || key === undefined || key === '') {
+            return Promise.resolve(null);
+          }
+          // DevExtreme pasó el objeto completo (ya resuelto)
+          if (typeof key === 'object') {
+            return Promise.resolve(key as RutaCatalogoDTO);
+          }
+          // id numérico: cache de la última búsqueda antes de ir al servidor
+          const enCache = self.ultimasRutas.find(r => r.idRuta === key);
+          if (enCache) return Promise.resolve(enCache);
+          return svc.getRutaById(key as number).toPromise() as Promise<RutaCatalogoDTO | null>;
+        }
+      }),
+      searchExpr: 'descRuta',
+      paginate: false
+    });
+  }
+
+  ruta_onSelectionChanged(e: any): void {
+    const item: RutaCatalogoDTO | null = e.selectedItem;
+    if (!item) return; // null/clear is handled in ruta_onValueChanged
+    this.selectedRuta = item;
+    if (item.idRuta) {
+      this.itemCotizacion.idRuta    = item.idRuta;
+      this.itemCotizacion.idOrigen  = item.idOrigen;
+      this.itemCotizacion.origen    = item.origen || '';
+      this.itemCotizacion.idDestino = item.idDestino;
+      this.itemCotizacion.destino   = item.destino || '';
+      // Sólo auto-rellenar kms cuando la cotización es nueva (kms_ida = 0)
+      if (!this.itemCotizacion.kms_ida) {
+        this.itemCotizacion.kms_ida = item.kmsRuta ?? 0;
+      }
+      this.mostrarAvisoRuta = false;
+      this._actualizarReadOnly(item.idOrigen != null, item.idDestino != null);
+    } else {
+      // Ruta manual (texto libre): idRuta = null
+      this.itemCotizacion.idRuta    = undefined;
+      this.itemCotizacion.idOrigen  = undefined;
+      this.itemCotizacion.idDestino = undefined;
+      this.mostrarAvisoRuta = true;
+      this._actualizarReadOnly(false, false);
+    }
+  }
+
+  ruta_onCustomItemCreating(args: any): void {
+    const custom: RutaCatalogoDTO = {
+      idRuta: null, descRuta: args.text,
+      idOrigen: null, origen: '', idDestino: null, destino: '',
+      kmsRuta: 0, kmsSct: 0, idTipoOperacion: null
+    };
+    this.selectedRuta = custom;
+    args.customItem = custom;
+  }
+
+  ruta_onValueChanged(e: any): void {
+    if (e.event == null) return; // ignorar cambios programáticos (modo edición)
+    if (e.value == null) {
+      this.selectedRuta = null;
+      this.itemCotizacion.idRuta    = undefined;
+      this.itemCotizacion.idOrigen  = undefined;
+      this.itemCotizacion.origen    = undefined;
+      this.itemCotizacion.idDestino = undefined;
+      this.itemCotizacion.destino   = undefined;
+      this.mostrarAvisoRuta = false;
+      this._actualizarReadOnly(false, false);
+    }
+  }
+
+  /**
+   * Actualiza readOnly de Origen y Destino.
+   * Dual: asigna objeto nuevo (para binding Angular) Y llama getEditor()
+   * (para garantizar actualización inmediata si el form ya existe).
+   */
+  private _actualizarReadOnly(origenRO: boolean, destinoRO: boolean): void {
+    this.origenOptions  = { readOnly: origenRO };
+    this.destinoOptions = { readOnly: destinoRO };
+    const inst = this.cotizadorFormRef?.instance;
+    if (inst) {
+      inst.getEditor('origen')?.option('readOnly', origenRO);
+      inst.getEditor('destino')?.option('readOnly', destinoRO);
+    }
   }
 
   getRentabilidad(operacion: string) {
@@ -649,11 +802,35 @@ precioTotalValueChanged(e: any) {
     // this.itemCotizacion = clonedItem;
     // this.tituloModal = "Editando Cotizacion Folio: " + this.itemCotizacion.folio;
     this.bolModal = true;
+    this.activeTab = 0;
+    this.selectedRuta = null;
+    this.mostrarAvisoRuta = false;
+    this._actualizarReadOnly(false, false);
     this.cotizadorService.getCotizacion(e.row.data.idCotizacion).subscribe(res => {
       this.itemCotizacion = res.data;
       this.tituloModal = "Editando Cotizacion Folio: " + this.itemCotizacion.folio;
       this.sololectura = "no";
-      // console.log( this.itemCotizacion)
+      // Recuperar idCliente para cotizaciones anteriores que solo tienen texto
+      if (this.itemCotizacion.cliente && !this.itemCotizacion.idCliente) {
+        const found = this.arrClientes.find(c => c.cliente === this.itemCotizacion.cliente);
+        if (found && (found.idCliente ?? 0) > 0) {
+          this.itemCotizacion.idCliente = found.idCliente;
+        }
+      }
+      // Recuperar ruta del catálogo si el modelo la trae
+      if (this.itemCotizacion.idRuta) {
+        this.catService.getRutaById(this.itemCotizacion.idRuta).subscribe(ruta => {
+          if (ruta) {
+            this.selectedRuta = ruta; // objeto completo para el combo
+            // kms_ida NO se modifica: el valor guardado se respeta
+            this._actualizarReadOnly(ruta.idOrigen != null, ruta.idDestino != null);
+          }
+        });
+      } else {
+        this.selectedRuta = null;
+        this.mostrarAvisoRuta = false;
+        this._actualizarReadOnly(false, false);
+      }
     });
   }
 
@@ -672,6 +849,8 @@ precioTotalValueChanged(e: any) {
    // this.itemCotizacion = clonedItem;
     this.tituloModal = "Cotizacion Folio: " + this.itemCotizacion.folio + " (Solo Lectura)";
     this.bolModal = true;
+    this.activeTab = 0;
+    this.selectedRuta = null;
     this.sololectura = "si";
      //this.bolModal = true;
     this.cotizadorService.getCotizacion(e.row.data.idCotizacion).subscribe(res => {
@@ -732,6 +911,10 @@ precioTotalValueChanged(e: any) {
 
   limpiarForm() {
     this.bolFormSoloLectura = false;
+    this.activeTab = 0;
+    this.selectedRuta = null;
+    this.mostrarAvisoRuta = false;
+    this._actualizarReadOnly(false, false);
     //this.itemCotizacion = {};
     this.itemCotizacion = {
       idCotizacion: undefined,
@@ -775,7 +958,30 @@ precioTotalValueChanged(e: any) {
       costoPorKm:0,
       ingresoPorKm:0,
       rend_cargado:0,
-      rend_vacio:0
+      rend_vacio:0,
+      // Datos para convenio
+      idCliente: undefined,
+      remitente: undefined,
+      idRemitente: undefined,
+      destinatario: undefined,
+      idDestinatario: undefined,
+      idOrigen: undefined,
+      idDestino: undefined,
+      idRuta: undefined,
+      idTipoMoneda: undefined,
+      tipoServ: undefined,
+      tipoCobro: undefined,
+      idContrato: undefined,
+      idTipoExportacion: undefined,
+      regimenes: [],
+      seguroCliente: false,
+      maniobrasCliente: false,
+      autopistasCliente: false,
+      toleranciaLlegada: 0,
+      descConvenio: undefined,
+      observaciones: undefined,
+      productos: [],
+      conceptos: []
     };
   }
 

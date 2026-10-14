@@ -49,8 +49,47 @@ export interface CotizacionModel{
   rend_vacio?: number,
   variables?: VariablesCotizacionModel[],
   costos_ida?: DetalleCotizacionModel[],
-  costos_regreso?: DetalleCotizacionModel[]
+  costos_regreso?: DetalleCotizacionModel[],
+  // ── Datos para convenio (opcionales, no afectan payload de guardado) ──────
+  idCliente?: number,
+  remitente?: string,
+  idRemitente?: number,
+  destinatario?: string,
+  idDestinatario?: number,
+  idOrigen?: number,
+  idDestino?: number,
+  idRuta?: number,
+  idTipoMoneda?: number,
+  tipoServ?: string,
+  tipoCobro?: string,
+  idContrato?: number,
+  idTipoExportacion?: number,
+  regimenes?: string[],
+  seguroCliente?: boolean,
+  maniobrasCliente?: boolean,
+  autopistasCliente?: boolean,
+  toleranciaLlegada?: number,
+  descConvenio?: string,
+  observaciones?: string,
+  productos?: ProductoCotizacionModel[],
+  conceptos?: ConceptoCotizacionModel[]
 }
+export interface ProductoCotizacionModel {
+  idProducto?: number,
+  producto?: string,
+  embalaje?: string,
+  idFraccion?: string,
+  cantidad?: number,
+  peso?: number,
+  volumen?: number,
+  importe?: number
+}
+
+export interface ConceptoCotizacionModel {
+  concepto?: string,
+  monto?: number
+}
+
 export interface VariablesCotizacionModel{
   variable: string,
   valor?: number
