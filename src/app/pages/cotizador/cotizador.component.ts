@@ -836,6 +836,15 @@ precioTotalValueChanged(e: any) {
         this.mostrarAvisoRuta = false;
         this._actualizarReadOnly(false, false);
       }
+      // dx-form no propaga cambios de editorOptions.items al editor ya creado;
+      // se actualiza directamente después del ciclo de detección de cambios
+      setTimeout(() => {
+        const ed = this.cotizadorFormRef?.instance?.getEditor('tipoOperacion');
+        if (ed) {
+          ed.option('items', ops);
+          ed.option('value', datos.tipoOperacion);
+        }
+      }, 0);
     });
   }
 
@@ -868,6 +877,13 @@ precioTotalValueChanged(e: any) {
       this.arrTipoOperacion = ops;
       this.itemCotizacion = datos;
       this.tituloModal = "Cotizacion Folio: " + this.itemCotizacion.folio + " (Solo Lectura)";
+      setTimeout(() => {
+        const ed = this.cotizadorFormRef?.instance?.getEditor('tipoOperacion');
+        if (ed) {
+          ed.option('items', ops);
+          ed.option('value', datos.tipoOperacion);
+        }
+      }, 0);
     });
   }
 
