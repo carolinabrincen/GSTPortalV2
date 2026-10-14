@@ -569,6 +569,35 @@ export class CotizadorComponent implements OnInit {
   }
 
   
+  // Resuelve el nombre correcto del tipo de operación desde la lista del área.
+  // El back puede devolver un nombre abreviado en tipoOperacion; clasificacion
+  // siempre tiene el nombre exacto con el que se guardó.
+  private _resolverTipoOperacion(
+    ops: TiposOperacionModel[],
+    idTipo: number,
+    clasificacion: string | undefined,
+    tipoOperacion: string | undefined
+  ): { finalOps: TiposOperacionModel[], resolvedValue: string } {
+    if (!ops.length) return { finalOps: ops, resolvedValue: tipoOperacion ?? '' };
+
+    const ref = (clasificacion ?? tipoOperacion ?? '').trim().toLowerCase();
+    const idNum = idTipo;
+
+    // a) coincidencia por id Y nombre
+    let match = ops.find(o => o.idTipoOperacion === idNum && o.operacion.trim().toLowerCase() === ref);
+    // b) solo nombre
+    if (!match) match = ops.find(o => o.operacion.trim().toLowerCase() === ref);
+    // c) solo id (primer elemento)
+    if (!match) match = ops.find(o => o.idTipoOperacion === idNum);
+
+    if (match) return { finalOps: ops, resolvedValue: match.operacion };
+
+    // d) opción temporal para no dejar el combo vacío
+    const nombre = (clasificacion ?? tipoOperacion ?? '').trim();
+    const temp: TiposOperacionModel = { idTipoOperacion: idNum, operacion: nombre };
+    return { finalOps: [...ops, temp], resolvedValue: nombre };
+  }
+
   //#endregion :::: FIN GETTERS ::::
 
   //#endregion :::: EVENTOS :::::
@@ -812,8 +841,12 @@ precioTotalValueChanged(e: any) {
         return of({ datos, ops: [] as TiposOperacionModel[] });
       })
     ).subscribe(({ datos, ops }) => {
-      this.arrTipoOperacion = ops;
+      const { finalOps, resolvedValue } = this._resolverTipoOperacion(
+        ops, datos.id_tipo_operacion, datos.clasificacion, datos.tipoOperacion
+      );
+      this.arrTipoOperacion = finalOps;
       this.itemCotizacion = datos;
+      this.itemCotizacion.tipoOperacion = resolvedValue;
       this.tituloModal = "Editando Cotizacion Folio: " + this.itemCotizacion.folio;
       this.sololectura = "no";
       // Recuperar idCliente para cotizaciones anteriores que solo tienen texto
@@ -836,13 +869,13 @@ precioTotalValueChanged(e: any) {
         this.mostrarAvisoRuta = false;
         this._actualizarReadOnly(false, false);
       }
-      // dx-form no propaga cambios de editorOptions.items al editor ya creado;
+      // dx-form no propaga editorOptions.items al editor ya creado;
       // se actualiza directamente después del ciclo de detección de cambios
       setTimeout(() => {
         const ed = this.cotizadorFormRef?.instance?.getEditor('tipoOperacion');
         if (ed) {
-          ed.option('items', ops);
-          ed.option('value', datos.tipoOperacion);
+          ed.option('items', finalOps);
+          ed.option('value', resolvedValue);
         }
       }, 0);
     });
@@ -874,14 +907,18 @@ precioTotalValueChanged(e: any) {
         return of({ datos, ops: [] as TiposOperacionModel[] });
       })
     ).subscribe(({ datos, ops }) => {
-      this.arrTipoOperacion = ops;
+      const { finalOps, resolvedValue } = this._resolverTipoOperacion(
+        ops, datos.id_tipo_operacion, datos.clasificacion, datos.tipoOperacion
+      );
+      this.arrTipoOperacion = finalOps;
       this.itemCotizacion = datos;
+      this.itemCotizacion.tipoOperacion = resolvedValue;
       this.tituloModal = "Cotizacion Folio: " + this.itemCotizacion.folio + " (Solo Lectura)";
       setTimeout(() => {
         const ed = this.cotizadorFormRef?.instance?.getEditor('tipoOperacion');
         if (ed) {
-          ed.option('items', ops);
-          ed.option('value', datos.tipoOperacion);
+          ed.option('items', finalOps);
+          ed.option('value', resolvedValue);
         }
       }, 0);
     });
