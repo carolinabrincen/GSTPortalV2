@@ -3,7 +3,7 @@ import { of, Subscription } from 'rxjs';
 import { ReportsPDFService } from './../../shared/reports/reports-pdf.service';
 import { CotizadorService } from './../../services/cotizador/cotizador.service';
 import { CotizacionModel, VariablesCotizacionModel, DetalleCotizacionModel} from './../../shared/models/cotizador/cotizador.model';
-import { CatalogosCotizadorService, RutaCatalogoDTO, CasetasRutaDTO, MSG_RUTA_NO_CATALOGO } from 'src/app/services/cotizador/catalogos-cotizador.service';
+import { CatalogosCotizadorService, RutaCatalogoDTO, CasetasRutaDTO, CRITERIO_SIN_TARIFA, MSG_RUTA_NO_CATALOGO } from 'src/app/services/cotizador/catalogos-cotizador.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   DxDataGridModule,
@@ -66,7 +66,10 @@ export class CotizadorComponent implements OnInit {
   // ── Casetas automáticas por ruta y número de ejes ────────────────────────
   arrEjes: { valor: number | null; texto: string }[] = [{ valor: null, texto: 'Sin definir' }];
   casetasRuta: CasetasRutaDTO | null = null;
+  /** Ruta y ejes con los que se obtuvo casetasRuta (el DTO no los trae). */
+  private casetasRutaKey: { idRuta: number; ejes: number | null } | null = null;
   bolModalCasetas = false;
+  readonly criterioSinTarifa = CRITERIO_SIN_TARIFA;
   /** El usuario editó a mano casetas ida/regreso desde el último cálculo. */
   private casetasEditadasManual = false;
   private casetasSub: Subscription | null = null;
@@ -391,7 +394,7 @@ export class CotizadorComponent implements OnInit {
     this.catService.getEjesCaseta().subscribe(ejes => {
       this.arrEjes = [
         { valor: null, texto: 'Sin definir' },
-        ...ejes.map(n => ({ valor: n, texto: `${n} ejes` }))
+        ...ejes.map(e => ({ valor: e.id, texto: e.descripcion || `${e.id} ejes` }))
       ];
     });
   }
@@ -554,7 +557,7 @@ export class CotizadorComponent implements OnInit {
   ruta_onValueChanged(e: any): void {
     if (e.event == null) return; // ignorar cambios programáticos (modo edición)
     this.casetasSub?.unsubscribe();
-    this.casetasRuta = null;
+    this.setCasetasRuta(null);
     // Ruta del catálogo → casetas automáticas; ruta manual → casetas quedan manuales
     if (e.value?.idRuta) {
       this.calcularCasetas('ruta', e.value.idRuta);
@@ -664,9 +667,10 @@ export class CotizadorComponent implements OnInit {
     if (!idRuta) return;
     const ejes = this.itemCotizacion.numEjes ?? null;
     this.casetasSub?.unsubscribe();
+    this.setCasetasRuta(null);
     this.casetasSub = this.catService.getCasetasRuta(idRuta, ejes).subscribe({
       next: res => {
-        this.casetasRuta = res;
+        this.setCasetasRuta(res, idRuta, ejes);
         const total = +(res?.total ?? 0);
         const redondo = this.itemCotizacion.tipoViaje === 'Redondo';
         if (motivo !== 'regreso') {
@@ -691,14 +695,32 @@ export class CotizadorComponent implements OnInit {
     if (!idRuta) return;
     const ejes = this.itemCotizacion.numEjes ?? null;
     // Detalle informativo: no modifica los montos capturados
-    if (this.casetasRuta && this.casetasRuta.idRuta === idRuta && (this.casetasRuta.ejes ?? null) === ejes) {
+    const key = this.casetasRutaKey;
+    if (this.casetasRuta && key?.idRuta === idRuta && key.ejes === ejes) {
       this.bolModalCasetas = true;
       return;
     }
     this.catService.getCasetasRuta(idRuta, ejes).subscribe({
-      next: res => { this.casetasRuta = res; this.bolModalCasetas = true; },
+      next: res => { this.setCasetasRuta(res, idRuta, ejes); this.bolModalCasetas = true; },
       error: () => notify('No se pudieron obtener las casetas de la ruta', 'error', 3000)
     });
+  }
+
+  private setCasetasRuta(res: CasetasRutaDTO | null, idRuta?: number, ejes: number | null = null): void {
+    this.casetasRuta = res;
+    this.casetasRutaKey = res && idRuta ? { idRuta, ejes } : null;
+  }
+
+  /** Total del popup: el que calcula el back, no la suma de la columna. */
+  casetasTotal_customizeText = (): string =>
+    'Total: $ ' + (this.casetasRuta?.total ?? 0).toLocaleString('es-MX', { maximumFractionDigits: 2 });
+
+  /** Marca en el popup las casetas sin tarifa para los ejes pedidos. */
+  casetaDetalle_onRowPrepared(e: any): void {
+    if (e.rowType === 'data' && e.data?.criterio === this.criterioSinTarifa) {
+      e.rowElement.style.backgroundColor = '#fff8e1';
+      e.rowElement.style.color = '#e65100';
+    }
   }
   toneladasTotalValueChanged(e: any) {
         if(this.itemCotizacion.costoViaje >0  && this.itemCotizacion.toneladas> 0)
@@ -1147,7 +1169,7 @@ precioTotalValueChanged(e: any) {
   private resetCasetasRuta(): void {
     this.casetasSub?.unsubscribe();
     this.casetasSub = null;
-    this.casetasRuta = null;
+    this.setCasetasRuta(null);
     this.casetasEditadasManual = false;
     this.bolModalCasetas = false;
   }

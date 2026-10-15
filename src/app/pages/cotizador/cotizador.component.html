@@ -540,11 +540,15 @@
                                     [(value)]="itemCotizacion.casetas"
                                     format="$ #,##0.##"
                                     [readOnly]="bolFormSoloLectura"
-                                    (onValueChanged)="caseta_ida_ValueChanged($event)">
+                                    (onValueChanged)="itemCotizacion.casetas = $event.value; caseta_ida_ValueChanged($event)">
                                     <dx-validator validationGroup="customerData">
                                         <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
                                     </dx-validator>
                                 </dx-number-box>
+                                <div *ngIf="casetasRuta?.hayCasetasSinTarifa"
+                                     style="margin-top: 4px; padding: 4px 6px; background: #fff8e1; border: 1px solid #ffe082; border-radius: 3px; color: #e65100; font-size: 12px; line-height: 1.4;">
+                                    &#9888; Alguna caseta de la ruta no tiene tarifa registrada; revise el monto.
+                                </div>
                                 <a *ngIf="itemCotizacion.idRuta" href="javascript:void(0)" (click)="verCasetasClick()"
                                    style="display: inline-block; margin-top: 4px; font-size: 12px;">Ver casetas</a>
                             </div>
@@ -604,17 +608,18 @@
     <!--#region :::: MODAL DETALLE CASETAS ::::  -->
     <dx-popup [showTitle]="true" title="Casetas de la ruta" [width]="720" [height]="'auto'" [dragEnabled]="true" [closeOnOutsideClick]="true" [showCloseButton]="true" container=".dx-viewport" [(visible)]="bolModalCasetas">
         <div *dxTemplate="let data of 'content'">
-            <div *ngIf="casetasRuta" style="margin-bottom: 8px; font-size: 13px;">
-                Ejes: <b>{{ casetasRuta.ejes != null ? casetasRuta.ejes : 'Sin definir' }}</b>
-                &nbsp;&middot;&nbsp; Total (con impuestos): <b>$ {{ casetasRuta.total | number:'1.0-2' }}</b>
+            <div *ngIf="casetasRuta?.hayCasetasSinTarifa" style="margin-bottom: 8px; color: #e65100; font-size: 12px;">
+                &#9888; Alguna caseta de la ruta no tiene tarifa registrada; revise el monto.
             </div>
-            <dx-data-grid [dataSource]="casetasRuta?.detalle" [showBorders]="true" [showColumnLines]="true" [columnAutoWidth]="true" noDataText="La ruta no tiene casetas registradas">
+            <dx-data-grid [dataSource]="casetasRuta?.detalle" [showBorders]="true" [showColumnLines]="true" [columnAutoWidth]="true" noDataText="La ruta no tiene casetas registradas" (onRowPrepared)="casetaDetalle_onRowPrepared($event)">
                 <dxi-column dataField="orden" caption="Orden" alignment="center" [width]="70"></dxi-column>
                 <dxi-column dataField="caseta" caption="Caseta"></dxi-column>
                 <dxi-column dataField="ejesAplicados" caption="Ejes aplicados" alignment="center"></dxi-column>
                 <dxi-column dataField="criterio" caption="Criterio"></dxi-column>
                 <dxi-column dataField="tarifa" caption="Tarifa" alignment="right" format="$ #,##0.##"></dxi-column>
-                <dxi-column dataField="total" caption="Total" alignment="right" format="$ #,##0.##"></dxi-column>
+                <dxo-summary>
+                    <dxi-total-item column="tarifa" summaryType="sum" [customizeText]="casetasTotal_customizeText"></dxi-total-item>
+                </dxo-summary>
             </dx-data-grid>
         </div>
     </dx-popup>

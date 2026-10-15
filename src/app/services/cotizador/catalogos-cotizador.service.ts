@@ -28,22 +28,24 @@ export interface RutaCatalogoDTO {
   idTipoOperacion: number | null;
 }
 
+/** Criterio que el back asigna a una caseta sin tarifa para los ejes pedidos. */
+export const CRITERIO_SIN_TARIFA = 'SIN TARIFA';
+
 /** Una caseta de la ruta con la tarifa aplicada según el número de ejes. */
 export interface CasetaDetalleDTO {
   orden: number;
+  idCaseta: number;
   caseta: string;
+  tarifa: number | null;
   ejesAplicados: number | null;
   criterio: string;
-  tarifa: number;
-  total: number;
 }
 
-/** Casetas de una ruta: total (con impuestos, un sentido) y detalle por caseta. */
+/** Casetas de una ruta (ApiResponse.data): total con impuestos de un sentido y detalle. */
 export interface CasetasRutaDTO {
-  idRuta: number;
-  ejes: number | null;
-  total: number;
   detalle: CasetaDetalleDTO[];
+  total: number;
+  hayCasetasSinTarifa: boolean;
 }
 
 /** Mensaje que se muestra cuando la ruta fue escrita manualmente (no del catálogo). */
@@ -168,41 +170,44 @@ const MOCK_RUTAS_CATALOGO: RutaCatalogoDTO[] = [
 ];
 
 // ── MOCK de casetas por ruta (tarifas con impuestos por número de ejes) ─────
-const MOCK_EJES_CASETA: number[] = [5, 6, 9];
+// id = número de ejes, como el back
+const MOCK_EJES_CASETA: CatalogoDTO[] = [
+  { id: 5, clave: '5', descripcion: '5 ejes' },
+  { id: 6, clave: '6', descripcion: '6 ejes' },
+  { id: 9, clave: '9', descripcion: '9 ejes' },
+];
 
-const MOCK_CASETAS_RUTA: { [idRuta: number]: { caseta: string; tarifas: { [ejes: number]: number } }[] } = {
+const MOCK_CASETAS_RUTA: { [idRuta: number]: { idCaseta: number; caseta: string; tarifas: { [ejes: number]: number } }[] } = {
   42: [
-    { caseta: 'VIA ATLIXCAYOTL', tarifas: { 5: 309, 6: 309, 9: 309 } },
-    { caseta: 'AMOZOC',          tarifas: { 5: 328, 6: 438, 9: 438 } },
-    { caseta: 'ESPERANZA',       tarifas: { 5: 680, 6: 990, 9: 990 } },
+    { idCaseta: 1, caseta: 'VIA ATLIXCAYOTL', tarifas: { 5: 309, 6: 309, 9: 309 } },
+    { idCaseta: 2, caseta: 'AMOZOC',          tarifas: { 5: 328, 6: 438, 9: 438 } },
+    { idCaseta: 3, caseta: 'ESPERANZA',       tarifas: { 5: 680, 6: 990, 9: 990 } },
   ],
 };
 
 /**
- * Calcula el MOCK de CasetasRuta. Con ejes usa la tarifa de ese número de ejes;
- * sin ejes (o si la caseta no lo tiene) usa la tarifa máxima de la caseta.
+ * Calcula el MOCK de CasetasRuta con la misma forma que ApiResponse.data del back.
+ * Con ejes usa la tarifa de ese número de ejes (sin ella → criterio SIN TARIFA, tarifa null);
+ * sin ejes usa la tarifa máxima de la caseta.
  */
 function mockCasetasRuta(idRuta: number, ejes?: number | null): CasetasRutaDTO {
   const casetas = MOCK_CASETAS_RUTA[idRuta] ?? [];
   const detalle: CasetaDetalleDTO[] = casetas.map((c, i) => {
-    let ejesAplicados: number | null;
-    let criterio: string;
-    if (ejes != null && c.tarifas[ejes] != null) {
-      ejesAplicados = ejes;
-      criterio = `Tarifa de ${ejes} ejes`;
-    } else {
-      ejesAplicados = Object.keys(c.tarifas).map(Number)
-        .reduce((max, e) => c.tarifas[e] > c.tarifas[max] ? e : max);
-      criterio = ejes != null ? `Sin tarifa de ${ejes} ejes; tarifa máxima` : 'Ejes sin definir; tarifa máxima';
+    const base = { orden: i + 1, idCaseta: c.idCaseta, caseta: c.caseta };
+    if (ejes != null) {
+      const tarifa = c.tarifas[ejes];
+      return tarifa != null
+        ? { ...base, tarifa, ejesAplicados: ejes, criterio: 'EJES' }
+        : { ...base, tarifa: null, ejesAplicados: null, criterio: CRITERIO_SIN_TARIFA };
     }
-    const tarifa = c.tarifas[ejesAplicados];
-    return { orden: i + 1, caseta: c.caseta, ejesAplicados, criterio, tarifa, total: tarifa };
+    const ejesAplicados = Object.keys(c.tarifas).map(Number)
+      .reduce((max, e) => c.tarifas[e] > c.tarifas[max] ? e : max);
+    return { ...base, tarifa: c.tarifas[ejesAplicados], ejesAplicados, criterio: 'MAXIMA' };
   });
   return {
-    idRuta,
-    ejes: ejes ?? null,
-    total: detalle.reduce((s, d) => s + d.total, 0),
-    detalle
+    detalle,
+    total: detalle.reduce((s, d) => s + (d.tarifa ?? 0), 0),
+    hayCasetasSinTarifa: detalle.some(d => d.criterio === CRITERIO_SIN_TARIFA)
   };
 }
 
@@ -443,24 +448,22 @@ export class CatalogosCotizadorService extends AbstractManagerService {
     ).pipe(map(r => this.unwrapArr(r) as unknown as RutaCatalogoDTO[]));
   }
 
-  /** Números de ejes con tarifa de casetas (combo "Número de ejes"). */
-  getEjesCaseta(): Observable<number[]> {
+  /** Números de ejes con tarifa de casetas (combo "Número de ejes"); id = número de ejes. */
+  getEjesCaseta(): Observable<CatalogoDTO[]> {
     if (this.useMock()) return of(MOCK_EJES_CASETA);
     return this.get<any>(this.catUrl + 'api/CatalogosCotizador/EjesCaseta', this.httpOptions)
-      .pipe(map(r => (Array.isArray(r) ? r : (r?.data ?? []))
-        .map((x: any) => typeof x === 'number' ? x : Number(x?.ejes ?? x?.id ?? x?.valor))
-        .filter((n: number) => !isNaN(n))));
+      .pipe(map(r => this.unwrapArr(r)));
   }
 
   /**
    * Casetas de una ruta con su total (con impuestos, un sentido).
-   * Endpoint real: GET CasetasRuta/{idRuta}?ejes=n (sin ejes → tarifa máxima por caseta).
+   * Endpoint real: GET CasetasRuta/{idRuta}?ejes=n → ApiResponse.data = CasetasRutaDTO.
    */
   getCasetasRuta(idRuta: number, ejes?: number | null): Observable<CasetasRutaDTO> {
     if (this.useMock()) return of(mockCasetasRuta(idRuta, ejes));
     const qs = ejes != null ? `?ejes=${ejes}` : '';
     return this.get<any>(`${this.catUrl}api/CatalogosCotizador/CasetasRuta/${idRuta}${qs}`, this.httpOptions)
-      .pipe(map(r => (r?.data ?? r) as CasetasRutaDTO));
+      .pipe(map(r => r?.data as CasetasRutaDTO));
   }
 
   /** Obtiene una ruta por id. Devuelve null si no existe. */
