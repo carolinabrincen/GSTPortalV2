@@ -632,8 +632,6 @@ export class CotizadorComponent implements OnInit {
   }
 
   getRentabilidad(operacion: string) {
-    // console.log(this.itemCotizacion.id_area+"   "+operacion)
-
     this.cotizadorService.getRentabilidad(this.itemCotizacion.id_area, operacion).subscribe(res => {
       
       this.itemCotizacion.rend_cargado = res.data.rend_cargado;
@@ -901,7 +899,6 @@ precioTotalValueChanged(e: any) {
   }
 
   guardarCotizacionClick(e: any) {
-    console.log(e)
     e.preventDefault();
     switch (this.tipoRegistro) {
       case 'nuevo':
@@ -945,10 +942,8 @@ precioTotalValueChanged(e: any) {
         this.cotizadorService.postEditarCotizacion(this.payloadGuardado()).subscribe(res => {
           if (res.responseCode === 200) {
             this.itemCotizacion = res.data;
-            // console.log(this.itemCotizacion)
             this.getPreCotizaciones();
             this.tipoOperacion_ValueChanged = this.tipoOperacion_ValueChanged.bind(this);
-            console.log("SE EDITO CORRECTAMENTE")
             notify({
               message: 'Cotización guardada con exito!',
               position: {
@@ -957,7 +952,6 @@ precioTotalValueChanged(e: any) {
               },
             }, 'success', 3000);
           } else {
-            console.log("ALGO PASO !!!!!!!!")
             notify({
               message: res.responseText,
               position: {
