@@ -268,8 +268,11 @@ export class CotizadorComponent implements OnInit {
       layout: 'horizontal',
       onValueChanged: (e) => {
         this.bolEsViajeSencillo = e.value === 'Solo de ida' ? true : false;
-        // Al pasar a Redondo por acción del usuario, llenar casetas de regreso
-        if (e.event != null && e.value === 'Redondo') {
+        // Al pasar a Redondo por acción del usuario, llenar kms (si está en 0) y casetas de regreso
+        if (e.event != null && e.value === 'Redondo' && this.itemCotizacion.idRuta) {
+          if (!this.itemCotizacion.kms_regreso) {
+            this.itemCotizacion.kms_regreso = this.selectedRuta?.kmsRuta ?? 0;
+          }
           this.calcularCasetas('regreso');
         }
       },
@@ -528,10 +531,7 @@ export class CotizadorComponent implements OnInit {
       this.itemCotizacion.origen    = item.origen || '';
       this.itemCotizacion.idDestino = item.idDestino;
       this.itemCotizacion.destino   = item.destino || '';
-      // Sólo auto-rellenar kms cuando la cotización es nueva (kms_ida = 0)
-      if (!this.itemCotizacion.kms_ida) {
-        this.itemCotizacion.kms_ida = item.kmsRuta ?? 0;
-      }
+      // Los kms se llenan en ruta_onValueChanged (solo por acción del usuario)
       this.mostrarAvisoRuta = false;
       this._actualizarReadOnly(item.idOrigen != null, item.idDestino != null);
     } else {
@@ -558,8 +558,10 @@ export class CotizadorComponent implements OnInit {
     if (e.event == null) return; // ignorar cambios programáticos (modo edición)
     this.casetasSub?.unsubscribe();
     this.setCasetasRuta(null);
-    // Ruta del catálogo → casetas automáticas; ruta manual → casetas quedan manuales
+    // Ruta del catálogo → kms y casetas automáticos; ruta manual → quedan manuales
     if (e.value?.idRuta) {
+      const cambioDeRuta = e.previousValue?.idRuta != null && e.previousValue.idRuta !== e.value.idRuta;
+      this.llenarKmsRuta(e.value.kmsRuta, cambioDeRuta);
       this.calcularCasetas('ruta', e.value.idRuta);
     }
     if (e.value == null) {
@@ -572,6 +574,25 @@ export class CotizadorComponent implements OnInit {
       this.mostrarAvisoRuta = false;
       this._actualizarReadOnly(false, false);
     }
+  }
+
+  /**
+   * Llena kms_ida (y kms_regreso si el viaje es Redondo) con los kms de la ruta.
+   * Solo pisa capturas manuales (kms ≠ 0) si se eligió otra ruta; en ese caso avisa.
+   */
+  private llenarKmsRuta(kmsRuta: number | null | undefined, cambioDeRuta: boolean): void {
+    const kms = kmsRuta ?? 0;
+    if (!kms) return;
+    const campos = this.itemCotizacion.tipoViaje === 'Redondo' ? ['kms_ida', 'kms_regreso'] : ['kms_ida'];
+    let reemplazados = false;
+    for (const campo of campos) {
+      const actual = this.itemCotizacion[campo];
+      if (!actual || cambioDeRuta) {
+        if (actual && actual !== kms) reemplazados = true;
+        this.itemCotizacion[campo] = kms;
+      }
+    }
+    if (reemplazados) notify('Kilómetros actualizados según la ruta', 'info', 3000);
   }
 
   /**

@@ -166,7 +166,7 @@ const MOCK_RUTAS_CATALOGO: RutaCatalogoDTO[] = [
   { idRuta: 42, descRuta: 'PUEBLA - HOLCIM ORIZABA',
     idOrigen: 114, origen: 'Puebla',
     idDestino: 1, destino: 'HOLCIM ORIZABA',
-    kmsRuta: 160, kmsSct: 160, idTipoOperacion: null },
+    kmsRuta: 225, kmsSct: 225, idTipoOperacion: null },
 ];
 
 // ── MOCK de casetas por ruta (tarifas con impuestos por número de ejes) ─────
