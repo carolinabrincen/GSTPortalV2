@@ -602,9 +602,6 @@ export class CotizadorComponent implements OnInit {
       const previo = this.itemCotizacion.kms_regreso;
       const kms = kmsRuta ?? 0;
       if (!previo && kms) this.asignarCampoForm('kms_regreso', kms);
-      // TEMPORAL: diagnóstico de kms de regreso al pasar a Redondo
-      console.log('[Redondo] idRuta:', idRuta, 'kmsRuta:', kmsRuta,
-        'kms_regreso previo:', previo, 'nuevo:', this.itemCotizacion.kms_regreso);
     };
     if (this.selectedRuta?.idRuta === idRuta) {
       aplicar(this.selectedRuta.kmsRuta);
