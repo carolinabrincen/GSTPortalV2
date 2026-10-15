@@ -270,9 +270,7 @@ export class CotizadorComponent implements OnInit {
         this.bolEsViajeSencillo = e.value === 'Solo de ida' ? true : false;
         // Al pasar a Redondo por acción del usuario, llenar kms (si está en 0) y casetas de regreso
         if (e.event != null && e.value === 'Redondo' && this.itemCotizacion.idRuta) {
-          if (!this.itemCotizacion.kms_regreso) {
-            this.itemCotizacion.kms_regreso = this.selectedRuta?.kmsRuta ?? 0;
-          }
+          this.llenarKmsRegresoRedondo(this.itemCotizacion.idRuta);
           this.calcularCasetas('regreso');
         }
       },
@@ -589,10 +587,36 @@ export class CotizadorComponent implements OnInit {
       const actual = this.itemCotizacion[campo];
       if (!actual || cambioDeRuta) {
         if (actual && actual !== kms) reemplazados = true;
-        this.itemCotizacion[campo] = kms;
+        this.asignarCampoForm(campo, kms);
       }
     }
     if (reemplazados) notify('Kilómetros actualizados según la ruta', 'info', 3000);
+  }
+
+  /**
+   * Al pasar a Redondo: kms_regreso = kms de la ruta, solo si está en 0.
+   * Usa la ruta seleccionada; si no corresponde al idRuta del modelo, la consulta.
+   */
+  private llenarKmsRegresoRedondo(idRuta: number): void {
+    const aplicar = (kmsRuta: number | null | undefined) => {
+      const previo = this.itemCotizacion.kms_regreso;
+      const kms = kmsRuta ?? 0;
+      if (!previo && kms) this.asignarCampoForm('kms_regreso', kms);
+      // TEMPORAL: diagnóstico de kms de regreso al pasar a Redondo
+      console.log('[Redondo] idRuta:', idRuta, 'kmsRuta:', kmsRuta,
+        'kms_regreso previo:', previo, 'nuevo:', this.itemCotizacion.kms_regreso);
+    };
+    if (this.selectedRuta?.idRuta === idRuta) {
+      aplicar(this.selectedRuta.kmsRuta);
+    } else {
+      this.catService.getRutaById(idRuta).subscribe(r => aplicar(r?.kmsRuta));
+    }
+  }
+
+  /** Asigna un campo en el modelo y en su editor del dx-form, para que se vea de inmediato. */
+  private asignarCampoForm(dataField: string, valor: any): void {
+    this.itemCotizacion[dataField] = valor;
+    this.cotizadorFormRef?.instance?.getEditor(dataField)?.option('value', valor);
   }
 
   /**

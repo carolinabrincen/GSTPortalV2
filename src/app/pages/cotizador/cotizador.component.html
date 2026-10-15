@@ -417,8 +417,10 @@
                                 </dxi-item>
 
                                 <!-- CASETAS -->
-                                <dxi-item itemtype="dxNumberBox" dataField="casetas" [colSpan]="2" [template]="'casetasIdaTpl'" [isRequired]="true">
+                                <dxi-item itemtype="dxNumberBox" dataField="casetas" [colSpan]="2" [template]="'casetasIdaTpl'">
                                     <dxo-label text="Casetas con Impuestos"> </dxo-label>
+                                    <!-- Marca de requerido en la etiqueta; la validación la hace el dx-validator de casetasIdaTpl -->
+                                    <dxi-validation-rule type="required" message="Distancia total es campo requerido"></dxi-validation-rule>
                                 </dxi-item>
                                 <!-- CASETAS -->
                                 <dxi-item itemtype="dxNumberBox" dataField="casetas_si" [colSpan]="2" [editorOptions]="{ format: '$ #,##0.##', readOnly: true }">
