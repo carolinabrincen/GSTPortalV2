@@ -50,44 +50,42 @@ export interface CotizacionModel{
   variables?: VariablesCotizacionModel[],
   costos_ida?: DetalleCotizacionModel[],
   costos_regreso?: DetalleCotizacionModel[],
-  // ── Datos para convenio (opcionales, no afectan payload de guardado) ──────
+  // ── Datos para convenio (opcionales) ──────────────────────────────────────
   idCliente?: number,
-  remitente?: string,
-  idRemitente?: number,
-  destinatario?: string,
-  idDestinatario?: number,
   idOrigen?: number,
   idDestino?: number,
   idRuta?: number,
+  /** descRuta de la ruta del catálogo, o el texto escrito si la ruta no existe. */
+  ruta?: string,
+  numEjes?: number,
+  idRemitente?: number,
+  idDestinatario?: number,
   idTipoMoneda?: number,
   tipoServ?: string,
   tipoCobro?: string,
+  /** true si el usuario cambió el tipo de cobro sugerido. */
+  tipoCobroManual?: boolean,
+  /** Solo aplica cuando tipoCobro = 'U'. */
+  tarifaUnitaria?: number,
   idContrato?: number,
   idTipoExportacion?: number,
-  regimenes?: string[],
-  seguroCliente?: boolean,
-  maniobrasCliente?: boolean,
-  autopistasCliente?: boolean,
+  regimenes?: number[],
   toleranciaLlegada?: number,
   descConvenio?: string,
   observaciones?: string,
-  productos?: ProductoCotizacionModel[],
-  conceptos?: ConceptoCotizacionModel[]
+  productos?: ProductoCotizacionModel[]
 }
 export interface ProductoCotizacionModel {
+  /** Consecutivo 1, 2, 3… según el orden en el grid. */
+  renglon?: number,
   idProducto?: number,
-  producto?: string,
-  embalaje?: string,
-  idFraccion?: string,
+  idFraccion?: number,
+  descripcion?: string,
+  embalaje?: number,
   cantidad?: number,
   peso?: number,
-  volumen?: number,
+  volumenM3?: number,
   importe?: number
-}
-
-export interface ConceptoCotizacionModel {
-  concepto?: string,
-  monto?: number
 }
 
 export interface VariablesCotizacionModel{

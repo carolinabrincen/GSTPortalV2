@@ -83,7 +83,7 @@ export class CotizadorComponent implements OnInit {
   checkBoxesMode: string;
  
 
-  itemCotizacion: any = {
+  itemCotizacion: CotizacionModel = {
     idCotizacion: undefined,
     folio: 0,
     sencillo:true,
@@ -128,28 +128,25 @@ export class CotizadorComponent implements OnInit {
     rend_vacio:0,
     // Datos para convenio
     idCliente: undefined,
-    remitente: undefined,
     idRemitente: undefined,
-    destinatario: undefined,
     idDestinatario: undefined,
     idOrigen: undefined,
     idDestino: undefined,
     idRuta: undefined,
+    ruta: undefined,
     numEjes: null,
     idTipoMoneda: undefined,
     tipoServ: undefined,
     tipoCobro: undefined,
+    tipoCobroManual: false,
+    tarifaUnitaria: undefined,
     idContrato: undefined,
     idTipoExportacion: undefined,
     regimenes: [],
-    seguroCliente: false,
-    maniobrasCliente: false,
-    autopistasCliente: false,
     toleranciaLlegada: 0,
     descConvenio: undefined,
     observaciones: undefined,
-    productos: [],
-    conceptos: []
+    productos: []
 
   };
 
@@ -523,6 +520,8 @@ export class CotizadorComponent implements OnInit {
     const item: RutaCatalogoDTO | null = e.selectedItem;
     if (!item) return; // null/clear is handled in ruta_onValueChanged
     this.selectedRuta = item;
+    // descRuta del catálogo, o el texto escrito si la ruta no existe
+    this.itemCotizacion.ruta = item.descRuta || undefined;
     if (item.idRuta) {
       this.itemCotizacion.idRuta    = item.idRuta;
       this.itemCotizacion.idOrigen  = item.idOrigen;
@@ -565,6 +564,7 @@ export class CotizadorComponent implements OnInit {
     if (e.value == null) {
       this.selectedRuta = null;
       this.itemCotizacion.idRuta    = undefined;
+      this.itemCotizacion.ruta      = undefined;
       this.itemCotizacion.idOrigen  = undefined;
       this.itemCotizacion.origen    = undefined;
       this.itemCotizacion.idDestino = undefined;
@@ -1023,6 +1023,15 @@ precioTotalValueChanged(e: any) {
             this._actualizarReadOnly(ruta.idOrigen != null, ruta.idDestino != null);
           }
         });
+      } else if (this.itemCotizacion.ruta) {
+        // Ruta escrita a mano: mostrar el texto guardado en el combo
+        this.selectedRuta = {
+          idRuta: null, descRuta: this.itemCotizacion.ruta,
+          idOrigen: null, origen: '', idDestino: null, destino: '',
+          kmsRuta: 0, kmsSct: 0, idTipoOperacion: null
+        };
+        this.mostrarAvisoRuta = true;
+        this._actualizarReadOnly(false, false);
       } else {
         this.selectedRuta = null;
         this.mostrarAvisoRuta = false;
@@ -1186,28 +1195,25 @@ precioTotalValueChanged(e: any) {
       rend_vacio:0,
       // Datos para convenio
       idCliente: undefined,
-      remitente: undefined,
       idRemitente: undefined,
-      destinatario: undefined,
       idDestinatario: undefined,
       idOrigen: undefined,
       idDestino: undefined,
       idRuta: undefined,
+      ruta: undefined,
       numEjes: null,
       idTipoMoneda: undefined,
       tipoServ: undefined,
       tipoCobro: undefined,
+      tipoCobroManual: false,
+      tarifaUnitaria: undefined,
       idContrato: undefined,
       idTipoExportacion: undefined,
       regimenes: [],
-      seguroCliente: false,
-      maniobrasCliente: false,
-      autopistasCliente: false,
       toleranciaLlegada: 0,
       descConvenio: undefined,
       observaciones: undefined,
-      productos: [],
-      conceptos: []
+      productos: []
     };
   }
 

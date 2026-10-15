@@ -96,9 +96,10 @@
         <dxi-item dataField="tipoCobro" editorType="dxSelectBox" [colSpan]="3" [editorOptions]="{
             dataSource: arrTiposCobro,
             displayExpr: 'descripcion',
-            valueExpr: 'descripcion',
+            valueExpr: 'clave',
             placeholder: 'Seleccionar...',
-            showClearButton: true
+            showClearButton: true,
+            onValueChanged: onTipoCobroChanged
         }">
             <dxo-label text="Tipo de Cobro"></dxo-label>
         </dxi-item>
@@ -115,7 +116,22 @@
             <dxo-label text="Contrato"></dxo-label>
         </dxi-item>
 
+        <!-- TARIFA UNITARIA (solo con tipo de cobro 'U') -->
+        <dxi-item dataField="tarifaUnitaria" editorType="dxNumberBox" [colSpan]="3" [visible]="esTarifaUnitaria"
+                  [editorOptions]="{ min: 0, format: '$ #,##0.##' }">
+            <dxo-label text="Tarifa unitaria"></dxo-label>
+        </dxi-item>
+
+        <!-- NOTA: origen del flete del convenio -->
+        <dxi-item itemType="simple" [colSpan]="12" [template]="'notaFleteTpl'"></dxi-item>
+
     </dxi-item>
+
+    <div *dxTemplate="let _ of 'notaFleteTpl'"
+         style="padding: 6px 10px; background: #e3f2fd; border-left: 3px solid #1976d2; color: #0d47a1; font-size: 12px; line-height: 1.4;">
+        &#9432; El flete del convenio será el Precio de Venta Final de la cotización
+        (incluye maniobras, estancias y casetas).
+    </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
          SECCIÓN 4 — COMERCIO EXTERIOR (visible solo con tipoServ I o E)
@@ -138,7 +154,7 @@
         <dxi-item dataField="regimenes" editorType="dxTagBox" [colSpan]="6" [editorOptions]="{
             dataSource: arrRegimenes,
             displayExpr: 'descripcion',
-            valueExpr: 'descripcion',
+            valueExpr: 'id',
             placeholder: 'Seleccionar regímenes...',
             showClearButton: true,
             applyValueMode: 'useButtons'
@@ -153,27 +169,6 @@
     ══════════════════════════════════════════════════════════════════ -->
     <dxi-item itemType="group" caption="Otros datos" [colSpan]="12" [colCount]="12">
 
-        <!-- SEGURO CLIENTE -->
-        <dxi-item dataField="seguroCliente" editorType="dxCheckBox" [colSpan]="2" [editorOptions]="{
-            text: 'Sí'
-        }">
-            <dxo-label text="Seguro del cliente"></dxo-label>
-        </dxi-item>
-
-        <!-- MANIOBRAS CLIENTE -->
-        <dxi-item dataField="maniobrasCliente" editorType="dxCheckBox" [colSpan]="2" [editorOptions]="{
-            text: 'Sí'
-        }">
-            <dxo-label text="Maniobras del cliente"></dxo-label>
-        </dxi-item>
-
-        <!-- AUTOPISTAS CLIENTE -->
-        <dxi-item dataField="autopistasCliente" editorType="dxCheckBox" [colSpan]="2" [editorOptions]="{
-            text: 'Sí'
-        }">
-            <dxo-label text="Autopistas del cliente"></dxo-label>
-        </dxi-item>
-
         <!-- TOLERANCIA DE LLEGADA (minutos) -->
         <dxi-item dataField="toleranciaLlegada" editorType="dxNumberBox" [colSpan]="2" [editorOptions]="{
             min: 0, format: '#0 min', showSpinButtons: true
@@ -182,7 +177,7 @@
         </dxi-item>
 
         <!-- DESCRIPCIÓN DEL CONVENIO -->
-        <dxi-item dataField="descConvenio" [colSpan]="4">
+        <dxi-item dataField="descConvenio" [colSpan]="10">
             <dxo-label text="Descripción del convenio"></dxo-label>
         </dxi-item>
 
@@ -200,7 +195,7 @@
 <!-- ══════════════════════════════════════════════════════════════════════════
      GRID — PRODUCTOS / MERCANCÍA
 ════════════════════════════════════════════════════════════════════════════ -->
-<div style="margin-top: 16px;">
+<div style="margin-top: 16px; margin-bottom: 24px;">
     <div style="font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #555;">
         Productos / Mercancía
     </div>
@@ -208,11 +203,18 @@
         [dataSource]="modelo.productos"
         [showBorders]="true"
         [columnAutoWidth]="true"
-        [rowAlternationEnabled]="true">
+        [rowAlternationEnabled]="true"
+        (onInitNewRow)="onProductoInitNewRow($event)"
+        (onRowInserted)="renumerarProductos()"
+        (onRowRemoved)="renumerarProductos()">
 
         <dxo-editing mode="row" [allowAdding]="true" [allowUpdating]="true" [allowDeleting]="true"
                      [useIcons]="true">
         </dxo-editing>
+
+        <!-- Renglón consecutivo (se recalcula al agregar o borrar) -->
+        <dxi-column dataField="renglon" caption="#" dataType="number" alignment="center" [width]="50"
+                    [allowEditing]="false"></dxi-column>
 
         <!-- Producto (lookup con precarga de campos relacionados) -->
         <dxi-column dataField="idProducto" caption="Producto" [width]="220"
@@ -221,47 +223,20 @@
             </dxo-lookup>
         </dxi-column>
 
-        <dxi-column dataField="embalaje"   caption="Embalaje"     [width]="130"></dxi-column>
-        <dxi-column dataField="idFraccion" caption="Fracción Ar." [width]="110"></dxi-column>
+        <dxi-column dataField="descripcion" caption="Descripción"  [width]="220"></dxi-column>
+        <dxi-column dataField="embalaje"    caption="Embalaje"     [width]="140">
+            <dxo-lookup [dataSource]="arrEmbalajes" displayExpr="descripcion" valueExpr="id">
+            </dxo-lookup>
+        </dxi-column>
+        <dxi-column dataField="idFraccion"  caption="Fracción Ar." dataType="number" [width]="110"></dxi-column>
         <dxi-column dataField="cantidad"   caption="Cantidad"     dataType="number" [width]="90"
                     [editorOptions]="{ min: 0, format: '#,##0.##' }"></dxi-column>
         <dxi-column dataField="peso"       caption="Peso (kg)"    dataType="number" [width]="100"
                     [editorOptions]="{ min: 0, format: '#,##0.##' }"></dxi-column>
-        <dxi-column dataField="volumen"    caption="Volumen (m³)" dataType="number" [width]="110"
+        <dxi-column dataField="volumenM3"  caption="Volumen (m³)" dataType="number" [width]="110"
                     [editorOptions]="{ min: 0, format: '#,##0.##' }"></dxi-column>
         <dxi-column dataField="importe"    caption="Importe"      dataType="number" [width]="120"
                     format="currency" [editorOptions]="{ min: 0, format: '$ #,##0.##' }"></dxi-column>
-
-        <dxo-paging [enabled]="false"></dxo-paging>
-    </dx-data-grid>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════════════════
-     GRID — OTROS CONCEPTOS
-════════════════════════════════════════════════════════════════════════════ -->
-<div style="margin-top: 16px; margin-bottom: 24px;">
-    <div style="font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #555;">
-        Otros Conceptos
-    </div>
-    <dx-data-grid
-        [dataSource]="modelo.conceptos"
-        [showBorders]="true"
-        [columnAutoWidth]="true"
-        [rowAlternationEnabled]="true">
-
-        <dxo-editing mode="row" [allowAdding]="true" [allowUpdating]="true" [allowDeleting]="true"
-                     [useIcons]="true">
-        </dxo-editing>
-
-        <!-- Concepto (lookup del catálogo, con opción libre) -->
-        <dxi-column dataField="concepto" caption="Concepto" [width]="320">
-            <dxo-lookup [dataSource]="arrConceptos" displayExpr="descripcion" valueExpr="descripcion">
-            </dxo-lookup>
-        </dxi-column>
-
-        <dxi-column dataField="monto" caption="Monto" dataType="number"
-                    format="currency" [width]="150"
-                    [editorOptions]="{ min: 0, format: '$ #,##0.##' }"></dxi-column>
 
         <dxo-paging [enabled]="false"></dxo-paging>
     </dx-data-grid>

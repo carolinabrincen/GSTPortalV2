@@ -114,11 +114,13 @@ const MOCK_TIPOS_SERVICIO: CatalogoDTO[] = [
   { id: 5, clave: 'D',   descripcion: 'Dedicado' },
 ];
 
+// clave = valor que se guarda en tipoCobro; 'U' habilita la tarifa unitaria
 const MOCK_TIPOS_COBRO: CatalogoDTO[] = [
-  { id: 1, descripcion: 'Por flete' },
-  { id: 2, descripcion: 'Por tonelada' },
-  { id: 3, descripcion: 'Por kilómetro' },
-  { id: 4, descripcion: 'Por viaje' },
+  { id: 1, clave: 'F', descripcion: 'Por flete' },
+  { id: 2, clave: 'T', descripcion: 'Por tonelada' },
+  { id: 3, clave: 'K', descripcion: 'Por kilómetro' },
+  { id: 4, clave: 'V', descripcion: 'Por viaje' },
+  { id: 5, clave: 'U', descripcion: 'Por unidad (tarifa unitaria)' },
 ];
 
 // idRelacion = 0 → disponible para todos; idRelacion > 0 → solo ese cliente
@@ -225,26 +227,27 @@ const MOCK_RUTAS_DATA: MockRutaInternal[] = [
   { id: 6, descripcion: 'Monterrey → Saltillo',    extra1: '85',  extra2: '1', _idOrigen: 103, _idDestino: 113 },
 ];
 
-// extra1=embalaje, extra2=id_fraccion (texto), valor=peso kg/unidad, idRelacion=id_fraccion
+// extra1=embalaje por defecto (id del catálogo Embalajes, como texto), extra2=id_fraccion (texto),
+// valor=peso kg/unidad, idRelacion=id_fraccion
 const MOCK_PRODUCTOS: CatalogoDTO[] = [
   // Real de pruebasgst
   { id: 12, descripcion: 'Lavadoras y suministros de uso doméstico', extra1: '1', extra2: '3', idRelacion: 3 },
   // Ejemplo
-  { id: 1, descripcion: 'Cemento Portland',        extra1: 'Granel',           extra2: '2523.10', valor: 1500 },
-  { id: 2, descripcion: 'Bebidas carbonatadas',    extra1: 'Caja',             extra2: '2202.10', valor: 12   },
-  { id: 3, descripcion: 'Pan empacado',             extra1: 'Caja',             extra2: '1905.90', valor: 8    },
-  { id: 4, descripcion: 'Productos lácteos',       extra1: 'Caja refrigerada', extra2: '0401.10', valor: 10   },
-  { id: 5, descripcion: 'Artículos de ferretería', extra1: 'Pallet',           extra2: '7326.90', valor: 50   },
-  { id: 6, descripcion: 'Pinturas y barnices',     extra1: 'Cubeta',           extra2: '3208.10', valor: 20   },
+  { id: 1, descripcion: 'Cemento Portland',        extra1: '2', extra2: '101', idRelacion: 101, valor: 1500 },
+  { id: 2, descripcion: 'Bebidas carbonatadas',    extra1: '1', extra2: '102', idRelacion: 102, valor: 12   },
+  { id: 3, descripcion: 'Pan empacado',             extra1: '1', extra2: '103', idRelacion: 103, valor: 8    },
+  { id: 4, descripcion: 'Productos lácteos',       extra1: '5', extra2: '104', idRelacion: 104, valor: 10   },
+  { id: 5, descripcion: 'Artículos de ferretería', extra1: '3', extra2: '105', idRelacion: 105, valor: 50   },
+  { id: 6, descripcion: 'Pinturas y barnices',     extra1: '4', extra2: '106', idRelacion: 106, valor: 20   },
 ];
 
-const MOCK_CONCEPTOS: CatalogoDTO[] = [
-  { id: 1, descripcion: 'Seguro de carga' },
-  { id: 2, descripcion: 'Maniobras de carga/descarga' },
-  { id: 3, descripcion: 'Autopistas adicionales' },
-  { id: 4, descripcion: 'Almacenaje temporal' },
-  { id: 5, descripcion: 'Espera en frontera' },
-  { id: 6, descripcion: 'Fumigación' },
+// id = embalaje
+const MOCK_EMBALAJES: CatalogoDTO[] = [
+  { id: 1, descripcion: 'Caja' },
+  { id: 2, descripcion: 'Granel' },
+  { id: 3, descripcion: 'Pallet' },
+  { id: 4, descripcion: 'Cubeta' },
+  { id: 5, descripcion: 'Caja refrigerada' },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -409,9 +412,10 @@ export class CatalogosCotizadorService extends AbstractManagerService {
       .pipe(map(r => this.unwrapArr(r)));
   }
 
-  getConceptos(): Observable<CatalogoDTO[]> {
-    if (this.useMock()) return of(MOCK_CONCEPTOS);
-    return this.get<any>(this.catUrl + 'api/CatalogosCotizador/Conceptos', this.httpOptions)
+  /** Catálogo de embalajes; id = embalaje. */
+  getEmbalajes(): Observable<CatalogoDTO[]> {
+    if (this.useMock()) return of(MOCK_EMBALAJES);
+    return this.get<any>(this.catUrl + 'api/CatalogosCotizador/Embalajes', this.httpOptions)
       .pipe(map(r => this.unwrapArr(r)));
   }
 

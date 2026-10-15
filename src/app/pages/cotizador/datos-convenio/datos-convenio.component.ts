@@ -33,13 +33,14 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
   arrTiposCobro:       CatalogoDTO[] = [];
   arrTiposExportacion: CatalogoDTO[] = [];
   arrRegimenes:        CatalogoDTO[] = [];
-  arrConceptos:        CatalogoDTO[] = [];
+  arrEmbalajes:        CatalogoDTO[] = [];
 
   // Catálogos dependientes (cargados por llamada al servicio)
   arrContratos: CatalogoDTO[] = [];
 
   constructor(private catService: CatalogosCotizadorService) {
     this.onTipoServChanged = this.onTipoServChanged.bind(this);
+    this.onTipoCobroChanged = this.onTipoCobroChanged.bind(this);
 
     this._buildClienteGSTDataSource();
     this._buildProductoDataSource();
@@ -117,14 +118,14 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
       tiposCobro:    this.catService.getTiposCobro(),
       tiposExp:      this.catService.getTiposExportacion(),
       regimenes:     this.catService.getRegimenes(),
-      conceptos:     this.catService.getConceptos(),
+      embalajes:     this.catService.getEmbalajes(),
     }).subscribe(res => {
       this.arrMonedas          = res.monedas;
       this.arrTiposServicio    = res.tiposServicio;
       this.arrTiposCobro       = res.tiposCobro;
       this.arrTiposExportacion = res.tiposExp;
       this.arrRegimenes        = res.regimenes;
-      this.arrConceptos        = res.conceptos;
+      this.arrEmbalajes        = res.embalajes;
 
       // Modo edición: cargar contratos si el modelo tiene cliente guardado
       const idCli = this.idClientePadre ?? this.modelo?.idCliente;
@@ -156,6 +157,19 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
     }
   }
 
+  // ── Evento tipo de cobro ──────────────────────────────────────────────────
+
+  onTipoCobroChanged(e: any): void {
+    // Solo un cambio del usuario lo marca como manual (no la carga en edición)
+    if (e.event != null) this.modelo.tipoCobroManual = true;
+    if (!this.esTarifaUnitaria) this.modelo.tarifaUnitaria = undefined;
+  }
+
+  /** La tarifa unitaria solo aplica con tipoCobro = 'U'. */
+  get esTarifaUnitaria(): boolean {
+    return (this.modelo?.tipoCobro || '').toUpperCase() === 'U';
+  }
+
   // ── Visibilidad sección Comercio Exterior ─────────────────────────────────
 
   get esComercioExterior(): boolean {
@@ -169,11 +183,27 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
     rowData.idProducto = value;
     return this.catService.getProductoById(value).toPromise().then(prod => {
       if (prod) {
-        rowData.producto   = prod.descripcion;
-        rowData.embalaje   = prod.extra1 || '';
-        rowData.idFraccion = prod.extra2 || '';
-        rowData.peso       = prod.valor  || 0;
+        rowData.descripcion = prod.descripcion;
+        rowData.embalaje    = this._aNumero(prod.extra1);                      // embalaje por defecto
+        rowData.idFraccion  = prod.idRelacion ?? this._aNumero(prod.extra2);
+        rowData.peso        = prod.valor || 0;
       }
     });
+  }
+
+  private _aNumero(v: string | null | undefined): number | undefined {
+    const n = Number(v);
+    return v != null && v !== '' && !isNaN(n) ? n : undefined;
+  }
+
+  // ── Renglón consecutivo del grid de productos ─────────────────────────────
+
+  onProductoInitNewRow = (e: any): void => {
+    e.data.renglon = (this.modelo.productos?.length ?? 0) + 1;
+  }
+
+  /** Recalcula renglon 1, 2, 3… según el orden del grid (al agregar o borrar). */
+  renumerarProductos = (): void => {
+    (this.modelo.productos ?? []).forEach((p, i) => p.renglon = i + 1);
   }
 }
