@@ -28,6 +28,24 @@ export interface RutaCatalogoDTO {
   idTipoOperacion: number | null;
 }
 
+/** Una caseta de la ruta con la tarifa aplicada según el número de ejes. */
+export interface CasetaDetalleDTO {
+  orden: number;
+  caseta: string;
+  ejesAplicados: number | null;
+  criterio: string;
+  tarifa: number;
+  total: number;
+}
+
+/** Casetas de una ruta: total (con impuestos, un sentido) y detalle por caseta. */
+export interface CasetasRutaDTO {
+  idRuta: number;
+  ejes: number | null;
+  total: number;
+  detalle: CasetaDetalleDTO[];
+}
+
 /** Mensaje que se muestra cuando la ruta fue escrita manualmente (no del catálogo). */
 export const MSG_RUTA_NO_CATALOGO =
   'La ruta no existe en el catálogo de GST. Debe darse de alta en el Catálogo de Rutas para poder generar el convenio.';
@@ -64,6 +82,7 @@ const MOCK_PLAZAS: CatalogoDTO[] = [
   { id: 930, clave: '930', descripcion: 'CARTONERA PLASTICA CUAUTI' },
   { id: 931, clave: '931', descripcion: 'STERIGENICS CUAUTI' },
   // Ejemplo
+  { id: 114, descripcion: 'Puebla' },
   { id: 101, descripcion: 'Ciudad de México' },
   { id: 102, descripcion: 'Guadalajara' },
   { id: 103, descripcion: 'Monterrey' },
@@ -142,7 +161,50 @@ const MOCK_RUTAS_CATALOGO: RutaCatalogoDTO[] = [
     idOrigen: 101, origen: 'Ciudad de México',
     idDestino: 104, destino: 'Querétaro',
     kmsRuta: 211, kmsSct: 211, idTipoOperacion: 1 },
+  { idRuta: 42, descRuta: 'PUEBLA - HOLCIM ORIZABA',
+    idOrigen: 114, origen: 'Puebla',
+    idDestino: 1, destino: 'HOLCIM ORIZABA',
+    kmsRuta: 160, kmsSct: 160, idTipoOperacion: null },
 ];
+
+// ── MOCK de casetas por ruta (tarifas con impuestos por número de ejes) ─────
+const MOCK_EJES_CASETA: number[] = [5, 6, 9];
+
+const MOCK_CASETAS_RUTA: { [idRuta: number]: { caseta: string; tarifas: { [ejes: number]: number } }[] } = {
+  42: [
+    { caseta: 'VIA ATLIXCAYOTL', tarifas: { 5: 309, 6: 309, 9: 309 } },
+    { caseta: 'AMOZOC',          tarifas: { 5: 328, 6: 438, 9: 438 } },
+    { caseta: 'ESPERANZA',       tarifas: { 5: 680, 6: 990, 9: 990 } },
+  ],
+};
+
+/**
+ * Calcula el MOCK de CasetasRuta. Con ejes usa la tarifa de ese número de ejes;
+ * sin ejes (o si la caseta no lo tiene) usa la tarifa máxima de la caseta.
+ */
+function mockCasetasRuta(idRuta: number, ejes?: number | null): CasetasRutaDTO {
+  const casetas = MOCK_CASETAS_RUTA[idRuta] ?? [];
+  const detalle: CasetaDetalleDTO[] = casetas.map((c, i) => {
+    let ejesAplicados: number | null;
+    let criterio: string;
+    if (ejes != null && c.tarifas[ejes] != null) {
+      ejesAplicados = ejes;
+      criterio = `Tarifa de ${ejes} ejes`;
+    } else {
+      ejesAplicados = Object.keys(c.tarifas).map(Number)
+        .reduce((max, e) => c.tarifas[e] > c.tarifas[max] ? e : max);
+      criterio = ejes != null ? `Sin tarifa de ${ejes} ejes; tarifa máxima` : 'Ejes sin definir; tarifa máxima';
+    }
+    const tarifa = c.tarifas[ejesAplicados];
+    return { orden: i + 1, caseta: c.caseta, ejesAplicados, criterio, tarifa, total: tarifa };
+  });
+  return {
+    idRuta,
+    ejes: ejes ?? null,
+    total: detalle.reduce((s, d) => s + d.total, 0),
+    detalle
+  };
+}
 
 // extra1=kms_sct, extra2=id_tipo_operacion (null = cualquier tipo), valor=kms_ruta;
 // _idOrigen/_idDestino solo para filtro interno MOCK
@@ -379,6 +441,26 @@ export class CatalogosCotizadorService extends AbstractManagerService {
       `${this.catUrl}api/CatalogosCotizador/RutasBuscar?texto=${encodeURIComponent(texto)}${qs}`,
       this.httpOptions
     ).pipe(map(r => this.unwrapArr(r) as unknown as RutaCatalogoDTO[]));
+  }
+
+  /** Números de ejes con tarifa de casetas (combo "Número de ejes"). */
+  getEjesCaseta(): Observable<number[]> {
+    if (this.useMock()) return of(MOCK_EJES_CASETA);
+    return this.get<any>(this.catUrl + 'api/CatalogosCotizador/EjesCaseta', this.httpOptions)
+      .pipe(map(r => (Array.isArray(r) ? r : (r?.data ?? []))
+        .map((x: any) => typeof x === 'number' ? x : Number(x?.ejes ?? x?.id ?? x?.valor))
+        .filter((n: number) => !isNaN(n))));
+  }
+
+  /**
+   * Casetas de una ruta con su total (con impuestos, un sentido).
+   * Endpoint real: GET CasetasRuta/{idRuta}?ejes=n (sin ejes → tarifa máxima por caseta).
+   */
+  getCasetasRuta(idRuta: number, ejes?: number | null): Observable<CasetasRutaDTO> {
+    if (this.useMock()) return of(mockCasetasRuta(idRuta, ejes));
+    const qs = ejes != null ? `?ejes=${ejes}` : '';
+    return this.get<any>(`${this.catUrl}api/CatalogosCotizador/CasetasRuta/${idRuta}${qs}`, this.httpOptions)
+      .pipe(map(r => (r?.data ?? r) as CasetasRutaDTO));
   }
 
   /** Obtiene una ruta por id. Devuelve null si no existe. */

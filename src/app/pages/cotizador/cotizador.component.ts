@@ -1,9 +1,9 @@
 import { switchMap, map } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { ReportsPDFService } from './../../shared/reports/reports-pdf.service';
 import { CotizadorService } from './../../services/cotizador/cotizador.service';
 import { CotizacionModel, VariablesCotizacionModel, DetalleCotizacionModel} from './../../shared/models/cotizador/cotizador.model';
-import { CatalogosCotizadorService, RutaCatalogoDTO, MSG_RUTA_NO_CATALOGO } from 'src/app/services/cotizador/catalogos-cotizador.service';
+import { CatalogosCotizadorService, RutaCatalogoDTO, CasetasRutaDTO, MSG_RUTA_NO_CATALOGO } from 'src/app/services/cotizador/catalogos-cotizador.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   DxDataGridModule,
@@ -62,6 +62,14 @@ export class CotizadorComponent implements OnInit {
   readonly msgRutaNoCatalogo = MSG_RUTA_NO_CATALOGO;
   origenOptions: any = {};
   destinoOptions: any = {};
+
+  // ── Casetas automáticas por ruta y número de ejes ────────────────────────
+  arrEjes: { valor: number | null; texto: string }[] = [{ valor: null, texto: 'Sin definir' }];
+  casetasRuta: CasetasRutaDTO | null = null;
+  bolModalCasetas = false;
+  /** El usuario editó a mano casetas ida/regreso desde el último cálculo. */
+  private casetasEditadasManual = false;
+  private casetasSub: Subscription | null = null;
 
   @ViewChild('rentGer') rentGer!: DxDataGridComponent;
   @ViewChild('cotizadorForm', { static: false }) cotizadorFormRef!: DxFormComponent;
@@ -124,6 +132,7 @@ export class CotizadorComponent implements OnInit {
     idOrigen: undefined,
     idDestino: undefined,
     idRuta: undefined,
+    numEjes: null,
     idTipoMoneda: undefined,
     tipoServ: undefined,
     tipoCobro: undefined,
@@ -198,6 +207,7 @@ export class CotizadorComponent implements OnInit {
     this.ruta_onSelectionChanged         = this.ruta_onSelectionChanged.bind(this);
     this.ruta_onCustomItemCreating       = this.ruta_onCustomItemCreating.bind(this);
     this.ruta_onValueChanged             = this.ruta_onValueChanged.bind(this);
+    this.numEjes_ValueChanged            = this.numEjes_ValueChanged.bind(this);
     this.buildRutaDataSource();
     this.editarCotizacionClick = this.editarCotizacionClick.bind(this);
     this.eliminarCotizcionClick = this.eliminarCotizcionClick.bind(this);
@@ -255,6 +265,10 @@ export class CotizadorComponent implements OnInit {
       layout: 'horizontal',
       onValueChanged: (e) => {
         this.bolEsViajeSencillo = e.value === 'Solo de ida' ? true : false;
+        // Al pasar a Redondo por acción del usuario, llenar casetas de regreso
+        if (e.event != null && e.value === 'Redondo') {
+          this.calcularCasetas('regreso');
+        }
       },
     };
 
@@ -333,6 +347,7 @@ export class CotizadorComponent implements OnInit {
     this.getPreCotizaciones();
     this.getUnidadesNegocio();
     this.getClientes();
+    this.getEjesCaseta();
   }
 
   // //#region :::: GETTERS ::::
@@ -369,6 +384,15 @@ export class CotizadorComponent implements OnInit {
     this.arrTipoOperacion = [];
     this.cotizadorService.getTiposOperacion(idUdN).subscribe(res => {
       this.arrTipoOperacion = res.data;
+    });
+  }
+
+  getEjesCaseta() {
+    this.catService.getEjesCaseta().subscribe(ejes => {
+      this.arrEjes = [
+        { valor: null, texto: 'Sin definir' },
+        ...ejes.map(n => ({ valor: n, texto: `${n} ejes` }))
+      ];
     });
   }
 
@@ -529,6 +553,12 @@ export class CotizadorComponent implements OnInit {
 
   ruta_onValueChanged(e: any): void {
     if (e.event == null) return; // ignorar cambios programáticos (modo edición)
+    this.casetasSub?.unsubscribe();
+    this.casetasRuta = null;
+    // Ruta del catálogo → casetas automáticas; ruta manual → casetas quedan manuales
+    if (e.value?.idRuta) {
+      this.calcularCasetas('ruta', e.value.idRuta);
+    }
     if (e.value == null) {
       this.selectedRuta = null;
       this.itemCotizacion.idRuta    = undefined;
@@ -607,14 +637,69 @@ export class CotizadorComponent implements OnInit {
  
   
   caseta_ida_ValueChanged(e: any) {
+    if (e.event != null) this.casetasEditadasManual = true;
     this.itemCotizacion.casetas_si = e.value === 0 ? 0 : +((this.itemCotizacion.casetas)/1.16).toFixed(2);
   }
 
-  caseta_regreso_ValueChanged(e: any) {  
+  caseta_regreso_ValueChanged(e: any) {
+    if (e.event != null) this.casetasEditadasManual = true;
     this.itemCotizacion.casetas_regreso_si = e.value === 0 ? 0 : +((this.itemCotizacion.casetas_regreso)/1.16).toFixed(2);
 
-   
+
    }
+
+  numEjes_ValueChanged(e: any) {
+    if (e.event == null) return; // ignorar cambios programáticos (modo edición)
+    this.calcularCasetas('ejes');
+  }
+
+  /**
+   * Llena casetas con impuestos desde el catálogo de la ruta y el número de ejes.
+   * Solo se llama por acción del usuario; en ruta manual (sin idRuta) no hace nada.
+   * - 'ruta' / 'ejes': llena ida, y regreso si el viaje es Redondo; avisa si
+   *   el usuario había editado las casetas a mano.
+   * - 'regreso': al pasar a Redondo, llena solo el regreso.
+   */
+  private calcularCasetas(motivo: 'ruta' | 'ejes' | 'regreso', idRuta = this.itemCotizacion.idRuta): void {
+    if (!idRuta) return;
+    const ejes = this.itemCotizacion.numEjes ?? null;
+    this.casetasSub?.unsubscribe();
+    this.casetasSub = this.catService.getCasetasRuta(idRuta, ejes).subscribe({
+      next: res => {
+        this.casetasRuta = res;
+        const total = +(res?.total ?? 0);
+        const redondo = this.itemCotizacion.tipoViaje === 'Redondo';
+        if (motivo !== 'regreso') {
+          this.itemCotizacion.casetas = total;
+          this.caseta_ida_ValueChanged({ value: total });
+        }
+        if (redondo) {
+          this.itemCotizacion.casetas_regreso = total;
+          this.caseta_regreso_ValueChanged({ value: total });
+        }
+        if (motivo !== 'regreso' && this.casetasEditadasManual) {
+          notify('Casetas recalculadas según la ruta y número de ejes.', 'info', 3000);
+        }
+        if (motivo !== 'regreso') this.casetasEditadasManual = false;
+      },
+      error: () => notify('No se pudieron obtener las casetas de la ruta', 'error', 3000)
+    });
+  }
+
+  verCasetasClick(): void {
+    const idRuta = this.itemCotizacion.idRuta;
+    if (!idRuta) return;
+    const ejes = this.itemCotizacion.numEjes ?? null;
+    // Detalle informativo: no modifica los montos capturados
+    if (this.casetasRuta && this.casetasRuta.idRuta === idRuta && (this.casetasRuta.ejes ?? null) === ejes) {
+      this.bolModalCasetas = true;
+      return;
+    }
+    this.catService.getCasetasRuta(idRuta, ejes).subscribe({
+      next: res => { this.casetasRuta = res; this.bolModalCasetas = true; },
+      error: () => notify('No se pudieron obtener las casetas de la ruta', 'error', 3000)
+    });
+  }
   toneladasTotalValueChanged(e: any) {
         if(this.itemCotizacion.costoViaje >0  && this.itemCotizacion.toneladas> 0)
         {
@@ -745,6 +830,12 @@ precioTotalValueChanged(e: any) {
     });
   }
 
+  /** Modelo a enviar al guardar; numEjes vive solo en el front (aún no se envía). */
+  private payloadGuardado(): any {
+    const { numEjes, ...payload } = this.itemCotizacion;
+    return payload;
+  }
+
   guardarCotizacionClick(e: any) {
     console.log(e)
     e.preventDefault();
@@ -757,7 +848,7 @@ precioTotalValueChanged(e: any) {
         this.itemCotizacion.idCotizacion = 0;
         this.itemCotizacion.id_ingreso = sessionStorage.getItem("idUsuario");
 
-        this.cotizadorService.postNuevaCotizacion(this.itemCotizacion).subscribe(res => {
+        this.cotizadorService.postNuevaCotizacion(this.payloadGuardado()).subscribe(res => {
           if (res.responseCode === 200) {
             this.itemCotizacion = res.data;
             this.getPreCotizaciones();
@@ -787,7 +878,7 @@ precioTotalValueChanged(e: any) {
         this.itemCotizacion.regresa_vacio = this.itemCotizacion.regreso === "Vacio" ? true : false;
         this.itemCotizacion.clienta_paga = this.itemCotizacion.clientePagaCasetas === "Si" ? true : false;
         
-        this.cotizadorService.postEditarCotizacion(this.itemCotizacion).subscribe(res => {
+        this.cotizadorService.postEditarCotizacion(this.payloadGuardado()).subscribe(res => {
           if (res.responseCode === 200) {
             this.itemCotizacion = res.data;
             // console.log(this.itemCotizacion)
@@ -830,6 +921,7 @@ precioTotalValueChanged(e: any) {
     this.selectedRuta = null;
     this.mostrarAvisoRuta = false;
     this._actualizarReadOnly(false, false);
+    this.resetCasetasRuta();
     this.cotizadorService.getCotizacion(e.row.data.idCotizacion).pipe(
       switchMap(res => {
         const datos = res.data;
@@ -895,6 +987,7 @@ precioTotalValueChanged(e: any) {
     this.bolModal = true;
     this.activeTab = 0;
     this.selectedRuta = null;
+    this.resetCasetasRuta();
     this.sololectura = "si";
     this.cotizadorService.getCotizacion(e.row.data.idCotizacion).pipe(
       switchMap(res => {
@@ -979,6 +1072,7 @@ precioTotalValueChanged(e: any) {
     this.mostrarAvisoRuta = false;
     this.arrTipoOperacion = [];
     this._actualizarReadOnly(false, false);
+    this.resetCasetasRuta();
     //this.itemCotizacion = {};
     this.itemCotizacion = {
       idCotizacion: undefined,
@@ -1032,6 +1126,7 @@ precioTotalValueChanged(e: any) {
       idOrigen: undefined,
       idDestino: undefined,
       idRuta: undefined,
+      numEjes: null,
       idTipoMoneda: undefined,
       tipoServ: undefined,
       tipoCobro: undefined,
@@ -1047,6 +1142,14 @@ precioTotalValueChanged(e: any) {
       productos: [],
       conceptos: []
     };
+  }
+
+  private resetCasetasRuta(): void {
+    this.casetasSub?.unsubscribe();
+    this.casetasSub = null;
+    this.casetasRuta = null;
+    this.casetasEditadasManual = false;
+    this.bolModalCasetas = false;
   }
 
   asignarFolio() {
