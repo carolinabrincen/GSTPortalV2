@@ -940,7 +940,15 @@ precioTotalValueChanged(e: any) {
     this.aplicarDefaultsConvenio();
     const m = this.itemCotizacion;
     const v = (x: any) => (x === undefined || x === null || x === '' ? null : x);
+    // TEMPORAL: diagnóstico de productos que llegan al payload
+    console.log('[payload] modelo.productos:', JSON.parse(JSON.stringify(m.productos ?? null)));
+    // idProducto puede llegar como número, texto numérico u objeto del lookup: normalizar a número
+    const aId = (x: any): number | null => {
+      const n = Number(x !== null && typeof x === 'object' ? x.id : x);
+      return x != null && x !== '' && !isNaN(n) ? n : null;
+    };
     const productos = (m.productos ?? [])
+      .map(p => ({ ...p, idProducto: aId(p.idProducto) }))
       .filter(p => p.idProducto != null)
       .map((p, i): ProductoCotizacionModel => ({
         renglon:     i + 1,
@@ -981,6 +989,16 @@ precioTotalValueChanged(e: any) {
 
   guardarCotizacionClick(e: any) {
     e.preventDefault();
+    // Primero guardar el renglón de productos que siga abierto en el grid de la pestaña 2;
+    // si no, no está en itemCotizacion.productos y no viaja en el payload.
+    const pendiente = this.datosConvenioRef?.guardarEdicionProductos() ?? Promise.resolve();
+    pendiente.then(
+      () => this._guardarCotizacion(),
+      () => notify('Revise el renglón de productos en "Datos para convenio" antes de guardar.', 'error', 4000)
+    );
+  }
+
+  private _guardarCotizacion(): void {
     switch (this.tipoRegistro) {
       case 'nuevo':
 

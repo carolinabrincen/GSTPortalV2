@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
-import { DxFormComponent } from 'devextreme-angular';
+import { DxDataGridComponent, DxFormComponent } from 'devextreme-angular';
 import DataSource from 'devextreme/data/data_source';
 import CustomStore, { Options as CustomStoreOptions } from 'devextreme/data/custom_store';
 import { CotizacionModel, ProductoCotizacionModel } from 'src/app/shared/models/cotizador/cotizador.model';
@@ -15,6 +15,7 @@ import notify from 'devextreme/ui/notify';
 export class DatosConvenioComponent implements OnInit, OnChanges {
 
   @ViewChild(DxFormComponent) formRef?: DxFormComponent;
+  @ViewChild('gridProductos') gridProductosRef?: DxDataGridComponent;
 
   @Input()  modelo: CotizacionModel;
   @Output() modeloChange = new EventEmitter<CotizacionModel>();
@@ -167,6 +168,20 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
 
   private _cargarContratos(idCliente: number): void {
     this.catService.getContratos(idCliente).subscribe(data => { this.arrContratos = data; });
+  }
+
+  /**
+   * Guarda el renglón del grid de productos que siga abierto (editing mode "row").
+   * Mientras no se guarda, el renglón no existe en modelo.productos; el padre
+   * debe esperar esta promesa antes de armar el payload.
+   */
+  guardarEdicionProductos(): Promise<void> {
+    const grid = this.gridProductosRef?.instance;
+    if (!grid || !grid.hasEditData()) return Promise.resolve();
+    return Promise.resolve(grid.saveEditData()).then(() => {
+      // Si la validación del grid dejó el renglón abierto, no se guardó
+      if (grid.hasEditData()) throw new Error('Renglón de productos sin guardar');
+    });
   }
 
   /**
