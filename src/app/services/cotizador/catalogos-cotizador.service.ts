@@ -388,7 +388,7 @@ export class CatalogosCotizadorService extends AbstractManagerService {
 
   getRegimenes(): Observable<CatalogoDTO[]> {
     if (this.useMock()) return of(MOCK_REGIMENES);
-    return this.get<any>(this.catUrl + 'api/CatalogosCotizador/Regimenes', this.httpOptions)
+    return this.get<any>(this.catUrl + 'api/CatalogosCotizador/RegimenesAduaneros', this.httpOptions)
       .pipe(map(r => this.unwrapArr(r)));
   }
 

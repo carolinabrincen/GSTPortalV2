@@ -4,7 +4,8 @@ import DataSource from 'devextreme/data/data_source';
 import CustomStore, { Options as CustomStoreOptions } from 'devextreme/data/custom_store';
 import { CotizacionModel, ProductoCotizacionModel } from 'src/app/shared/models/cotizador/cotizador.model';
 import { CatalogoDTO, CatalogosCotizadorService } from 'src/app/services/cotizador/catalogos-cotizador.service';
-import { forkJoin } from 'rxjs';
+import { Observable } from 'rxjs';
+import notify from 'devextreme/ui/notify';
 
 @Component({
   selector: 'app-datos-convenio',
@@ -142,24 +143,25 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
 
   // ── Catálogos estáticos + carga inicial de dependientes ──────────────────
 
+  /**
+   * Cada catálogo se carga por separado: si uno falla, los demás se llenan igual
+   * (con forkJoin un solo error dejaba todos vacíos y cancelaba las peticiones pendientes).
+   */
   private _cargarCatalogosEstaticos(): void {
-    forkJoin({
-      monedas:       this.catService.getMonedas(),
-      tiposServicio: this.catService.getTiposServicio(),
-      tiposCobro:    this.catService.getTiposCobro(),
-      tiposExp:      this.catService.getTiposExportacion(),
-      regimenes:     this.catService.getRegimenes(),
-    }).subscribe(res => {
-      this.arrMonedas          = res.monedas;
-      this.arrTiposServicio    = res.tiposServicio;
-      this.arrTiposCobro       = res.tiposCobro;
-      this.arrTiposExportacion = res.tiposExp;
-      this.arrRegimenes        = res.regimenes;
+    const cargar = (nombre: string, obs: Observable<CatalogoDTO[]>, asignar: (d: CatalogoDTO[]) => void) =>
+      obs.subscribe({
+        next: d => asignar(d ?? []),
+        error: () => notify(`No se pudo cargar el catálogo de ${nombre}`, 'error', 3000)
+      });
+    cargar('monedas',              this.catService.getMonedas(),          d => this.arrMonedas = d);
+    cargar('tipos de servicio',    this.catService.getTiposServicio(),    d => this.arrTiposServicio = d);
+    cargar('tipos de cobro',       this.catService.getTiposCobro(),       d => this.arrTiposCobro = d);
+    cargar('tipos de exportación', this.catService.getTiposExportacion(), d => this.arrTiposExportacion = d);
+    cargar('regímenes',            this.catService.getRegimenes(),        d => this.arrRegimenes = d);
 
-      // Modo edición: cargar contratos si el modelo tiene cliente guardado
-      const idCli = this.idClientePadre ?? this.modelo?.idCliente;
-      if (idCli) this._cargarContratos(idCli);
-    });
+    // Modo edición: cargar contratos si el modelo tiene cliente guardado
+    const idCli = this.idClientePadre ?? this.modelo?.idCliente;
+    if (idCli) this._cargarContratos(idCli);
   }
 
   // ── Catálogos dependientes ────────────────────────────────────────────────
