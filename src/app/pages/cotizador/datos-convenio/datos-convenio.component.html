@@ -226,7 +226,7 @@
 
         <dxi-column dataField="descripcion" caption="Descripción"  [width]="220"></dxi-column>
         <dxi-column dataField="embalaje"    caption="Embalaje"     [width]="140">
-            <dxo-lookup [dataSource]="arrEmbalajes" displayExpr="descripcion" valueExpr="id">
+            <dxo-lookup [dataSource]="embalajesLookup" displayExpr="descripcion" valueExpr="id">
             </dxo-lookup>
         </dxi-column>
         <dxi-column dataField="idFraccion"  caption="Fracción Ar." dataType="number" [width]="110"></dxi-column>

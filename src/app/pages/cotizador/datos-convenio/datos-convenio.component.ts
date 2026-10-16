@@ -37,6 +37,8 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
   arrTiposExportacion: CatalogoDTO[] = [];
   arrRegimenes:        CatalogoDTO[] = [];
   arrEmbalajes:        CatalogoDTO[] = [];
+  /** dataSource del dxo-lookup de Embalaje (ver _buildEmbalajesLookup). */
+  embalajesLookup:     { store: CustomStore };
 
   // Catálogos dependientes (cargados por llamada al servicio)
   arrContratos: CatalogoDTO[] = [];
@@ -48,6 +50,7 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
     this._buildClienteGSTDataSource();
     this._buildProductoDataSource();
     this._buildProductosStore();
+    this._buildEmbalajesLookup();
   }
 
   ngOnInit(): void {
@@ -113,6 +116,30 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
     } as CustomStoreOptions<CatalogoDTO, number>);
   }
 
+  /**
+   * Lookup de Embalaje del grid de productos. Carga propia (fuera del forkJoin, para
+   * que un fallo de otro catálogo no la deje vacía) y por store: el grid pide los
+   * datos cuando los necesita, sin depender de que arrEmbalajes ya esté lleno al
+   * renderizar.
+   */
+  private _buildEmbalajesLookup(): void {
+    let carga: Promise<CatalogoDTO[]> | null = null;
+    this.embalajesLookup = {
+      store: new CustomStore({
+        key: 'id',
+        loadMode: 'raw',
+        load: () => {
+          if (!carga) {
+            carga = this.catService.getEmbalajes().toPromise()
+              .then(r => (this.arrEmbalajes = r ?? []))
+              .catch(err => { carga = null; throw err; }); // permitir reintento
+          }
+          return carga;
+        }
+      } as CustomStoreOptions<CatalogoDTO, number>)
+    };
+  }
+
   // ── Catálogos estáticos + carga inicial de dependientes ──────────────────
 
   private _cargarCatalogosEstaticos(): void {
@@ -122,14 +149,12 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
       tiposCobro:    this.catService.getTiposCobro(),
       tiposExp:      this.catService.getTiposExportacion(),
       regimenes:     this.catService.getRegimenes(),
-      embalajes:     this.catService.getEmbalajes(),
     }).subscribe(res => {
       this.arrMonedas          = res.monedas;
       this.arrTiposServicio    = res.tiposServicio;
       this.arrTiposCobro       = res.tiposCobro;
       this.arrTiposExportacion = res.tiposExp;
       this.arrRegimenes        = res.regimenes;
-      this.arrEmbalajes        = res.embalajes;
 
       // Modo edición: cargar contratos si el modelo tiene cliente guardado
       const idCli = this.idClientePadre ?? this.modelo?.idCliente;
@@ -200,19 +225,27 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
 
   // ── setCellValue grid productos — arrow fn + Promise para que DX espere ──
 
-  setCellValueProducto = (rowData: ProductoCotizacionModel, value: number): Promise<void> => {
-    rowData.idProducto = value;
-    return this.catService.getProductoById(value).toPromise().then(prod => {
-      if (prod) {
-        rowData.descripcion = prod.descripcion;
-        rowData.embalaje    = this._aNumero(prod.extra1);                      // embalaje por defecto
-        rowData.idFraccion  = prod.idRelacion ?? this._aNumero(prod.extra2);
-        rowData.peso        = prod.valor || 0;
+  /**
+   * Firma de DevExtreme: (newData, value, currentRowData). Regresa la promesa para
+   * que el grid espere los datos del producto antes de pintar la fila.
+   */
+  setCellValueProducto = (newData: ProductoCotizacionModel, value: number,
+                          currentRowData: ProductoCotizacionModel): Promise<void> => {
+    newData.idProducto = value;
+    if (value == null) return Promise.resolve();
+    return this.catService.getProductoById(value).toPromise().then(p => {
+      if (!p) return;
+      newData.descripcion = p.descripcion;
+      newData.idFraccion  = this._aNumero(p.idRelacion as any) ?? null;
+      newData.peso        = p.valor || 0;
+      // Embalaje por defecto del producto, solo si la fila aún no tiene uno
+      if (currentRowData?.embalaje == null) {
+        newData.embalaje = this._aNumero(p.extra1) ?? null;
       }
     });
   }
 
-  private _aNumero(v: string | null | undefined): number | undefined {
+  private _aNumero(v: string | number | null | undefined): number | undefined {
     const n = Number(v);
     return v != null && v !== '' && !isNaN(n) ? n : undefined;
   }
@@ -220,7 +253,8 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
   // ── Renglón consecutivo del grid de productos ─────────────────────────────
 
   onProductoInitNewRow = (e: any): void => {
-    e.data.renglon = (this.modelo.productos?.length ?? 0) + 1;
+    e.data.renglon  = (this.modelo.productos?.length ?? 0) + 1;
+    e.data.embalaje = null;   // sin embalaje hasta elegir producto (no 0 ni '')
   }
 
   /** Recalcula renglon 1, 2, 3… según el orden del grid (al agregar o borrar). */
