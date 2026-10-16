@@ -3,7 +3,7 @@ import { DxFormComponent } from 'devextreme-angular';
 import DataSource from 'devextreme/data/data_source';
 import CustomStore, { Options as CustomStoreOptions } from 'devextreme/data/custom_store';
 import { CotizacionModel, ProductoCotizacionModel } from 'src/app/shared/models/cotizador/cotizador.model';
-import { CatalogoDTO, CatalogosCotizadorService } from 'src/app/services/cotizador/catalogos-cotizador.service';
+import { CatalogoDTO, CatalogosCotizadorService, OpcionClaveDTO, TIPOS_COBRO, TIPOS_SERVICIO } from 'src/app/services/cotizador/catalogos-cotizador.service';
 import { Observable } from 'rxjs';
 import notify from 'devextreme/ui/notify';
 
@@ -33,8 +33,9 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
 
   // Catálogos estáticos
   arrMonedas:          CatalogoDTO[] = [];
-  arrTiposServicio:    CatalogoDTO[] = [];
-  arrTiposCobro:       CatalogoDTO[] = [];
+  // Catálogos fijos (el back no tiene endpoint para estos)
+  readonly arrTiposServicio: OpcionClaveDTO[] = TIPOS_SERVICIO;
+  readonly arrTiposCobro:    OpcionClaveDTO[] = TIPOS_COBRO;
   arrTiposExportacion: CatalogoDTO[] = [];
   arrRegimenes:        CatalogoDTO[] = [];
   arrEmbalajes:        CatalogoDTO[] = [];
@@ -154,8 +155,6 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
         error: () => notify(`No se pudo cargar el catálogo de ${nombre}`, 'error', 3000)
       });
     cargar('monedas',              this.catService.getMonedas(),          d => this.arrMonedas = d);
-    cargar('tipos de servicio',    this.catService.getTiposServicio(),    d => this.arrTiposServicio = d);
-    cargar('tipos de cobro',       this.catService.getTiposCobro(),       d => this.arrTiposCobro = d);
     cargar('tipos de exportación', this.catService.getTiposExportacion(), d => this.arrTiposExportacion = d);
     cargar('regímenes',            this.catService.getRegimenes(),        d => this.arrRegimenes = d);
 

@@ -28,6 +28,30 @@ export interface RutaCatalogoDTO {
   idTipoOperacion: number | null;
 }
 
+/** Opción de un catálogo fijo del front (sin endpoint en el back). */
+export interface OpcionClaveDTO {
+  clave: string;
+  descripcion: string;
+}
+
+/** Clave de Cruce en tipo_serv; pendiente de confirmar contra la base. */
+export const TIPO_SERV_CRUCE = 'C';
+
+/** Tipo de servicio (tipo_serv). 'I' / 'E' muestran la sección de comercio exterior. */
+export const TIPOS_SERVICIO: OpcionClaveDTO[] = [
+  { clave: 'D',             descripcion: 'Doméstico' },
+  { clave: 'I',             descripcion: 'Importación' },
+  { clave: 'E',             descripcion: 'Exportación' },
+  { clave: TIPO_SERV_CRUCE, descripcion: 'Cruce' },
+];
+
+/** Tipo de cobro (tipo_cobro). 'U' habilita la tarifa unitaria. */
+export const TIPOS_COBRO: OpcionClaveDTO[] = [
+  { clave: 'V', descripcion: 'Por viaje' },
+  { clave: 'T', descripcion: 'Por tonelada' },
+  { clave: 'U', descripcion: 'Valor unitario' },
+];
+
 /** Criterio que el back asigna a una caseta sin tarifa para los ejes pedidos. */
 export const CRITERIO_SIN_TARIFA = 'SIN TARIFA';
 
@@ -105,23 +129,6 @@ const MOCK_MONEDAS: CatalogoDTO[] = [
   { id: 2, clave: 'USD', descripcion: 'Dólar Americano' },
 ];
 
-// clave = 'I'/'E' activa sección de comercio exterior
-const MOCK_TIPOS_SERVICIO: CatalogoDTO[] = [
-  { id: 1, clave: 'FTL', descripcion: 'FTL — Carga completa' },
-  { id: 2, clave: 'LTL', descripcion: 'LTL — Carga parcial' },
-  { id: 3, clave: 'I',   descripcion: 'Importación' },
-  { id: 4, clave: 'E',   descripcion: 'Exportación' },
-  { id: 5, clave: 'D',   descripcion: 'Doméstico' },
-];
-
-// clave = valor que se guarda en tipoCobro; 'U' habilita la tarifa unitaria
-const MOCK_TIPOS_COBRO: CatalogoDTO[] = [
-  { id: 1, clave: 'F', descripcion: 'Por flete' },
-  { id: 2, clave: 'T', descripcion: 'Por tonelada' },
-  { id: 3, clave: 'K', descripcion: 'Por kilómetro' },
-  { id: 4, clave: 'V', descripcion: 'Por viaje' },
-  { id: 5, clave: 'U', descripcion: 'Por unidad (tarifa unitaria)' },
-];
 
 // idRelacion = 0 → disponible para todos; idRelacion > 0 → solo ese cliente
 const MOCK_CONTRATOS: CatalogoDTO[] = [
@@ -356,17 +363,6 @@ export class CatalogosCotizadorService extends AbstractManagerService {
       .pipe(map(r => this.unwrapArr(r)));
   }
 
-  getTiposServicio(): Observable<CatalogoDTO[]> {
-    if (this.useMock()) return of(MOCK_TIPOS_SERVICIO);
-    return this.get<any>(this.catUrl + 'api/CatalogosCotizador/TiposServicio', this.httpOptions)
-      .pipe(map(r => this.unwrapArr(r)));
-  }
-
-  getTiposCobro(): Observable<CatalogoDTO[]> {
-    if (this.useMock()) return of(MOCK_TIPOS_COBRO);
-    return this.get<any>(this.catUrl + 'api/CatalogosCotizador/TiposCobro', this.httpOptions)
-      .pipe(map(r => this.unwrapArr(r)));
-  }
 
   /** Contratos disponibles para un cliente. Sin idCliente devuelve solo los globales (idRelacion=0). */
   getContratos(idCliente?: number): Observable<CatalogoDTO[]> {
