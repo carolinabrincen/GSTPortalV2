@@ -282,8 +282,14 @@ export class CatalogosCotizadorService extends AbstractManagerService {
     return Array.isArray(r) ? r : (r?.data ?? []);
   }
 
+  /**
+   * Un solo elemento de la respuesta. Los endpoints por id del back (Clientes/{id},
+   * Plazas/{id}, Productos/{id}) regresan ApiResponse.data como lista de 0 o 1 elementos;
+   * también acepta data como objeto o la respuesta sin envolver.
+   */
   private unwrapOne(r: any, fallback: CatalogoDTO): CatalogoDTO {
-    const arr = Array.isArray(r) ? r : (r?.data ? [r.data] : [r]);
+    const data = Array.isArray(r) ? r : (r?.data !== undefined ? r.data : r);
+    const arr = Array.isArray(data) ? data : [data];
     return arr[0] ?? fallback;
   }
 
