@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { DxFormComponent } from 'devextreme-angular';
 import DataSource from 'devextreme/data/data_source';
 import CustomStore, { Options as CustomStoreOptions } from 'devextreme/data/custom_store';
 import { CotizacionModel, ProductoCotizacionModel } from 'src/app/shared/models/cotizador/cotizador.model';
@@ -11,6 +12,8 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./datos-convenio.component.scss']
 })
 export class DatosConvenioComponent implements OnInit, OnChanges {
+
+  @ViewChild(DxFormComponent) formRef?: DxFormComponent;
 
   @Input()  modelo: CotizacionModel;
   @Output() modeloChange = new EventEmitter<CotizacionModel>();
@@ -62,8 +65,9 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
           // Modo edición: cargar contratos sin limpiar idContrato guardado
           if (curr) this._cargarContratos(curr);
         } else {
-          // Cambio real por el usuario: solo limpiar si había un cliente anterior
-          if (prev !== null) {
+          // Cambio real por el usuario: solo limpiar si había un cliente anterior.
+          // Si también cambió el modelo es una carga (editar/ver/nueva): conservar idContrato.
+          if (prev !== null && !changes['modelo']) {
             this.modelo.idContrato = undefined;
             this.arrContratos      = [];
           }
@@ -137,6 +141,23 @@ export class DatosConvenioComponent implements OnInit, OnChanges {
 
   private _cargarContratos(idCliente: number): void {
     this.catService.getContratos(idCliente).subscribe(data => { this.arrContratos = data; });
+  }
+
+  /**
+   * Empuja los valores del modelo a los editores del form tras cargar una
+   * cotización guardada (remitente/destinatario se resuelven con byKey).
+   */
+  refrescarEditores(): void {
+    const form = this.formRef?.instance;
+    if (!form || !this.modelo) return;
+    const campos: (keyof CotizacionModel)[] = [
+      'idRemitente', 'idDestinatario', 'idTipoMoneda', 'tipoServ', 'tipoCobro',
+      'tarifaUnitaria', 'idContrato', 'idTipoExportacion', 'regimenes',
+      'toleranciaLlegada', 'descConvenio', 'observaciones'
+    ];
+    for (const campo of campos) {
+      form.getEditor(campo)?.option('value', this.modelo[campo] ?? null);
+    }
   }
 
   // ── Texto vacío de contratos según estado del cliente ────────────────────

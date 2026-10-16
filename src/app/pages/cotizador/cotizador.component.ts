@@ -2,9 +2,10 @@ import { switchMap, map } from 'rxjs/operators';
 import { of, Subscription } from 'rxjs';
 import { ReportsPDFService } from './../../shared/reports/reports-pdf.service';
 import { CotizadorService } from './../../services/cotizador/cotizador.service';
-import { CotizacionModel, VariablesCotizacionModel, DetalleCotizacionModel} from './../../shared/models/cotizador/cotizador.model';
+import { CotizacionModel, VariablesCotizacionModel, DetalleCotizacionModel, ProductoCotizacionModel } from './../../shared/models/cotizador/cotizador.model';
 import { CatalogosCotizadorService, RutaCatalogoDTO, CasetasRutaDTO, CRITERIO_SIN_TARIFA, MSG_RUTA_NO_CATALOGO } from 'src/app/services/cotizador/catalogos-cotizador.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { DatosConvenioComponent } from './datos-convenio/datos-convenio.component';
 import {
   DxDataGridModule,
   DxDataGridComponent,
@@ -76,6 +77,7 @@ export class CotizadorComponent implements OnInit {
 
   @ViewChild('rentGer') rentGer!: DxDataGridComponent;
   @ViewChild('cotizadorForm', { static: false }) cotizadorFormRef!: DxFormComponent;
+  @ViewChild(DatosConvenioComponent) datosConvenioRef?: DatosConvenioComponent;
 
   arrCotizacionesSelect: CotizacionModel[] = [];
 
@@ -143,7 +145,7 @@ export class CotizadorComponent implements OnInit {
     idContrato: undefined,
     idTipoExportacion: undefined,
     regimenes: [],
-    toleranciaLlegada: 0,
+    toleranciaLlegada: undefined,
     descConvenio: undefined,
     observaciones: undefined,
     productos: []
@@ -892,10 +894,50 @@ precioTotalValueChanged(e: any) {
     });
   }
 
-  /** Modelo a enviar al guardar; numEjes vive solo en el front (aún no se envía). */
-  private payloadGuardado(): any {
-    const { numEjes, ...payload } = this.itemCotizacion;
-    return payload;
+  /**
+   * Modelo a enviar al guardar: los campos existentes igual que siempre, más los
+   * del convenio con null cuando no se capturaron (nunca 0 ni '').
+   * productos: solo filas con idProducto, renglon 1..n en el orden del grid.
+   */
+  private payloadGuardado(): CotizacionModel {
+    const m = this.itemCotizacion;
+    const v = (x: any) => (x === undefined || x === null || x === '' ? null : x);
+    const productos = (m.productos ?? [])
+      .filter(p => p.idProducto != null)
+      .map((p, i): ProductoCotizacionModel => ({
+        renglon:     i + 1,
+        idProducto:  p.idProducto,
+        idFraccion:  v(p.idFraccion),
+        descripcion: v(p.descripcion),
+        embalaje:    v(p.embalaje),
+        cantidad:    v(p.cantidad),
+        peso:        v(p.peso),
+        volumenM3:   v(p.volumenM3),
+        importe:     v(p.importe)
+      }));
+    return {
+      ...m,
+      idCliente:         v(m.idCliente),
+      idOrigen:          v(m.idOrigen),
+      idDestino:         v(m.idDestino),
+      idRuta:            v(m.idRuta),
+      ruta:              v(m.ruta),
+      numEjes:           v(m.numEjes),
+      idRemitente:       v(m.idRemitente),
+      idDestinatario:    v(m.idDestinatario),
+      idTipoMoneda:      v(m.idTipoMoneda),
+      tipoServ:          v(m.tipoServ),
+      tipoCobro:         v(m.tipoCobro),
+      tipoCobroManual:   m.tipoCobroManual ?? false,
+      tarifaUnitaria:    (m.tipoCobro || '').toUpperCase() === 'U' ? v(m.tarifaUnitaria) : null,
+      idContrato:        v(m.idContrato),
+      idTipoExportacion: v(m.idTipoExportacion),
+      regimenes:         m.regimenes ?? [],
+      toleranciaLlegada: v(m.toleranciaLlegada),
+      descConvenio:      v(m.descConvenio),
+      observaciones:     v(m.observaciones),
+      productos
+    };
   }
 
   guardarCotizacionClick(e: any) {
@@ -991,53 +1033,89 @@ precioTotalValueChanged(e: any) {
         return of({ datos, ops: [] as TiposOperacionModel[] });
       })
     ).subscribe(({ datos, ops }) => {
-      const { finalOps, resolvedValue } = this._resolverTipoOperacion(
-        ops, datos.id_tipo_operacion, datos.clasificacion, datos.tipoOperacion
-      );
-      this.arrTipoOperacion = finalOps;
-      this.itemCotizacion = datos;
-      this.itemCotizacion.tipoOperacion = resolvedValue;
+      this._cargarCotizacion(datos, ops);
       this.tituloModal = "Editando Cotizacion Folio: " + this.itemCotizacion.folio;
       this.sololectura = "no";
-      // Recuperar idCliente para cotizaciones anteriores que solo tienen texto
-      if (this.itemCotizacion.cliente && !this.itemCotizacion.idCliente) {
-        const found = this.arrClientes.find(c => c.cliente === this.itemCotizacion.cliente);
-        if (found && (found.idCliente ?? 0) > 0) {
-          this.itemCotizacion.idCliente = found.idCliente;
-        }
-      }
-      // Recuperar ruta del catálogo si el modelo la trae
-      if (this.itemCotizacion.idRuta) {
-        this.catService.getRutaById(this.itemCotizacion.idRuta).subscribe(ruta => {
-          if (ruta) {
-            this.selectedRuta = ruta;
-            this._actualizarReadOnly(ruta.idOrigen != null, ruta.idDestino != null);
-          }
-        });
-      } else if (this.itemCotizacion.ruta) {
-        // Ruta escrita a mano: mostrar el texto guardado en el combo
-        this.selectedRuta = {
-          idRuta: null, descRuta: this.itemCotizacion.ruta,
-          idOrigen: null, origen: '', idDestino: null, destino: '',
-          kmsRuta: 0, kmsSct: 0, idTipoOperacion: null
-        };
-        this.mostrarAvisoRuta = true;
-        this._actualizarReadOnly(false, false);
-      } else {
-        this.selectedRuta = null;
-        this.mostrarAvisoRuta = false;
-        this._actualizarReadOnly(false, false);
-      }
-      // dx-form no propaga editorOptions.items al editor ya creado;
-      // se actualiza directamente después del ciclo de detección de cambios
-      setTimeout(() => {
-        const ed = this.cotizadorFormRef?.instance?.getEditor('tipoOperacion');
-        if (ed) {
-          ed.option('items', finalOps);
-          ed.option('value', resolvedValue);
-        }
-      }, 0);
     });
+  }
+
+  /**
+   * Carga una cotización guardada (editar / ver) en el modelo y en los editores.
+   * No recalcula casetas, kms ni tipo de cobro: todos los cambios son programáticos
+   * (e.event == null) y los handlers los ignoran.
+   * Cotizaciones anteriores sin datos del convenio abren igual que antes.
+   */
+  private _cargarCotizacion(datos: CotizacionModel, ops: TiposOperacionModel[]): void {
+    const { finalOps, resolvedValue } = this._resolverTipoOperacion(
+      ops, datos.id_tipo_operacion, datos.clasificacion, datos.tipoOperacion
+    );
+    this.arrTipoOperacion = finalOps;
+    this.itemCotizacion = {
+      ...datos,
+      numEjes:         datos.numEjes ?? null,
+      tipoCobroManual: datos.tipoCobroManual ?? false,
+      regimenes:       datos.regimenes ?? [],
+      productos:       datos.productos ?? []
+    };
+    this.itemCotizacion.tipoOperacion = resolvedValue;
+
+    // Cliente: con idCliente se selecciona el del catálogo; sin él queda el texto
+    if (this.itemCotizacion.idCliente) {
+      const found = this.arrClientes.find(c => c.idCliente === this.itemCotizacion.idCliente);
+      if (found) this.itemCotizacion.cliente = found.cliente;
+    } else if (this.itemCotizacion.cliente) {
+      // Cotizaciones anteriores que solo tienen texto: recuperar idCliente si existe
+      const found = this.arrClientes.find(c => c.cliente === this.itemCotizacion.cliente);
+      if (found && (found.idCliente ?? 0) > 0) {
+        this.itemCotizacion.idCliente = found.idCliente;
+      }
+    }
+
+    // Ruta: del catálogo (origen/destino solo lectura) o escrita a mano (con aviso)
+    if (this.itemCotizacion.idRuta) {
+      this.catService.getRutaById(this.itemCotizacion.idRuta).subscribe(ruta => {
+        if (ruta) {
+          this.selectedRuta = ruta;
+          this.mostrarAvisoRuta = false;
+          this._actualizarReadOnly(ruta.idOrigen != null, ruta.idDestino != null);
+        } else {
+          this._mostrarRutaEscrita(this.itemCotizacion.ruta);
+        }
+      });
+    } else {
+      this._mostrarRutaEscrita(this.itemCotizacion.ruta);
+    }
+
+    // dx-form no propaga editorOptions.items al editor ya creado;
+    // se actualiza directamente después del ciclo de detección de cambios
+    setTimeout(() => {
+      const form = this.cotizadorFormRef?.instance;
+      const ed = form?.getEditor('tipoOperacion');
+      if (ed) {
+        ed.option('items', finalOps);
+        ed.option('value', resolvedValue);
+      }
+      for (const campo of ['cliente', 'numEjes', 'origen', 'destino'] as const) {
+        form?.getEditor(campo)?.option('value', this.itemCotizacion[campo]);
+      }
+      this.datosConvenioRef?.refrescarEditores();
+    }, 0);
+  }
+
+  /** Muestra en el combo una ruta escrita a mano (sin idRuta) con su aviso, o lo deja vacío. */
+  private _mostrarRutaEscrita(texto: string | undefined): void {
+    if (texto) {
+      this.selectedRuta = {
+        idRuta: null, descRuta: texto,
+        idOrigen: null, origen: '', idDestino: null, destino: '',
+        kmsRuta: 0, kmsSct: 0, idTipoOperacion: null
+      };
+      this.mostrarAvisoRuta = true;
+    } else {
+      this.selectedRuta = null;
+      this.mostrarAvisoRuta = false;
+    }
+    this._actualizarReadOnly(false, false);
   }
 
   onSelectionChanged(_e: any) {
@@ -1067,20 +1145,8 @@ precioTotalValueChanged(e: any) {
         return of({ datos, ops: [] as TiposOperacionModel[] });
       })
     ).subscribe(({ datos, ops }) => {
-      const { finalOps, resolvedValue } = this._resolverTipoOperacion(
-        ops, datos.id_tipo_operacion, datos.clasificacion, datos.tipoOperacion
-      );
-      this.arrTipoOperacion = finalOps;
-      this.itemCotizacion = datos;
-      this.itemCotizacion.tipoOperacion = resolvedValue;
+      this._cargarCotizacion(datos, ops);
       this.tituloModal = "Cotizacion Folio: " + this.itemCotizacion.folio + " (Solo Lectura)";
-      setTimeout(() => {
-        const ed = this.cotizadorFormRef?.instance?.getEditor('tipoOperacion');
-        if (ed) {
-          ed.option('items', finalOps);
-          ed.option('value', resolvedValue);
-        }
-      }, 0);
     });
   }
 
@@ -1201,7 +1267,7 @@ precioTotalValueChanged(e: any) {
       idContrato: undefined,
       idTipoExportacion: undefined,
       regimenes: [],
-      toleranciaLlegada: 0,
+      toleranciaLlegada: undefined,
       descConvenio: undefined,
       observaciones: undefined,
       productos: []
