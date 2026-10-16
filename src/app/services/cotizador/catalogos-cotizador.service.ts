@@ -34,15 +34,11 @@ export interface OpcionClaveDTO {
   descripcion: string;
 }
 
-/** Clave de Cruce en tipo_serv; pendiente de confirmar contra la base. */
-export const TIPO_SERV_CRUCE = 'C';
-
-/** Tipo de servicio (tipo_serv). 'I' / 'E' muestran la sección de comercio exterior. */
+/** Tipo de servicio (tipo_serv). 'D' por defecto; 'I' / 'E' muestran la sección de comercio exterior. */
 export const TIPOS_SERVICIO: OpcionClaveDTO[] = [
-  { clave: 'D',             descripcion: 'Doméstico' },
-  { clave: 'I',             descripcion: 'Importación' },
-  { clave: 'E',             descripcion: 'Exportación' },
-  { clave: TIPO_SERV_CRUCE, descripcion: 'Cruce' },
+  { clave: 'D', descripcion: 'Doméstico' },
+  { clave: 'I', descripcion: 'Importación' },
+  { clave: 'E', descripcion: 'Exportación' },
 ];
 
 /** Tipo de cobro (tipo_cobro). 'U' habilita la tarifa unitaria. */
