@@ -111,7 +111,7 @@ const MOCK_TIPOS_SERVICIO: CatalogoDTO[] = [
   { id: 2, clave: 'LTL', descripcion: 'LTL — Carga parcial' },
   { id: 3, clave: 'I',   descripcion: 'Importación' },
   { id: 4, clave: 'E',   descripcion: 'Exportación' },
-  { id: 5, clave: 'D',   descripcion: 'Dedicado' },
+  { id: 5, clave: 'D',   descripcion: 'Doméstico' },
 ];
 
 // clave = valor que se guarda en tipoCobro; 'U' habilita la tarifa unitaria

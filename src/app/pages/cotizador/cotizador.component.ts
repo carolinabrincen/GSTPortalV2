@@ -34,6 +34,12 @@ import CustomStore from 'devextreme/data/custom_store';
 
 
 
+// Valores por defecto del convenio (aplican aunque no se abra "Datos para convenio")
+const MONEDA_DEFAULT = 1;        // Pesos
+const TIPO_SERV_DEFAULT = 'D';   // Doméstico
+const TIPO_COBRO_TONELADA = 'T';
+const TIPO_COBRO_VIAJE = 'V';
+
 @Component({
   selector: 'app-cotizador',
   templateUrl: './cotizador.component.html',
@@ -137,9 +143,9 @@ export class CotizadorComponent implements OnInit {
     idRuta: undefined,
     ruta: undefined,
     numEjes: null,
-    idTipoMoneda: undefined,
-    tipoServ: undefined,
-    tipoCobro: undefined,
+    idTipoMoneda: MONEDA_DEFAULT,
+    tipoServ: TIPO_SERV_DEFAULT,
+    tipoCobro: TIPO_COBRO_VIAJE,
     tipoCobroManual: false,
     tarifaUnitaria: undefined,
     idContrato: undefined,
@@ -403,7 +409,9 @@ export class CotizadorComponent implements OnInit {
     this.refreshClientesOptions = { ...this.refreshClientesOptions, disabled: true, icon: 'clock' };
     this.carteraClientesService.getClientesDisplay().subscribe({
       next: (res) => {
-        const lista = res.data || res || [];
+        const lista = (res.data || res || [])
+          // El catálogo trae nombres con espacios al inicio/fin: el valor del combo (y lo que se guarda) va recortado
+          .map((c: any) => ({ ...c, cliente: (c.cliente || '').trim() }));
         this.arrClientes = lista.sort((a: any, b: any) =>
           (a.cliente || '').localeCompare(b.cliente || '', 'es', { sensitivity: 'base' })
         );
@@ -456,7 +464,8 @@ export class CotizadorComponent implements OnInit {
         },
         // Requerido para que acceptCustomValue pueda resolver el valor seleccionado
         byKey: (key: string) => {
-          const found = self.arrClientes.find(c => c.cliente === key);
+          const texto = (key || '').trim();
+          const found = self.arrClientes.find(c => c.cliente === texto);
           return Promise.resolve(found ?? { cliente: key });
         }
       }),
@@ -467,9 +476,10 @@ export class CotizadorComponent implements OnInit {
 
   cliente_onCustomItemCreating(args: any) {
     // Custom item siempre tiene idCliente: null (texto libre, sin catálogo)
-    const nuevoCliente = { idCliente: null, cliente: args.text };
+    const texto = (args.text || '').trim();
+    const nuevoCliente = { idCliente: null, cliente: texto };
     this.arrClientes.push(nuevoCliente);
-    this._clientesIndex.push({ lower: args.text.toLowerCase(), item: nuevoCliente });
+    this._clientesIndex.push({ lower: texto.toLowerCase(), item: nuevoCliente });
     args.customItem = nuevoCliente;
   }
 
@@ -782,7 +792,8 @@ export class CotizadorComponent implements OnInit {
         {
           this.itemCotizacion.costo_tonelada = 0;
         }
-   
+    // Cambiar toneladas recalcula el precio por tonelada → puede cambiar el tipo de cobro sugerido
+    if (e.event != null) this.sugerirTipoCobro();
   }
 
   precioToneladasTotalValueChanged(e: any) {
@@ -802,6 +813,7 @@ export class CotizadorComponent implements OnInit {
         }
       }
     }
+    if (e.event != null) this.sugerirTipoCobro();
   }
 
   unidadNegocio_ValueChanged(e: any) {
@@ -848,7 +860,31 @@ precioTotalValueChanged(e: any) {
       }
     }
   }
+  if (e.event != null) this.sugerirTipoCobro();
 }
+
+  /**
+   * Tipo de cobro sugerido mientras el usuario no lo haya cambiado a mano:
+   * 'T' si hay precio por tonelada, si no 'V'. Actualiza modelo y editor de la pestaña 2.
+   */
+  private sugerirTipoCobro(): void {
+    if (this.itemCotizacion.tipoCobroManual) return;
+    const sugerido = (this.itemCotizacion.costo_tonelada ?? 0) > 0 ? TIPO_COBRO_TONELADA : TIPO_COBRO_VIAJE;
+    if (this.itemCotizacion.tipoCobro === sugerido) return;
+    this.itemCotizacion.tipoCobro = sugerido;
+    this.datosConvenioRef?.formRef?.instance?.getEditor('tipoCobro')?.option('value', sugerido);
+  }
+
+  /** Completa moneda, tipo de servicio y tipo de cobro cuando la cotización no los trae. */
+  private aplicarDefaultsConvenio(): void {
+    const m = this.itemCotizacion;
+    const vacio = (x: any) => x === undefined || x === null || x === '';
+    if (vacio(m.idTipoMoneda)) m.idTipoMoneda = MONEDA_DEFAULT;
+    if (vacio(m.tipoServ))     m.tipoServ     = TIPO_SERV_DEFAULT;
+    if (vacio(m.tipoCobro) && !m.tipoCobroManual) {
+      m.tipoCobro = (m.costo_tonelada ?? 0) > 0 ? TIPO_COBRO_TONELADA : TIPO_COBRO_VIAJE;
+    }
+  }
 
 
   mouseoverAprobarCotizacion(e: any) {
@@ -900,6 +936,8 @@ precioTotalValueChanged(e: any) {
    * productos: solo filas con idProducto, renglon 1..n en el orden del grid.
    */
   private payloadGuardado(): CotizacionModel {
+    // Moneda, tipo de servicio y tipo de cobro nunca van en null aunque no se abra la pestaña 2
+    this.aplicarDefaultsConvenio();
     const m = this.itemCotizacion;
     const v = (x: any) => (x === undefined || x === null || x === '' ? null : x);
     const productos = (m.productos ?? [])
@@ -917,6 +955,7 @@ precioTotalValueChanged(e: any) {
       }));
     return {
       ...m,
+      cliente:           typeof m.cliente === 'string' ? m.cliente.trim() : m.cliente,
       idCliente:         v(m.idCliente),
       idOrigen:          v(m.idOrigen),
       idDestino:         v(m.idDestino),
@@ -1058,6 +1097,8 @@ precioTotalValueChanged(e: any) {
       productos:       datos.productos ?? []
     };
     this.itemCotizacion.tipoOperacion = resolvedValue;
+    // Cotizaciones que no traen moneda / tipo de servicio / tipo de cobro: valores por defecto
+    this.aplicarDefaultsConvenio();
 
     // Cliente: con idCliente se selecciona el del catálogo; sin él queda el texto
     if (this.itemCotizacion.idCliente) {
@@ -1065,7 +1106,8 @@ precioTotalValueChanged(e: any) {
       if (found) this.itemCotizacion.cliente = found.cliente;
     } else if (this.itemCotizacion.cliente) {
       // Cotizaciones anteriores que solo tienen texto: recuperar idCliente si existe
-      const found = this.arrClientes.find(c => c.cliente === this.itemCotizacion.cliente);
+      const texto = this.itemCotizacion.cliente.trim();
+      const found = this.arrClientes.find(c => c.cliente === texto);
       if (found && (found.idCliente ?? 0) > 0) {
         this.itemCotizacion.idCliente = found.idCliente;
       }
@@ -1259,9 +1301,9 @@ precioTotalValueChanged(e: any) {
       idRuta: undefined,
       ruta: undefined,
       numEjes: null,
-      idTipoMoneda: undefined,
-      tipoServ: undefined,
-      tipoCobro: undefined,
+      idTipoMoneda: MONEDA_DEFAULT,
+      tipoServ: TIPO_SERV_DEFAULT,
+      tipoCobro: TIPO_COBRO_VIAJE,
       tipoCobroManual: false,
       tarifaUnitaria: undefined,
       idContrato: undefined,

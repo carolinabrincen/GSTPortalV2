@@ -25,7 +25,8 @@
     </div>
 </div>
 
-<dx-form [(formData)]="modelo" [colCount]="12" [showColonAfterLabel]="true" labelLocation="top">
+<!-- formData en una sola vía: el form modifica en el lugar el mismo objeto itemCotizacion del padre -->
+<dx-form [formData]="modelo"[colCount]="12" [showColonAfterLabel]="true" labelLocation="top">
 
     <!-- ══════════════════════════════════════════════════════════════════
          SECCIÓN 1 — PARTES (Remitente / Destinatario)
