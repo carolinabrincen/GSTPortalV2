@@ -303,7 +303,7 @@
                 <!-- PESTAÑA 1 — form en div[hidden], NO en dxTemplate, para ancho completo -->
                 <!-- padding simétrico 25px: evita que width=100% desborde sobre el scrollbar -->
                 <div [hidden]="activeTab !== 0" style="padding: 0 25px; box-sizing: border-box;">
-                    <form action="" (submit)="guardarCotizacionClick($event)">
+                    <form action="" (submit)="guardarCotizacionClick($event)" (keydown.enter)="evitarSubmitConEnter($event)">
                         <dx-form #cotizadorForm id="form" [(formData)]="itemCotizacion" [colCount]="12" width="100%" validationGroup="customerData" [readOnly]="bolFormSoloLectura">
                             <!-- TIPO VIAJE -->
                             <dxi-item dataField="tipoViaje" editorType="dxRadioGroup" [editorOptions]="RadioButtonTipoViaje" [colSpan]="3">

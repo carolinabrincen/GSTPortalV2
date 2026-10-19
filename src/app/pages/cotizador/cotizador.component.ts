@@ -987,6 +987,18 @@ precioTotalValueChanged(e: any) {
     };
   }
 
+  /**
+   * Enter en un campo del form no debe enviarlo (eso guardaba y cerraba el popup).
+   * Solo se guarda con el botón Guardar; Enter sobre un botón o en un textarea
+   * conserva su comportamiento normal.
+   */
+  evitarSubmitConEnter(e: Event): void {
+    const target = e.target as HTMLElement;
+    const tag = target?.tagName?.toLowerCase();
+    if (tag === 'textarea' || tag === 'button' || target?.closest('.dx-button')) return;
+    e.preventDefault();
+  }
+
   guardarCotizacionClick(e: any) {
     e.preventDefault();
     // Primero guardar el renglón de productos que siga abierto en el grid de la pestaña 2;
