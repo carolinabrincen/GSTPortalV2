@@ -1,4 +1,4 @@
-﻿<h2 class="content-block">Cotizaciones de Rutas</h2>
+<h2 class="content-block">Cotizaciones de Rutas</h2>
 
 <div [id]="'myDiv'" class="content-block dx-card responsive-paddings">
     <!--#region :::: TABS PARA GRIDS::::  -->
@@ -86,19 +86,19 @@
                 </dxi-column>
 
                 <div *dxTemplate="let data of 'tarifa25'">
-                    <dx-button icon="check" stylingMode="outlined" style="background-color: #ffc340;" (onClick)="tarifa25(data)"></dx-button>
+                    <dx-button icon="check" stylingMode="outlined" style="background-color: #ffc340;" [disabled]="!!data.data?.idConvenioConv" (onClick)="tarifa25(data)"></dx-button>
                 </div>
 
                 <div *dxTemplate="let data of 'tarifa30'">
-                    <dx-button icon="check" stylingMode="outlined" style="background-color: #ffc340;" (onClick)="tarifa30(data)"></dx-button>
+                    <dx-button icon="check" stylingMode="outlined" style="background-color: #ffc340;" [disabled]="!!data.data?.idConvenioConv" (onClick)="tarifa30(data)"></dx-button>
                 </div>
 
                 <div *dxTemplate="let data of 'tarifa35'">
-                    <dx-button icon="check" stylingMode="outlined" style="background-color: #ffc340;" (onClick)="tarifa35(data)"></dx-button>
+                    <dx-button icon="check" stylingMode="outlined" style="background-color: #ffc340;" [disabled]="!!data.data?.idConvenioConv" (onClick)="tarifa35(data)"></dx-button>
                 </div>
 
                 <div *dxTemplate="let data of 'tarifa40'">
-                    <dx-button icon="check" stylingMode="outlined" style="background-color: #ffc340;" (onClick)="tarifa40(data)"></dx-button>
+                    <dx-button icon="check" stylingMode="outlined" style="background-color: #ffc340;" [disabled]="!!data.data?.idConvenioConv" (onClick)="tarifa40(data)"></dx-button>
                 </div>
 
                 <div *dxTemplate="let data of 'headerTemplate'">
@@ -131,7 +131,7 @@
                         {{ cell.text }}
                     </div>
                     <!-- BOTON APROBAR COTIZACION -->
-                    <div *ngIf="cell.text === 'PRECOTIZACION' && bolBotonAprobarCotizacion">
+                    <div *ngIf="cell.text === 'PRECOTIZACION' && bolBotonAprobarCotizacion && !cell.data?.idConvenioConv">
                         <dx-button icon="check" type="danger" text="Aprobar" style="
                 font-size: 9px !important;
                 background-color: #ffc340 !important;
@@ -162,6 +162,8 @@
                 <dxi-column dataField="folio" caption="Folio" alignment="center" headerCellTemplate="headerTemplate" cellTemplate="cellTemplateBold" fixed="true"></dxi-column>
                 <!-- STATUS -->
                 <dxi-column dataField="status" caption="Status" alignment="center" headerCellTemplate="headerTemplate" cellTemplate="cellTemplateTag" fixed="true" [width]="120"></dxi-column>
+                <!-- CONVENIO generado al aprobar -->
+                <dxi-column dataField="idConvenioConv" caption="Convenio" alignment="center" headerCellTemplate="headerTemplate" cellTemplate="cellTemplateBold" [width]="90"></dxi-column>
                 <dxi-column dataField="ingreso" caption="Ingreso" dataType="date" format="dd/MM/yyyy" headerCellTemplate="headerTemplate"></dxi-column>
                 <dxi-column dataField="id_ingreso" caption="ID Ingreso" headerCellTemplate="headerTemplate"></dxi-column>
                 
@@ -261,7 +263,7 @@
                         {{ cell.text }}
                     </div>
                     <!-- BOTON APROBAR COTIZACION -->
-                    <div *ngIf="cell.text === 'PRECOTIZACION' && bolBotonAprobarCotizacion">
+                    <div *ngIf="cell.text === 'PRECOTIZACION' && bolBotonAprobarCotizacion && !cell.data?.idConvenioConv">
                         <dx-button icon="check" type="danger" text="Aprobar" style="
                 font-size: 9px !important;
                 background-color: #ffc340 !important;
@@ -469,6 +471,12 @@
                   noDataText: contratoNoDataText
                 }">
                                     <dxo-label text="Contrato"></dxo-label>
+                                </dxi-item>
+                                <!-- CONVENIO generado al aprobar (solo lectura) -->
+                                <dxi-item dataField="idConvenioConv" editorType="dxNumberBox" [colSpan]="3"
+                                          [visible]="!!itemCotizacion?.idConvenioConv"
+                                          [editorOptions]="{ readOnly: true, format: '#0' }">
+                                    <dxo-label text="Convenio"></dxo-label>
                                 </dxi-item>
                                 <!-- TARIFA UNITARIA (solo con tipo de cobro 'U') -->
                                 <dxi-item dataField="tarifaUnitaria" editorType="dxNumberBox" [colSpan]="3" [visible]="esTarifaUnitaria"

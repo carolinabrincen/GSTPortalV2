@@ -73,7 +73,9 @@ export interface CotizacionModel{
   toleranciaLlegada?: number,
   descConvenio?: string,
   observaciones?: string,
-  productos?: ProductoCotizacionModel[]
+  productos?: ProductoCotizacionModel[],
+  /** Convenio generado al aprobar (solo lectura; lo llena el back). */
+  idConvenioConv?: number
 }
 export interface ProductoCotizacionModel {
   /** Consecutivo 1, 2, 3… según el orden en el grid. */

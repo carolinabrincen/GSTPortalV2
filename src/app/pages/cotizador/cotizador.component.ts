@@ -1086,42 +1086,131 @@ precioTotalValueChanged(e: any) {
     this.bolBotonAprobarCotizacion = e.value === 'PRECOTIZACION';
 
   }
+  /** Botón "Aprobar" de la etiqueta de status: aprueba con la tarifa ya guardada. */
   aprobarCotizacionClick(e: any) {
-    const clonedItem = { ...e.row.data };
-    let result = confirm("<i>Esta seguro de aprobar la cotización: <b>" +
-      clonedItem.folio + "</b></i>", "Confirmar Operación");
-    result.then((dialogResult) => {
-      if (dialogResult) {
-        //TODO: Implementar endpoint para aprobar cotizacion
-        this.cotizadorService.postAprobarCotizacion(clonedItem.idCotizacion).subscribe(res =>{
-          if (res.responseCode === 200) {
-            //agregamos precotizacion a las aprobadas
-            const elementIndex = this.arrPreCotizaciones.findIndex(obj=> obj.idCotizacion == clonedItem.idCotizacion);
-            this.arrPreCotizaciones[elementIndex].status = "APROBADA";
-            this.arrCotizaciones.push(this.arrPreCotizaciones[elementIndex]);
+    const row: CotizacionModel = { ...e.row.data };
+    if (this._yaTieneConvenio(row)) return;
+    confirm(this._avisoCambiosSinGuardar(row) +
+      "<i>Esta seguro de aprobar la cotización: <b>" + row.folio + "</b></i>", "Confirmar Operación")
+      .then(ok => { if (ok) this._aprobar(row); });
+  }
 
-            //Quitamos la aprobada de las precotizaciones
-            this.arrPreCotizaciones = this.arrPreCotizaciones.filter(e => e.idCotizacion !== clonedItem.idCotizacion);
-
-            notify({
-              message: 'Cotización aprobada con exito!',
-              position: {
-                my: 'center center',
-                at: 'center center',
-              },
-            }, 'success', 3000);
-          } else {
-            notify({
-              message: res.responseText,
-              position: {
-                my: 'center center',
-                at: 'center center',
-              },
-            }, 'error', 5000);
-          }
+  /**
+   * Botones de aprobación por tarifa (25/30/35/40 %). Fija la tarifa final sobre lo
+   * último guardado de la cotización y, ya guardada, la aprueba (el back genera el convenio).
+   */
+  aprobarConTarifa(row: CotizacionModel, tarifa: number): void {
+    if (this._yaTieneConvenio(row)) return;
+    if (!(tarifa > 0)) {
+      this._notificarAprobacion('La tarifa seleccionada no es válida para aprobar.', 'error');
+      return;
+    }
+    const tarifaTexto = Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(tarifa);
+    confirm(this._avisoCambiosSinGuardar(row) +
+      "<i>La tarifa final sera <b>" + tarifaTexto + "</b></i><br>" +
+      "<i>Esta seguro de aprobar la cotización: <b>" + row.folio + "</b></i>", "Confirmar Operación")
+      .then(ok => {
+        if (!ok) return;
+        // Lo último guardado + la tarifa elegida (mismos ajustes que hacían guardarCotizacionT25..T40)
+        this.cotizadorService.getCotizacion(row.idCotizacion).pipe(
+          switchMap(res => {
+            const guardada: CotizacionModel = res.data;
+            guardada.sencillo      = guardada.tipoViaje === "Solo de ida";
+            guardada.regresa_vacio = guardada.regreso === "Vacio";
+            guardada.clienta_paga  = guardada.clientePagaCasetas === "Si";
+            guardada.tarifaFinal   = tarifa;
+            guardada.tipoOperacion = row.tipoOperacion;
+            guardada.casetas_total_sin_impuestos = row.casetas_total_sin_impuestos;
+            guardada.casetas_regreso             = row.casetas_regreso;
+            return this.cotizadorService.postEditarCotizacion(guardada);
+          })
+        ).subscribe({
+          next: res => {
+            if (res.responseCode !== 200) {
+              this._notificarAprobacion(res.responseText, 'error');
+              return;
+            }
+            this._aprobar({ ...row, tarifaFinal: tarifa });
+          },
+          error: err => this._notificarAprobacion(this._mensajeHttpError(err), 'error')
         });
-      }
+      });
+  }
+
+  /**
+   * Llama a AprobarCotizacion. El back responde responseCode 400 (en el cuerpo) con un
+   * mensaje de negocio, p. ej. faltan remitente y destinatario: se muestra tal cual y la
+   * cotización no se marca como aprobada.
+   */
+  private _aprobar(row: CotizacionModel): void {
+    this.cotizadorService.postAprobarCotizacion(row.idCotizacion).subscribe({
+      next: res => {
+        if (res.responseCode !== 200) {
+          this._notificarAprobacion(res.responseText, 'error');
+          return;
+        }
+        const idConvenioConv: number | undefined = res.data?.idConvenioConv ?? undefined;
+        const aprobada: CotizacionModel = {
+          ...row,
+          status: res.data?.status ?? 'APROBADA',
+          tarifaFinal: res.data?.tarifaFinal ?? row.tarifaFinal,
+          idConvenioConv
+        };
+        this.arrPreCotizaciones = this.arrPreCotizaciones.filter(c => c.idCotizacion !== row.idCotizacion);
+        this.arrCotizaciones = [...this.arrCotizaciones, aprobada];
+        // Si es la cotización cargada en el form, reflejar el convenio y dar por guardado
+        if (this.itemCotizacion?.idCotizacion === row.idCotizacion) {
+          this.itemCotizacion.idConvenioConv = idConvenioConv;
+          this.itemCotizacion.status = aprobada.status;
+          this._tomarSnapshotGuardado();
+        }
+        this._notificarAprobacion(`Cotización aprobada. Convenio generado: ${idConvenioConv ?? '—'}`, 'success');
+      },
+      error: err => this._notificarAprobacion(this._mensajeHttpError(err), 'error')
     });
+  }
+
+  private _yaTieneConvenio(row: CotizacionModel): boolean {
+    if (!row?.idConvenioConv) return false;
+    this._notificarAprobacion(`La cotización ya está aprobada con el convenio ${row.idConvenioConv}.`, 'warning');
+    return true;
+  }
+
+  /** Mensaje del back si el HTTP falló (por si algún día responde 400/500 como status HTTP). */
+  private _mensajeHttpError(err: any): string {
+    return err?.error?.responseText || err?.error?.message || err?.message || 'No se pudo aprobar la cotización.';
+  }
+
+  private _notificarAprobacion(message: string, type: 'success' | 'error' | 'warning'): void {
+    notify({ message, position: { my: 'center center', at: 'center center' } }, type, type === 'success' ? 4000 : 6000);
+  }
+
+  // ── Cambios sin guardar (aviso antes de aprobar) ──────────────────────────
+
+  /** JSON de la cotización tal como quedó al cargarla o guardarla. */
+  private snapshotGuardado: { idCotizacion: number; json: string } | null = null;
+
+  private _tomarSnapshotGuardado(): void {
+    const id = this.itemCotizacion?.idCotizacion;
+    this.snapshotGuardado = id ? { idCotizacion: id, json: JSON.stringify(this.itemCotizacion) } : null;
+  }
+
+  /**
+   * true si la cotización está cargada en el form (aunque el popup se haya cerrado sin
+   * guardar) y su contenido difiere de lo último cargado/guardado.
+   */
+  private _hayCambiosSinGuardar(idCotizacion: number): boolean {
+    const s = this.snapshotGuardado;
+    return !!s && s.idCotizacion === idCotizacion
+      && this.itemCotizacion?.idCotizacion === idCotizacion
+      && JSON.stringify(this.itemCotizacion) !== s.json;
+  }
+
+  private _avisoCambiosSinGuardar(row: CotizacionModel): string {
+    return this._hayCambiosSinGuardar(row.idCotizacion)
+      ? "<div style='color:#e65100; margin-bottom:8px;'>&#9888; La cotización tiene cambios sin guardar. " +
+        "Se aprobará con lo último guardado.</div>"
+      : '';
   }
 
   /**
@@ -1134,8 +1223,6 @@ precioTotalValueChanged(e: any) {
     this.aplicarDefaultsConvenio();
     const m = this.itemCotizacion;
     const v = (x: any) => (x === undefined || x === null || x === '' ? null : x);
-    // TEMPORAL: diagnóstico de productos que llegan al payload
-    console.log('[payload] modelo.productos:', JSON.parse(JSON.stringify(m.productos ?? null)));
     // idProducto puede llegar como número, texto numérico u objeto del lookup: normalizar a número
     const aId = (x: any): number | null => {
       const n = Number(x !== null && typeof x === 'object' ? x.id : x);
@@ -1346,6 +1433,8 @@ precioTotalValueChanged(e: any) {
         } else {
           this._mostrarRutaEscrita(this.itemCotizacion.ruta);
         }
+        // Seleccionar la ruta ajusta origen/destino en el modelo: rehacer la foto de lo guardado
+        setTimeout(() => this._tomarSnapshotGuardado(), 500);
       });
     } else {
       this._mostrarRutaEscrita(this.itemCotizacion.ruta);
@@ -1370,6 +1459,9 @@ precioTotalValueChanged(e: any) {
       for (const campo of campos) {
         form?.getEditor(campo)?.option('value', this.itemCotizacion[campo] ?? null);
       }
+      // Foto de lo guardado para el aviso "cambios sin guardar" al aprobar; con retraso para
+      // incluir lo que los editores ajustan de forma asíncrona al cargar (byKey, ruta).
+      setTimeout(() => this._tomarSnapshotGuardado(), 500);
     }, 0);
   }
 
@@ -1541,6 +1633,7 @@ precioTotalValueChanged(e: any) {
       observaciones: undefined,
       productos: []
     };
+    this.snapshotGuardado = null;
     this._sincronizarContratos();
   }
 
@@ -1667,74 +1760,9 @@ precioTotalValueChanged(e: any) {
   casetasRegreso: number;
   mode: boolean = false;
   // dataCotizacion: any;
-  tarifa25(data){
-    // this.dataCotizacion = data.data;
-    // this.modConfimation = true;
-
-    this.T25 = data.data.tarifa25;
-    this.tipoOperacion = data.data.tipoOperacion;
-    this.casetaSImp = data.data.casetas_total_sin_impuestos;
-    this.casetasRegreso = data.data.casetas_regreso;
-
-    this.cotizadorService.getCotizacion(data.data.idCotizacion).subscribe(res => {
-      this.itemCotizacionT25 = res.data;
-    });
-    
-    
-    const formatValue = Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(data.data.tarifa25);
-    const clonedItem = { ...data.data };
-    let result = confirm("<i>La tarifa final sera <b>"+formatValue+"</b></i><br>"+
-                        "<i>Esta seguro de aprobar la cotización: <b>" +
-      clonedItem.folio + "</b></i>", "Confirmar Operación");
-    result.then((dialogResult) => {
-
-
-        if (dialogResult) {
-          //TODO: Implementar endpoint para aprobar cotizacion
-          this.guardarCotizacionT25()
-
-          // if(this.tarifaFinal == 0){
-
-          // }
-
-          if(this.itemCotizacionT25.tarifaFinal !== 0){
-            // alert("entre")
-            this.cotizadorService.postAprobarCotizacion(clonedItem.idCotizacion).subscribe(res =>{
-              if (res.responseCode === 200) {
-                //agregamos precotizacion a las aprobadas
-
-                const elementIndex = this.arrPreCotizaciones.findIndex(obj=> obj.idCotizacion == clonedItem.idCotizacion);
-                this.arrPreCotizaciones[elementIndex].status = "APROBADA";
-                
-                this.arrCotizaciones.push(this.arrPreCotizaciones[elementIndex]);
-
-                //Quitamos la aprobada de las precotizaciones
-                this.arrPreCotizaciones = this.arrPreCotizaciones.filter(e => e.idCotizacion !== clonedItem.idCotizacion);
-                
-
-                notify({
-                  message: 'Cotización aprobada con exito!',
-                  position: {
-                    my: 'center center',
-                    at: 'center center',
-                  },
-                }, 'success', 3000);
-
-              } else {
-                notify({
-                  message: res.responseText,
-                  position: {
-                    my: 'center center',
-                    at: 'center center',
-                  },
-                }, 'error', 5000);
-              }
-            });
-
-          }
-        }
-      
-    });
+  /** Aprobar con la tarifa del 25 %: ver aprobarConTarifa(). */
+  tarifa25(data) {
+    this.aprobarConTarifa(data.data, data.data.tarifa25);
   }
 
   guardarCotizacionT25() {
@@ -1876,59 +1904,9 @@ precioTotalValueChanged(e: any) {
   casetaSImpT30: number;
   casetasRegresoT30: number;
   modeT30: boolean = false;
-  tarifa30(data){    
-    this.T30 = data.data.tarifa30;
-    this.tipoOperacionT30 = data.data.tipoOperacion;
-    this.casetaSImpT30 = data.data.casetas_total_sin_impuestos;
-    this.casetasRegresoT30 = data.data.casetas_regreso;
-
-    this.cotizadorService.getCotizacion(data.data.idCotizacion).subscribe(res => {
-      this.itemCotizacionT30 = res.data;
-    });
-
-    const formatValue = Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(data.data.tarifa30);
-    const clonedItem = { ...data.data };
-    let result = confirm("<i>La tarifa final sera <b>"+formatValue+"</b></i><br>"+
-                        "<i>Esta seguro de aprobar la cotización: <b>" +
-      clonedItem.folio + "</b></i>", "Confirmar Operación");
-    result.then((dialogResult) => {
-
-
-      if (dialogResult) {
-        //TODO: Implementar endpoint para aprobar cotizacion
-        this.guardarCotizacionT30()
-
-        if(this.itemCotizacionT30.tarifaFinal !== 0){
-        this.cotizadorService.postAprobarCotizacion(clonedItem.idCotizacion).subscribe(res =>{
-          if (res.responseCode === 200) {
-            //agregamos precotizacion a las aprobadas
-            const elementIndex = this.arrPreCotizaciones.findIndex(obj=> obj.idCotizacion == clonedItem.idCotizacion);
-            this.arrPreCotizaciones[elementIndex].status = "APROBADA";
-            this.arrCotizaciones.push(this.arrPreCotizaciones[elementIndex]);
-
-            //Quitamos la aprobada de las precotizaciones
-            this.arrPreCotizaciones = this.arrPreCotizaciones.filter(e => e.idCotizacion !== clonedItem.idCotizacion);
-
-            notify({
-              message: 'Cotización aprobada con exito!',
-              position: {
-                my: 'center center',
-                at: 'center center',
-              },
-            }, 'success', 3000);
-          } else {
-            notify({
-              message: res.responseText,
-              position: {
-                my: 'center center',
-                at: 'center center',
-              },
-            }, 'error', 5000);
-          }
-        });
-      }
-    }
-    });
+  /** Aprobar con la tarifa del 30 %: ver aprobarConTarifa(). */
+  tarifa30(data) {
+    this.aprobarConTarifa(data.data, data.data.tarifa30);
   }
 
   guardarCotizacionT30() {
@@ -2070,60 +2048,9 @@ precioTotalValueChanged(e: any) {
   casetaSImpT35: number;
   casetasRegresoT35: number;
   modeT35: boolean = false;
-  tarifa35(data){
-    this.T35 = data.data.tarifa35;
-    this.tipoOperacionT35 = data.data.tipoOperacion;
-    this.casetaSImpT35 = data.data.casetas_total_sin_impuestos;
-    this.casetasRegresoT35 = data.data.casetas_regreso;
-
-    this.cotizadorService.getCotizacion(data.data.idCotizacion).subscribe(res => {
-      this.itemCotizacionT35 = res.data;
-    });
-    
-    const formatValue = Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(data.data.tarifa35);
-    const clonedItem = { ...data.data };
-    let result = confirm("<i>La tarifa final sera <b>"+formatValue+"</b></i><br>"+
-                        "<i>Esta seguro de aprobar la cotización: <b>" +
-      clonedItem.folio + "</b></i>", "Confirmar Operación");
-    result.then((dialogResult) => {
-
-
-      if (dialogResult) {
-        //TODO: Implementar endpoint para aprobar cotizacion
-        this.guardarCotizacionT35();
-
-
-        if(this.itemCotizacionT35.tarifaFinal !== 0){
-        this.cotizadorService.postAprobarCotizacion(clonedItem.idCotizacion).subscribe(res =>{
-          if (res.responseCode === 200) {
-            //agregamos precotizacion a las aprobadas
-            const elementIndex = this.arrPreCotizaciones.findIndex(obj=> obj.idCotizacion == clonedItem.idCotizacion);
-            this.arrPreCotizaciones[elementIndex].status = "APROBADA";
-            this.arrCotizaciones.push(this.arrPreCotizaciones[elementIndex]);
-
-            //Quitamos la aprobada de las precotizaciones
-            this.arrPreCotizaciones = this.arrPreCotizaciones.filter(e => e.idCotizacion !== clonedItem.idCotizacion);
-
-            notify({
-              message: 'Cotización aprobada con exito!',
-              position: {
-                my: 'center center',
-                at: 'center center',
-              },
-            }, 'success', 3000);
-          } else {
-            notify({
-              message: res.responseText,
-              position: {
-                my: 'center center',
-                at: 'center center',
-              },
-            }, 'error', 5000);
-          }
-        });
-      }
-    }
-    });
+  /** Aprobar con la tarifa del 35 %: ver aprobarConTarifa(). */
+  tarifa35(data) {
+    this.aprobarConTarifa(data.data, data.data.tarifa35);
   }
 
   guardarCotizacionT35() {
@@ -2266,61 +2193,9 @@ precioTotalValueChanged(e: any) {
   casetaSImpT40: number;
   casetasRegresoT40: number;
   modeT40: boolean = false;
-  tarifa40(data){
-    this.T40 = data.data.tarifa40;
-    this.tipoOperacionT40 = data.data.tipoOperacion;
-    this.casetaSImpT40 = data.data.casetas_total_sin_impuestos;
-    this.casetasRegresoT40 = data.data.casetas_regreso;
-
-    this.cotizadorService.getCotizacion(data.data.idCotizacion).subscribe(res => {
-      this.itemCotizacionT40 = res.data;
-    });
-    
-    const formatValue = Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(data.data.tarifa40);
-    const clonedItem = { ...data.data };
-    let result = confirm("<i>La tarifa final sera <b>"+formatValue+"</b></i><br>"+
-                        "<i>Esta seguro de aprobar la cotización: <b>" +
-      clonedItem.folio + "</b></i>", "Confirmar Operación");
-    result.then((dialogResult) => {
-
-
-      if (dialogResult) {
-        //TODO: Implementar endpoint para aprobar cotizacion
-        this.guardarCotizacionT40();
-        
-        if(this.itemCotizacionT40.tarifaFinal !== 0){
-        this.cotizadorService.postAprobarCotizacion(clonedItem.idCotizacion).subscribe(res =>{
-          if (res.responseCode === 200) {
-            //agregamos precotizacion a las aprobadas
-            const elementIndex = this.arrPreCotizaciones.findIndex(obj=> obj.idCotizacion == clonedItem.idCotizacion);
-            this.arrPreCotizaciones[elementIndex].status = "APROBADA";
-            this.arrCotizaciones.push(this.arrPreCotizaciones[elementIndex]);
-
-            //Quitamos la aprobada de las precotizaciones
-            this.arrPreCotizaciones = this.arrPreCotizaciones.filter(e => e.idCotizacion !== clonedItem.idCotizacion);
-
-            notify({
-              message: 'Cotización aprobada con exito!',
-              position: {
-                my: 'center center',
-                at: 'center center',
-              },
-            }, 'success', 3000);
-          } else {
-            notify({
-              message: res.responseText,
-              position: {
-                my: 'center center',
-                at: 'center center',
-              },
-            }, 'error', 5000);
-          }
-        });
-      }
-    }
-    });
-
-    
+  /** Aprobar con la tarifa del 40 %: ver aprobarConTarifa(). */
+  tarifa40(data) {
+    this.aprobarConTarifa(data.data, data.data.tarifa40);
   }
 
   guardarCotizacionT40() {
