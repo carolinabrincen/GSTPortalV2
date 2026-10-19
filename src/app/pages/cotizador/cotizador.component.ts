@@ -1,11 +1,13 @@
 import { switchMap, map } from 'rxjs/operators';
-import { of, Subscription } from 'rxjs';
+import { of, Observable, Subscription } from 'rxjs';
 import { ReportsPDFService } from './../../shared/reports/reports-pdf.service';
 import { CotizadorService } from './../../services/cotizador/cotizador.service';
 import { CotizacionModel, VariablesCotizacionModel, DetalleCotizacionModel, ProductoCotizacionModel } from './../../shared/models/cotizador/cotizador.model';
-import { CatalogosCotizadorService, RutaCatalogoDTO, CasetasRutaDTO, CRITERIO_SIN_TARIFA, MSG_RUTA_NO_CATALOGO } from 'src/app/services/cotizador/catalogos-cotizador.service';
+import {
+  CatalogosCotizadorService, CatalogoDTO, RutaCatalogoDTO, CasetasRutaDTO, OpcionClaveDTO,
+  CRITERIO_SIN_TARIFA, MSG_RUTA_NO_CATALOGO, TIPOS_COBRO, TIPOS_SERVICIO
+} from 'src/app/services/cotizador/catalogos-cotizador.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DatosConvenioComponent } from './datos-convenio/datos-convenio.component';
 import {
   DxDataGridModule,
   DxDataGridComponent,
@@ -26,7 +28,7 @@ import themes from 'devextreme/ui/themes';
 import dxSelectBox from 'devextreme/ui/select_box';
 import { runInThisContext } from 'vm';
 import DataSource from 'devextreme/data/data_source';
-import CustomStore from 'devextreme/data/custom_store';
+import CustomStore, { Options as CustomStoreOptions } from 'devextreme/data/custom_store';
 
 
 
@@ -34,7 +36,7 @@ import CustomStore from 'devextreme/data/custom_store';
 
 
 
-// Valores por defecto del convenio (aplican aunque no se abra "Datos para convenio")
+// Valores por defecto del convenio (aplican aunque el usuario no capture esos campos)
 const MONEDA_DEFAULT = 1;        // Pesos
 const TIPO_SERV_DEFAULT = 'D';   // Doméstico
 const TIPO_COBRO_TONELADA = 'T';
@@ -83,7 +85,24 @@ export class CotizadorComponent implements OnInit {
 
   @ViewChild('rentGer') rentGer!: DxDataGridComponent;
   @ViewChild('cotizadorForm', { static: false }) cotizadorFormRef!: DxFormComponent;
-  @ViewChild(DatosConvenioComponent) datosConvenioRef?: DatosConvenioComponent;
+  @ViewChild('gridProductos') gridProductosRef?: DxDataGridComponent;
+
+  // ── Datos del convenio ────────────────────────────────────────────────────
+  // DataSources con búsqueda en servidor (mín 3 chars, paginate:false)
+  clienteGSTDataSource: DataSource;   // Remitente y Destinatario
+  // Store para el dxo-lookup de Producto del grid (no acepta DataSource directamente)
+  productosStore: CustomStore;
+  /** dataSource del dxo-lookup de Embalaje (ver _buildEmbalajesLookup). */
+  embalajesLookup: { store: CustomStore };
+  arrMonedas:          CatalogoDTO[] = [];
+  // Catálogos fijos (el back no tiene endpoint para estos)
+  readonly arrTiposServicio: OpcionClaveDTO[] = TIPOS_SERVICIO;
+  readonly arrTiposCobro:    OpcionClaveDTO[] = TIPOS_COBRO;
+  arrTiposExportacion: CatalogoDTO[] = [];
+  arrRegimenes:        CatalogoDTO[] = [];
+  arrContratos:        CatalogoDTO[] = [];
+  /** idCliente con el que se cargó arrContratos. */
+  private contratosIdCliente: number | null | undefined;
 
   arrCotizacionesSelect: CotizacionModel[] = [];
 
@@ -180,7 +199,6 @@ export class CotizadorComponent implements OnInit {
   buttonOptionsCerar: any;
 
   bolModal: boolean = false;
-  activeTab: number = 0;
   positionOf: string = '#myDiv';
   tituloModal: string = '';
   sololectura:string = '';
@@ -216,7 +234,13 @@ export class CotizadorComponent implements OnInit {
     this.ruta_onCustomItemCreating       = this.ruta_onCustomItemCreating.bind(this);
     this.ruta_onValueChanged             = this.ruta_onValueChanged.bind(this);
     this.numEjes_ValueChanged            = this.numEjes_ValueChanged.bind(this);
+    this.cliente_onValueChanged          = this.cliente_onValueChanged.bind(this);
+    this.tipoServ_ValueChanged           = this.tipoServ_ValueChanged.bind(this);
+    this.tipoCobro_ValueChanged          = this.tipoCobro_ValueChanged.bind(this);
     this.buildRutaDataSource();
+    this._buildClienteGSTDataSource();
+    this._buildProductosStore();
+    this._buildEmbalajesLookup();
     this.editarCotizacionClick = this.editarCotizacionClick.bind(this);
     this.eliminarCotizcionClick = this.eliminarCotizcionClick.bind(this);
     this.verCortizacionClick = this.verCortizacionClick.bind(this);
@@ -357,6 +381,7 @@ export class CotizadorComponent implements OnInit {
     this.getUnidadesNegocio();
     this.getClientes();
     this.getEjesCaseta();
+    this._cargarCatalogosConvenio();
   }
 
   // //#region :::: GETTERS ::::
@@ -486,12 +511,182 @@ export class CotizadorComponent implements OnInit {
   cliente_onSelectionChanged(e: any): void {
     // Captura idCliente del catálogo, o null si es texto libre o se limpia
     this.itemCotizacion.idCliente = e.selectedItem?.idCliente ?? null;
+    this._sincronizarContratos();
+  }
+
+  /** Cambio de cliente hecho por el usuario: el contrato elegido ya no aplica. */
+  cliente_onValueChanged(e: any): void {
+    if (e.event == null) return; // carga de una cotización guardada: conservar idContrato
+    this.asignarCampoForm('idContrato', null);
   }
 
   clienteItemTemplate(item: any): string {
     if (!item) return '';
     const id = item.idCliente > 0 ? item.idCliente : '—';
     return `<span>${id} &middot; ${item.cliente || ''}</span>`;
+  }
+
+  // ── Datos del convenio: catálogos ─────────────────────────────────────────
+
+  private _buildClienteGSTDataSource(): void {
+    const svc = this.catService;
+    this.clienteGSTDataSource = new DataSource({
+      store: new CustomStore({
+        key: 'id',
+        load: (opts: any) => svc.searchClientes(opts.searchValue || '').toPromise(),
+        byKey: (key: number) => svc.getClienteById(key).toPromise()
+      }),
+      paginate: false
+    });
+  }
+
+  private _buildProductosStore(): void {
+    const svc = this.catService;
+    this.productosStore = new CustomStore({
+      key: 'id',
+      load: (opts: any) => svc.searchProductos(opts.searchValue || '').toPromise(),
+      byKey: (key: number) => svc.getProductoById(key).toPromise()
+    } as CustomStoreOptions<CatalogoDTO, number>);
+  }
+
+  /**
+   * Lookup de Embalaje del grid de productos. Carga propia y por store: el grid
+   * pide los datos cuando los necesita, sin depender de que ya estén cargados
+   * al renderizar.
+   */
+  private _buildEmbalajesLookup(): void {
+    let carga: Promise<CatalogoDTO[]> | null = null;
+    this.embalajesLookup = {
+      store: new CustomStore({
+        key: 'id',
+        loadMode: 'raw',
+        load: () => {
+          if (!carga) {
+            carga = this.catService.getEmbalajes().toPromise()
+              .then(r => r ?? [])
+              .catch(err => { carga = null; throw err; }); // permitir reintento
+          }
+          return carga;
+        }
+      } as CustomStoreOptions<CatalogoDTO, number>)
+    };
+  }
+
+  /**
+   * Cada catálogo se carga por separado: si uno falla, los demás se llenan igual.
+   * Se empujan también al editor por si el form ya existe (dx-form no propaga
+   * editorOptions.dataSource a un editor ya creado).
+   */
+  private _cargarCatalogosConvenio(): void {
+    const cargar = (nombre: string, obs: Observable<CatalogoDTO[]>, campo: string, asignar: (d: CatalogoDTO[]) => void) =>
+      obs.subscribe({
+        next: d => { asignar(d ?? []); this._setEditorDataSource(campo, d ?? []); },
+        error: () => notify(`No se pudo cargar el catálogo de ${nombre}`, 'error', 3000)
+      });
+    cargar('monedas',              this.catService.getMonedas(),          'idTipoMoneda',      d => this.arrMonedas = d);
+    cargar('tipos de exportación', this.catService.getTiposExportacion(), 'idTipoExportacion', d => this.arrTiposExportacion = d);
+    cargar('regímenes',            this.catService.getRegimenes(),        'regimenes',         d => this.arrRegimenes = d);
+  }
+
+  /** Recarga los contratos cuando cambia el idCliente del modelo (sin tocar idContrato). */
+  private _sincronizarContratos(): void {
+    const id = this.itemCotizacion.idCliente ?? null;
+    if (id === this.contratosIdCliente) return;
+    this.contratosIdCliente = id;
+    this.arrContratos = [];
+    this._setEditorDataSource('idContrato', []);
+    if (!id) return;
+    this.catService.getContratos(id).subscribe(data => {
+      if (this.contratosIdCliente !== id) return; // llegó tarde: el cliente ya cambió
+      this.arrContratos = data ?? [];
+      this._setEditorDataSource('idContrato', this.arrContratos);
+    });
+  }
+
+  private _setEditorDataSource(campo: string, data: any[]): void {
+    this.cotizadorFormRef?.instance?.getEditor(campo)?.option('dataSource', data);
+  }
+
+  get contratoNoDataText(): string {
+    return this.itemCotizacion?.idCliente
+      ? 'Sin contratos para este cliente'
+      : 'Seleccione un cliente del catálogo';
+  }
+
+  // ── Datos del convenio: eventos ───────────────────────────────────────────
+
+  tipoServ_ValueChanged(_e: any): void {
+    if (!this.esComercioExterior) {
+      this.itemCotizacion.idTipoExportacion = undefined;
+      this.itemCotizacion.regimenes         = [];
+    }
+  }
+
+  tipoCobro_ValueChanged(e: any): void {
+    // Solo un cambio del usuario lo marca como manual (no la carga ni la sugerencia)
+    if (e.event != null) this.itemCotizacion.tipoCobroManual = true;
+    if (!this.esTarifaUnitaria) this.itemCotizacion.tarifaUnitaria = undefined;
+  }
+
+  /** La tarifa unitaria solo aplica con tipoCobro = 'U'. */
+  get esTarifaUnitaria(): boolean {
+    return (this.itemCotizacion?.tipoCobro || '').toUpperCase() === 'U';
+  }
+
+  /** La sección de comercio exterior solo aplica con tipo de servicio I o E. */
+  get esComercioExterior(): boolean {
+    const c = (this.itemCotizacion?.tipoServ || '').toUpperCase();
+    return c === 'I' || c === 'E';
+  }
+
+  // ── Datos del convenio: grid de productos ─────────────────────────────────
+
+  /**
+   * Firma de DevExtreme: (newData, value, currentRowData). Regresa la promesa para
+   * que el grid espere los datos del producto antes de pintar la fila.
+   */
+  setCellValueProducto = (newData: ProductoCotizacionModel, value: number,
+                          currentRowData: ProductoCotizacionModel): Promise<void> => {
+    newData.idProducto = value;
+    if (value == null) return Promise.resolve();
+    return this.catService.getProductoById(value).toPromise().then(p => {
+      if (!p) return;
+      newData.descripcion = p.descripcion;
+      newData.idFraccion  = this._aNumero(p.idRelacion) ?? null;
+      newData.peso        = p.valor || 0;
+      // Embalaje por defecto del producto, solo si la fila aún no tiene uno
+      if (currentRowData?.embalaje == null) {
+        newData.embalaje = this._aNumero(p.extra1) ?? null;
+      }
+    });
+  }
+
+  private _aNumero(v: string | number | null | undefined): number | undefined {
+    const n = Number(v);
+    return v != null && v !== '' && !isNaN(n) ? n : undefined;
+  }
+
+  onProductoInitNewRow = (e: any): void => {
+    e.data.renglon  = (this.itemCotizacion.productos?.length ?? 0) + 1;
+    e.data.embalaje = null;   // sin embalaje hasta elegir producto (no 0 ni '')
+  }
+
+  /** Recalcula renglon 1, 2, 3… según el orden del grid (al agregar o borrar). */
+  renumerarProductos = (): void => {
+    (this.itemCotizacion.productos ?? []).forEach((p, i) => p.renglon = i + 1);
+  }
+
+  /**
+   * Guarda el renglón del grid de productos que siga abierto (editing mode "row").
+   * Mientras no se guarda, el renglón no existe en itemCotizacion.productos.
+   */
+  private guardarEdicionProductos(): Promise<void> {
+    const grid = this.gridProductosRef?.instance;
+    if (!grid || !grid.hasEditData()) return Promise.resolve();
+    return Promise.resolve(grid.saveEditData()).then(() => {
+      // Si la validación del grid dejó el renglón abierto, no se guardó
+      if (grid.hasEditData()) throw new Error('Renglón de productos sin guardar');
+    });
   }
 
   // ── Ruta ─────────────────────────────────────────────────────────────────
@@ -871,8 +1066,7 @@ precioTotalValueChanged(e: any) {
     if (this.itemCotizacion.tipoCobroManual) return;
     const sugerido = (this.itemCotizacion.costo_tonelada ?? 0) > 0 ? TIPO_COBRO_TONELADA : TIPO_COBRO_VIAJE;
     if (this.itemCotizacion.tipoCobro === sugerido) return;
-    this.itemCotizacion.tipoCobro = sugerido;
-    this.datosConvenioRef?.formRef?.instance?.getEditor('tipoCobro')?.option('value', sugerido);
+    this.asignarCampoForm('tipoCobro', sugerido);
   }
 
   /** Completa moneda, tipo de servicio y tipo de cobro cuando la cotización no los trae. */
@@ -1001,12 +1195,11 @@ precioTotalValueChanged(e: any) {
 
   guardarCotizacionClick(e: any) {
     e.preventDefault();
-    // Primero guardar el renglón de productos que siga abierto en el grid de la pestaña 2;
+    // Primero guardar el renglón de productos que siga abierto en el grid;
     // si no, no está en itemCotizacion.productos y no viaja en el payload.
-    const pendiente = this.datosConvenioRef?.guardarEdicionProductos() ?? Promise.resolve();
-    pendiente.then(
+    this.guardarEdicionProductos().then(
       () => this._guardarCotizacion(),
-      () => notify('Revise el renglón de productos en "Datos para convenio" antes de guardar.', 'error', 4000)
+      () => notify('Revise el renglón de Productos / Mercancía antes de guardar.', 'error', 4000)
     );
   }
 
@@ -1086,7 +1279,6 @@ precioTotalValueChanged(e: any) {
     e.event.preventDefault();
     this.tipoRegistro = "editar";
     this.bolModal = true;
-    this.activeTab = 0;
     this.selectedRuta = null;
     this.mostrarAvisoRuta = false;
     this._actualizarReadOnly(false, false);
@@ -1142,6 +1334,7 @@ precioTotalValueChanged(e: any) {
         this.itemCotizacion.idCliente = found.idCliente;
       }
     }
+    this._sincronizarContratos();
 
     // Ruta: del catálogo (origen/destino solo lectura) o escrita a mano (con aviso)
     if (this.itemCotizacion.idRuta) {
@@ -1167,10 +1360,16 @@ precioTotalValueChanged(e: any) {
         ed.option('items', finalOps);
         ed.option('value', resolvedValue);
       }
-      for (const campo of ['cliente', 'numEjes', 'origen', 'destino'] as const) {
-        form?.getEditor(campo)?.option('value', this.itemCotizacion[campo]);
+      // Valores guardados → editores (remitente/destinatario se resuelven con byKey)
+      const campos: (keyof CotizacionModel)[] = [
+        'cliente', 'numEjes', 'origen', 'destino',
+        'idRemitente', 'idDestinatario', 'idTipoMoneda', 'tipoServ', 'tipoCobro',
+        'tarifaUnitaria', 'idContrato', 'idTipoExportacion', 'regimenes',
+        'toleranciaLlegada', 'descConvenio', 'observaciones'
+      ];
+      for (const campo of campos) {
+        form?.getEditor(campo)?.option('value', this.itemCotizacion[campo] ?? null);
       }
-      this.datosConvenioRef?.refrescarEditores();
     }, 0);
   }
 
@@ -1202,7 +1401,6 @@ precioTotalValueChanged(e: any) {
     e.event.preventDefault();
     this.bolFormSoloLectura = true;
     this.bolModal = true;
-    this.activeTab = 0;
     this.selectedRuta = null;
     this.resetCasetasRuta();
     this.sololectura = "si";
@@ -1272,7 +1470,6 @@ precioTotalValueChanged(e: any) {
 
   limpiarForm() {
     this.bolFormSoloLectura = false;
-    this.activeTab = 0;
     this.selectedRuta = null;
     this.mostrarAvisoRuta = false;
     this.arrTipoOperacion = [];
@@ -1344,6 +1541,7 @@ precioTotalValueChanged(e: any) {
       observaciones: undefined,
       productos: []
     };
+    this._sincronizarContratos();
   }
 
   private resetCasetasRuta(): void {
