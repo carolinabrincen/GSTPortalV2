@@ -356,7 +356,8 @@
                             </dxi-item>
 
                             <!-- CLIENTE + REFRESH (colSpan original = 6, sin cambios) -->
-                            <dxi-item itemType="group" [colSpan]="6" [colCount]="13">
+                            <!-- Sin Ruta/Ejes (MOSTRAR_DATOS_CONVENIO = false) el Cliente ocupa la fila completa -->
+                            <dxi-item itemType="group" [colSpan]="mostrarDatosConvenio ? 6 : 12" [colCount]="13">
                                 <dxi-item dataField="cliente" editorType="dxSelectBox" [editorOptions]="{
                                     dataSource: clientesDataSource,
                                     searchEnabled: true,
@@ -380,8 +381,8 @@
                             </dxi-item>
 
                             <!-- RUTA + NÚMERO DE EJES — ocupan las 6 cols restantes de la fila del Cliente -->
-                            <dxi-item [template]="'rutaTpl'" [colSpan]="4"></dxi-item>
-                            <dxi-item dataField="numEjes" editorType="dxSelectBox" [editorOptions]="{
+                            <dxi-item [template]="'rutaTpl'" [colSpan]="4" [visible]="mostrarDatosConvenio"></dxi-item>
+                            <dxi-item dataField="numEjes" editorType="dxSelectBox" [visible]="mostrarDatosConvenio" [editorOptions]="{
                   items: arrEjes,
                   displayExpr: 'texto',
                   valueExpr: 'valor',
@@ -401,7 +402,7 @@
                             </dxi-item>
 
                             <!-- PARTES (Remitente / Destinatario) -->
-                            <dxi-item itemType="group" caption="Partes" [colSpan]="12" [colCount]="12">
+                            <dxi-item itemType="group" caption="Partes" [colSpan]="12" [colCount]="12" [visible]="mostrarDatosConvenio">
                                 <dxi-item dataField="idRemitente" editorType="dxSelectBox" [colSpan]="6" [editorOptions]="{
                   dataSource: clienteGSTDataSource,
                   displayExpr: 'descripcion',
@@ -431,7 +432,7 @@
                             </dxi-item>
 
                             <!-- CONDICIONES COMERCIALES -->
-                            <dxi-item itemType="group" caption="Condiciones comerciales" [colSpan]="12" [colCount]="12">
+                            <dxi-item itemType="group" caption="Condiciones comerciales" [colSpan]="12" [colCount]="12" [visible]="mostrarDatosConvenio">
                                 <dxi-item dataField="idTipoMoneda" editorType="dxSelectBox" [colSpan]="3" [editorOptions]="{
                   dataSource: arrMonedas,
                   displayExpr: 'descripcion',
@@ -489,7 +490,7 @@
 
                             <!-- COMERCIO EXTERIOR (visible solo con tipo de servicio I o E) -->
                             <dxi-item itemType="group" caption="Comercio exterior" [colSpan]="12" [colCount]="12"
-                                      [visible]="esComercioExterior">
+                                      [visible]="mostrarDatosConvenio && esComercioExterior">
                                 <dxi-item dataField="idTipoExportacion" editorType="dxSelectBox" [colSpan]="6" [editorOptions]="{
                   dataSource: arrTiposExportacion,
                   displayExpr: 'descripcion',
@@ -592,7 +593,7 @@
                             </dxi-item>
 
                             <!-- OTROS DATOS DEL CONVENIO -->
-                            <dxi-item itemType="group" caption="Otros datos" [colSpan]="12" [colCount]="12">
+                            <dxi-item itemType="group" caption="Otros datos" [colSpan]="12" [colCount]="12" [visible]="mostrarDatosConvenio">
                                 <dxi-item dataField="toleranciaLlegada" editorType="dxNumberBox" [colSpan]="2" [editorOptions]="{
                   min: 0, format: '#0 min', showSpinButtons: true
                 }">
@@ -609,7 +610,7 @@
                             </dxi-item>
 
                             <!-- PRODUCTOS / MERCANCÍA -->
-                            <dxi-item itemType="group" caption="Productos / Mercancía" [colSpan]="12">
+                            <dxi-item itemType="group" caption="Productos / Mercancía" [colSpan]="12" [visible]="mostrarDatosConvenio">
                                 <dxi-item [template]="'productosTpl'"></dxi-item>
                             </dxi-item>
                             <!-- ESPACIO EN BLANCO -->

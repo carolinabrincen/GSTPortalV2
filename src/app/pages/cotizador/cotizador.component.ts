@@ -36,6 +36,14 @@ import CustomStore, { Options as CustomStoreOptions } from 'devextreme/data/cust
 
 
 
+/**
+ * Muestra u oculta en el popup Nueva / Editar cotización los datos del convenio:
+ * Ruta, Número de ejes, Partes, Condiciones comerciales (y Comercio exterior),
+ * Otros datos (con Observaciones) y Productos / Mercancía.
+ * TEMPORAL: ocultos por ahora; cambiar a true para volver a mostrarlos.
+ */
+const MOSTRAR_DATOS_CONVENIO = false;
+
 // Valores por defecto del convenio (aplican aunque el usuario no capture esos campos)
 const MONEDA_DEFAULT = 1;        // Pesos
 const TIPO_SERV_DEFAULT = 'D';   // Doméstico
@@ -88,6 +96,8 @@ export class CotizadorComponent implements OnInit {
   @ViewChild('gridProductos') gridProductosRef?: DxDataGridComponent;
 
   // ── Datos del convenio ────────────────────────────────────────────────────
+  /** Ver MOSTRAR_DATOS_CONVENIO. */
+  readonly mostrarDatosConvenio = MOSTRAR_DATOS_CONVENIO;
   // DataSources con búsqueda en servidor (mín 3 chars, paginate:false)
   clienteGSTDataSource: DataSource;   // Remitente y Destinatario
   // Store para el dxo-lookup de Producto del grid (no acepta DataSource directamente)
