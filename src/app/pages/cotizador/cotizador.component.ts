@@ -1132,6 +1132,8 @@ precioTotalValueChanged(e: any) {
             guardada.tipoOperacion = row.tipoOperacion;
             guardada.casetas_total_sin_impuestos = row.casetas_total_sin_impuestos;
             guardada.casetas_regreso             = row.casetas_regreso;
+            // Cotizaciones guardadas antes sin remitente/destinatario (secciones ocultas)
+            this._aplicarPartesTemporales(guardada);
             return this.cotizadorService.postEditarCotizacion(guardada);
           })
         ).subscribe({
@@ -1252,7 +1254,7 @@ precioTotalValueChanged(e: any) {
         volumenM3:   v(p.volumenM3),
         importe:     v(p.importe)
       }));
-    return {
+    const payload: CotizacionModel = {
       ...m,
       cliente:           typeof m.cliente === 'string' ? m.cliente.trim() : m.cliente,
       idCliente:         v(m.idCliente),
@@ -1276,6 +1278,22 @@ precioTotalValueChanged(e: any) {
       observaciones:     v(m.observaciones),
       productos
     };
+    this._aplicarPartesTemporales(payload);
+    return payload;
+  }
+
+  /**
+   * TEMPORAL mientras las secciones del convenio están ocultas (MOSTRAR_DATOS_CONVENIO = false):
+   * el back exige remitente y destinatario para aprobar, así que se toman del cliente
+   * (mismo catálogo: trafico_cliente.id_cliente) y se marca en observaciones.
+   */
+  private _aplicarPartesTemporales(cotizacion: CotizacionModel): void {
+    if (MOSTRAR_DATOS_CONVENIO) return;
+    const idCliente = cotizacion.idCliente;
+    cotizacion.idRemitente    = cotizacion.idRemitente    ?? idCliente;
+    cotizacion.idDestinatario = cotizacion.idDestinatario ?? idCliente;
+    cotizacion.observaciones  = cotizacion.observaciones
+                                || 'PARTES PENDIENTES – generado con valores temporales';
   }
 
   /**
