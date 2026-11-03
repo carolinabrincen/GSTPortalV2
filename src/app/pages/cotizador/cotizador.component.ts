@@ -1101,10 +1101,18 @@ precioTotalValueChanged(e: any) {
     const row: CotizacionModel = { ...e.row.data };
     if (this._yaTieneConvenio(row)) return;
     // La fila del grid no trae idCliente: validar contra lo guardado
-    this._conCotizacionGuardada(row, () =>
+    this._conCotizacionGuardada(row, guardada =>
       confirm(this._avisoCambiosSinGuardar(row) +
         "<i>Esta seguro de aprobar la cotización: <b>" + row.folio + "</b></i>", "Confirmar Operación")
-        .then(ok => { if (ok) this._aprobar(row); }));
+        .then(ok => {
+          if (!ok) return;
+          // TEMPORAL: sin remitente/destinatario el back no aprueba; completarlos y guardar antes
+          if (!MOSTRAR_DATOS_CONVENIO && (!guardada.idRemitente || !guardada.idDestinatario)) {
+            this._guardarParaAprobar(guardada, row, null, () => this._aprobar(row));
+          } else {
+            this._aprobar(row);
+          }
+        }));
   }
 
   /**
@@ -1124,28 +1132,36 @@ precioTotalValueChanged(e: any) {
         "<i>La tarifa final sera <b>" + tarifaTexto + "</b></i><br>" +
         "<i>Esta seguro de aprobar la cotización: <b>" + row.folio + "</b></i>", "Confirmar Operación")
         .then(ok => {
-          if (!ok) return;
-          // Mismos ajustes que hacían guardarCotizacionT25..T40
-          guardada.sencillo      = guardada.tipoViaje === "Solo de ida";
-          guardada.regresa_vacio = guardada.regreso === "Vacio";
-          guardada.clienta_paga  = guardada.clientePagaCasetas === "Si";
-          guardada.tarifaFinal   = tarifa;
-          guardada.tipoOperacion = row.tipoOperacion;
-          guardada.casetas_total_sin_impuestos = row.casetas_total_sin_impuestos;
-          guardada.casetas_regreso             = row.casetas_regreso;
-          // Cotizaciones guardadas antes sin remitente/destinatario (secciones ocultas)
-          this._aplicarPartesTemporales(guardada);
-          this.cotizadorService.postEditarCotizacion(guardada).subscribe({
-            next: res => {
-              if (res.responseCode !== 200) {
-                this._notificarAprobacion(res.responseText, 'error');
-                return;
-              }
-              this._aprobar({ ...row, tarifaFinal: tarifa });
-            },
-            error: err => this._notificarAprobacion(this._mensajeHttpError(err), 'error')
-          });
+          if (ok) this._guardarParaAprobar(guardada, row, tarifa, () => this._aprobar({ ...row, tarifaFinal: tarifa }));
         }));
+  }
+
+  /**
+   * Guardado previo a aprobar (el mismo para los botones de tarifa y el "Aprobar" de la
+   * etiqueta): mismos ajustes que hacían guardarCotizacionT25..T40, la tarifa elegida si
+   * se indica y, con las secciones del convenio ocultas, remitente/destinatario temporales.
+   * Solo si el guardado sale bien continúa con la aprobación.
+   */
+  private _guardarParaAprobar(guardada: CotizacionModel, row: CotizacionModel,
+                              tarifa: number | null, despues: () => void): void {
+    guardada.sencillo      = guardada.tipoViaje === "Solo de ida";
+    guardada.regresa_vacio = guardada.regreso === "Vacio";
+    guardada.clienta_paga  = guardada.clientePagaCasetas === "Si";
+    if (tarifa != null) guardada.tarifaFinal = tarifa;
+    guardada.tipoOperacion = row.tipoOperacion;
+    guardada.casetas_total_sin_impuestos = row.casetas_total_sin_impuestos;
+    guardada.casetas_regreso             = row.casetas_regreso;
+    this._aplicarPartesTemporales(guardada);
+    this.cotizadorService.postEditarCotizacion(guardada).subscribe({
+      next: res => {
+        if (res.responseCode !== 200) {
+          this._notificarAprobacion(res.responseText, 'error');
+          return;
+        }
+        despues();
+      },
+      error: err => this._notificarAprobacion(this._mensajeHttpError(err), 'error')
+    });
   }
 
   /**
