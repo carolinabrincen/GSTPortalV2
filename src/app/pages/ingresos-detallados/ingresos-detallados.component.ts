@@ -138,7 +138,7 @@ export class IngresosDetalladosComponent implements OnInit {
      this.getIDMDAgosto2026();
      this.getIDMDSeptiembre2026();
      this.getIDMDOctubre2026();
-    // this.getIDMDNoviembre2026();
+     this.getIDMDNoviembre2026();
     // this.getIDMDDiciembre2026();
   }
 
@@ -599,15 +599,15 @@ export class IngresosDetalladosComponent implements OnInit {
        this.loadingVisible = false;
      });
    }
-  // getIDMDNoviembre2026(){
-  //   this.loadingVisible = true;
-  //   this.ingresosService.getIngresosDetalladosMensualNov2026().subscribe(res => {
-  //     this.arrIngresosNov2026 = res.data.resumen;
-  //     this.arrDetalleNov2026 = res.data.detalle;
-  //     //console.log("NOVIEMBRE !!!!!! ",res.data)
-  //     this.loadingVisible = false;
-  //   });
-  // }
+   getIDMDNoviembre2026(){
+     this.loadingVisible = true;
+     this.ingresosService.getIngresosDetalladosMensualNov2026().subscribe(res => {
+     this.arrIngresosNov2026 = res.data.resumen;
+      this.arrDetalleNov2026 = res.data.detalle;
+       //console.log("NOVIEMBRE !!!!!! ",res.data)
+       this.loadingVisible = false;
+     });
+   }
   // getIDMDDiciembre2026(){
   //   this.loadingVisible = true;
   //   this.ingresosService.getIngresosDetalladosMensualDic2026().subscribe(res => {
@@ -1017,6 +1017,196 @@ onCellPreparedOct(e: any){
 }
 
 customizeOct(e) {  
+  var gridCell = e.gridCell;
+  if (gridCell.rowType === 'data') {
+
+    if(e.gridCell.column.dataField !== 'tipoOperacion'){
+      var x = Math.round(e.value)
+
+      var myvalue = Math.trunc(x);
+      var myFormat = myvalue.toString().split(".");
+      myFormat[0] = myFormat[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+      e.value = '$ '+myFormat;
+    }
+
+    if(e.gridCell.column.dataField == "facturadoProvision"){
+      e.fontWeight = "bolder"
+      e.font = {bold: true}
+
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "refacturado"){
+      e.fontWeight = "bolder"
+      e.font = {bold: true}
+    }
+
+    if(e.gridCell.column.dataField == "cancelacionProvision"){
+      e.fontWeight = "bolder"
+      e.font = {bold: true}
+
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "maSolicitudCancelacion"){
+      e.fontWeight = "bolder"
+      e.font = {bold: true}
+
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "maCancelacionOtros"){
+      e.fontWeight = "bolder"
+      e.font = {bold: true}
+
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "maTotal"){
+      e.backgroundColor = "#DCDCDC";
+      e.fontWeight = "bolder"
+      e.font = {bold: true}
+
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "totalFlete"){
+      e.backgroundColor = "#DCDCDC";
+    }
+
+    if(e.gridCell.column.dataField == "maTotal2"){
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "notasCredito"){
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "total"){
+      e.backgroundColor = "#DCDCDC";
+    }
+  }
+
+  if (gridCell.rowType === 'groupFooter') {
+    
+    e.backgroundColor = "#DCDCDC";
+    e.fontWeight = "bolder"
+    e.font = {bold: true}
+
+    if(e.gridCell.column.dataField == "facturadoProvision"){
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "cancelacionProvision"){
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "maSolicitudCancelacion"){
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "maCancelacionOtros"){
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "maTotal"){
+      e.backgroundColor = "#DCDCDC";
+
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "maTotal2"){
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "notasCredito"){
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+  }
+
+  if (gridCell.rowType === 'totalFooter') {
+      
+    e.backgroundColor = "#ff9460";
+    e.fontWeight = "bolder"
+    e.font = {bold: true}
+
+    if(e.gridCell.column.dataField == "facturadoProvision"){
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "cancelacionProvision"){
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "maSolicitudCancelacion"){
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "maCancelacionOtros"){
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "maTotal"){
+      // e.backgroundColor = "#DCDCDC";
+
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "maTotal2"){
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+
+    if(e.gridCell.column.dataField == "notasCredito"){
+      if(e.gridCell.value.toString().startsWith('-')){
+        e.font.color = '#ff0000'
+      }
+    }
+  }
+}
+
+customizeNov(e) {  
   var gridCell = e.gridCell;
   if (gridCell.rowType === 'data') {
 
